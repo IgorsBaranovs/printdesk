@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintDesk - 3D Manager</title>
+    
+    <!-- Вшиваем манифест прямо в HTML, чтобы не создавать отдельный файл! -->
+    <link rel="manifest" href='data:application/json,{"name":"PrintDesk","short_name":"PrintDesk","start_url":".","display":"standalone","background_color":"#121212","theme_color":"#1e1e1e","orientation":"portrait","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2300adb5%22/><text y=%2270%22 x=%2218%22 font-size=%2260%22 fill=%22white%22 font-family=%22sans-serif%22 font-weight=%22bold%22>3D</text></svg>","sizes":"512x512","type":"image/svg+xml"}]}'>
+    <meta name="theme-color" content="#1e1e1e">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; padding-bottom: 70px; }
+        header { background-color: #1e1e1e; padding: 15px; text-align: center; border-bottom: 1px solid #2d2d2d; font-size: 20px; font-weight: bold; color: #00adb5; }
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        .card { background-color: #1e1e1e; border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #2d2d2d; }
+        .card h3 { margin-bottom: 10px; color: #00adb5; font-size: 16px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-box { background-color: #252525; padding: 12px; border-radius: 8px; text-align: center; }
+        .stat-box .val { font-size: 18px; font-weight: bold; margin-top: 5px; color: #fff; }
+        .stat-box .val.green { color: #4caf50; }
+        .btn { background-color: #00adb5; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; display: block; text-align: center; text-decoration: none; margin-top: 10px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 14px; margin-bottom: 5px; color: #aaa; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; background-color: #252525; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 15px; }
+        .result-item { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; border-bottom: 1px dashed #2d2d2d; }
+        .result-total { display: flex; justify-content: space-between; padding: 10px 0; font-size: 18px; font-weight: bold; color: #fff; border-top: 1px solid #444; margin-top: 5px; }
+        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background-color: #1e1e1e; display: flex; border-top: 1px solid #2d2d2d; z-index: 1000; }
+        .nav-item { flex: 1; text-align: center; padding: 12px 5px; color: #888; cursor: pointer; font-size: 12px; }
+        .nav-item.active { color: #00adb5; font-weight: bold; }
+        .nav-item span { display: block; font-size: 18px; margin-bottom: 2px; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .spool-card, .history-card { background-color: #252525; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #00adb5; }
+    </style>
+</head>
+<body>
+
+<header>🖨 PrintDesk</header>
+
+<div class="container">
+    <!-- ГЛАВНАЯ -->
+    <div id="page-main" class="page active">
+        <div class="card"><h3>Текущие остатки пластика</h3><div id="spool-summary"></div></div>
+        <div class="stat-grid">
+            <div class="stat-box"><div>Печать (всего)</div><div class="val" id="stat-today">0 г</div></div>
+            <div class="stat-box"><div>Прибыль</div><div class="val green" id="stat-profit">0.00 €</div></div>
+        </div>
+        <button class="btn" onclick="switchPage('calc')">📦 Новый расчёт</button>
+    </div>
+
+    <!-- КАЛЬКУЛЯТОР -->
+    <div id="page-calc" class="page">
+        <div class="card">
+            <h3>Новый расчёт модели</h3>
+            <div class="form-group"><label>Название модели</label><input type="text" id="calc-name" value="Деталь"></div>
+            <div class="form-group"><label>Выберите катушку</label><select id="calc-spool" onchange="calculate()"></select></div>
+            <div class="form-group"><label>Вес модели (грамм)</label><input type="number" id="calc-weight" value="100" oninput="calculate()"></div>
+            <div class="form-group"><label>Время печати (часов)</label><input type="number" id="calc-time" value="4" oninput="calculate()"></div>
+            <div style="margin-top: 15px;">
+                <div class="result-item"><span>Материал:</span><span id="res-mat">0.00 €</span></div>
+                <div class="result-item"><span>Электричество:</span><span id="res-elec">0.00 €</span></div>
+                <div class="result-item"><span>Амортизация:</span><span id="res-amp">0.00 €</span></div>
+                <div class="result-total"><span>Себестоимость:</span><span id="res-cost">0.00 €</span></div>
+                <div class="result-item" style="color:#4caf50; font-weight:bold;"><span>Прибыль (0.05€/г):</span><span id="res-profit">0.00 €</span></div>
+                <div class="result-total" style="color:#00adb5;"><span>Цена продажи:</span><span id="res-price">0.00 €</span></div>
+            </div>
+            <button class="btn" onclick="saveOrder()">💾 Сохранить заказ</button>
+        </div>
+    </div>
+
+    <!-- КАТУШКИ -->
+    <div id="page-spools" class="page">
+        <div class="card">
+            <h3>Добавить новую катушку</h3>
+            <div class="form-group"><label>Название / Цвет</label><input type="text" id="spool-name" placeholder="Например, Anycubic PLA Black"></div>
+            <div class="form-group"><label>Вес пластика (грамм)</label><input type="number" id="spool-weight" value="1000"></div>
+            <div class="form-group"><label>Цена катушки (€)</label><input type="number" id="spool-price" value="19.99" step="0.01"></div>
+            <button class="btn" onclick="addSpool()">➕ Добавить катушку</button>
+        </div>
+        <div id="spools-list"></div>
+    </div>
+
+    <!-- ИСТОРИЯ -->
+    <div id="page-history" class="page"><div class="card"><h3>История заказов</h3><div id="history-list"></div></div></div>
+</div>
+
+<div class="nav-bar">
+    <div class="nav-item active" id="nav-main" onclick="switchPage('main')"><span>🏠</span>Главная</div>
+    <div class="nav-item" id="nav-calc" onclick="switchPage('calc')"><span>🧮</span>Расчет</div>
+    <div class="nav-item" id="nav-spools" onclick="switchPage('spools')"><span>🧵</span>Катушки</div>
+    <div class="nav-item" id="nav-history" onclick="switchPage('history')"><span>📋</span>История</div>
+</div>
+
+<script>
+    const ELEC_COST_PER_HOUR = 0.05;
+    const AMORT_COST_PER_HOUR = 0.10;
+    const PROFIT_PER_GRAM = 0.05;
+
+    let spools = JSON.parse(localStorage.getItem('pd_spools')) || [
+        { id: 1, name: "Anycubic PLA Black", weight: 740, price: 18.99, initWeight: 1000 },
+        { id: 2, name: "SUNLU PETG Yellow", weight: 320, price: 19.99, initWeight: 1000 }
+    ];
+    let history = JSON.parse(localStorage.getItem('pd_history')) || [];
+
+    function saveData() { localStorage.setItem('pd_spools', JSON.stringify(spools)); localStorage.setItem('pd_history', JSON.stringify(history)); updateUI(); }
+    
+    function switchPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById('page-' + pageId).classList.add('active');
+        document.getElementById('nav-' + pageId).classList.add('active');
+        if(pageId === 'calc') updateSpoolSelect();
+        updateUI();
+    }
+
+    function updateSpoolSelect() {
+        const select = document.getElementById('calc-spool'); select.innerHTML = '';
+        spools.forEach(s => { select.innerHTML += `<option value="${s.id}">${s.name} (${s.weight}г)</option>`; });
+        calculate();
+    }
+
+    function calculate() {
+        const spoolId = parseInt(document.getElementById('calc-spool').value);
+        const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
+        const time = parseFloat(document.getElementById('calc-time').value) || 0;
+        const spool = spools.find(s => s.id === spoolId); if (!spool) return;
+        
+        const pricePerGram = spool.price / spool.initWeight;
+        const matCost = weight * pricePerGram;
+        const elecCost = time * ELEC_COST_PER_HOUR;
+        const amortCost = time * AMORT_COST_PER_HOUR;
+        const totalCost = matCost + elecCost + amortCost;
+        const profit = weight * PROFIT_PER_GRAM;
+
+        document.getElementById('res-mat').innerText = matCost.toFixed(2) + ' €';
+        document.getElementById('res-elec').innerText = elecCost.toFixed(2) + ' €';
+        document.getElementById('res-amp').innerText = amortCost.toFixed(2) + ' €';
+        document.getElementById('res-cost').innerText = totalCost.toFixed(2) + ' €';
+        document.getElementById('res-profit').innerText = profit.toFixed(2) + ' €';
+        document.getElementById('res-price').innerText = (totalCost + profit).toFixed(2) + ' €';
+    }
+
+    function saveOrder() {
+        const spoolId = parseInt(document.getElementById('calc-spool').value);
+        const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
+        const time = parseFloat(document.getElementById('calc-time').value) || 0;
+        const name = document.getElementById('calc-name').value || "Деталь";
+        const spool = spools.find(s => s.id === spoolId);
+        
+        if (!spool || spool.weight < weight) { alert("Недостаточно пластика!"); return; }
+        spool.weight -= weight;
+        
+        const pricePerGram = spool.price / spool.initWeight;
+        const totalCost = (weight * pricePerGram) + (time * ELEC_COST_PER_HOUR) + (time * AMORT_COST_PER_HOUR);
+        const profit = weight * PROFIT_PER_GRAM;
+
+        history.unshift({ id: Date.now(), name: name, weight: weight, profit: profit, price: totalCost + profit, date: new Date().toLocaleDateString('ru-RU') });
+        saveData(); alert("Заказ сохранен, пластик списан!"); switchPage('main');
+    }
+
+    function addSpool() {
+        const name = document.getElementById('spool-name').value;
+        const weight = parseFloat(document.getElementById('spool-weight').value);
+        const price = parseFloat(document.getElementById('spool-price').value);
+        if(!name) return;
+        spools.push({ id: Date.now(), name: name, weight: weight, initWeight: weight, price: price });
+        document.getElementById('spool-name').value = ''; saveData(); alert("Катушка добавлена!");
+    }
+
+    function updateUI() {
+        const summary = document.getElementById('spool-summary'); summary.innerHTML = '';
+        spools.forEach(s => { summary.innerHTML += `<div>🟢 <b>${s.name}</b>: ${s.weight} г осталось</div>`; });
+        
+        let totalW = 0; let totalP = 0;
+        history.forEach(h => { totalW += h.weight; totalP += h.profit; });
+        document.getElementById('stat-today').innerText = totalW + ' г';
+        document.getElementById('stat-profit').innerText = totalP.toFixed(2) + ' €';
+        
+        const spoolsList = document.getElementById('spools-list'); spoolsList.innerHTML = '';
+        spools.forEach(s => { spoolsList.innerHTML += `<div class="spool-card"><h4>${s.name}</h4><p>${s.weight}г осталось / Цена: ${s.price}€</p></div>`; });
+        
+        const historyList = document.getElementById('history-list'); historyList.innerHTML = '';
+        history.forEach(h => { historyList.innerHTML += `<div class="history-card"><h4>${h.name} <span style="float:right;font-size:12px;color:#888;">${h.date}</span></h4><p>${h.weight}г | Прибыль: <span style="color:#4caf50">${h.profit.toFixed(2)}€</span></p></div>`; });
+    }
+
+    // Простейший инлайн сервис-воркер для офлайн работы
+    const swCode = `
+        const CACHE = 'pd-v2';
+        self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html']))));
+        self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
+    `;
+    const blob = new Blob([swCode], {type: 'application/javascript'});
+    const swUrl = URL.createObjectURL(blob);
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register(swUrl); }
+
+    updateUI();
+</script>
+</body>
+</html>
+
