@@ -171,7 +171,15 @@
 
     function updateUI() {
         const summary = document.getElementById('spool-summary'); summary.innerHTML = '';
-        spools.forEach(s => { summary.innerHTML += `<div>🟢 <b>${s.name}</b>: ${s.weight} г осталось</div>`; });
+        spools.forEach((s, index) => { 
+          spoolsList.innerHTML += `
+            <div class="spool-card" style="position: relative;">
+              <h4>${s.name}</h4>
+              <p>${s.weight}г осталось / Цена: ${s.price}€</p>
+              <button onclick="deleteSpool(${index})" style="position: absolute; right: 10px; top: 10px; background: none; border: none; color: #ff5252; cursor: pointer; font-size: 16px;">🗑️</button>
+            </div>`; 
+});
+
         
         let totalW = 0; let totalP = 0;
         history.forEach(h => { totalW += h.weight; totalP += h.profit; });
@@ -184,6 +192,13 @@
         const historyList = document.getElementById('history-list'); historyList.innerHTML = '';
         history.forEach(h => { historyList.innerHTML += `<div class="history-card"><h4>${h.name} <span style="float:right;font-size:12px;color:#888;">${h.date}</span></h4><p>${h.weight}г | Прибыль: <span style="color:#4caf50">${h.profit.toFixed(2)}€</span></p></div>`; });
     }
+    function deleteSpool(index) {
+    if (confirm("Удалить эту катушку из списка?")) {
+        spools.splice(index, 1);
+        saveData();
+    }
+}
+
 
     // Простейший инлайн сервис-воркер для офлайн работы
     const swCode = `
