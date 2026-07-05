@@ -63,8 +63,8 @@
                 <div class="result-item"><span>Электричество:</span><span id="res-elec">0.00 €</span></div>
                 <div class="result-item"><span>Амортизация:</span><span id="res-amp">0.00 €</span></div>
                 <div class="result-total"><span>Себестоимость:</span><span id="res-cost">0.00 €</span></div>
-                <div class="result-item" style="color:#4caf50; font-weight:bold;"><span>Прибыль (0.00€/г):</span><span id="res-profit">0.00 €</span></div>
-                <div class="result-total" style="color:#00adb5;"><span>Цена продажи:</span><span id="res-price">0.00 €</span></div>
+                <div class="result-item" style="color:#4caf50; font-weight:bold; display:none;"><span>Прибыль:</span><span id="res-profit">0.00 €</span></div>
+                <div class="result-total" style="color:#00adb5;"><span>Итоговая цена:</span><span id="res-price">0.00 €</span></div>
             </div>
             <button class="btn" onclick="saveOrder()">💾 Сохранить заказ</button>
         </div>
@@ -96,12 +96,9 @@
 <script>
     const ELEC_COST_PER_HOUR = 0.05;
     const AMORT_COST_PER_HOUR = 0.10;
-    const PROFIT_PER_GRAM = 0.00;
+    const PROFIT_PER_GRAM = 0.00; // Поставил 0 для хобби, чтобы считать чистую себестоимость
 
-    let spools = JSON.parse(localStorage.getItem('pd_spools')) || [
-        { id: 1, name: "Anycubic PLA Black", weight: 740, price: 18.99, initWeight: 1000 },
-        { id: 2, name: "SUNLU PETG Yellow", weight: 320, price: 19.99, initWeight: 1000 }
-    ];
+    let spools = JSON.parse(localStorage.getItem('pd_spools')) || [];
     let history = JSON.parse(localStorage.getItem('pd_history')) || [];
 
     function saveData() { localStorage.setItem('pd_spools', JSON.stringify(spools)); localStorage.setItem('pd_history', JSON.stringify(history)); updateUI(); }
@@ -117,12 +114,18 @@
 
     function updateSpoolSelect() {
         const select = document.getElementById('calc-spool'); select.innerHTML = '';
+        if (spools.length === 0) {
+            select.innerHTML = '<option value="">Нет активных катушек</option>';
+            return;
+        }
         spools.forEach(s => { select.innerHTML += `<option value="${s.id}">${s.name} (${s.weight}г)</option>`; });
         calculate();
     }
 
     function calculate() {
-        const spoolId = parseInt(document.getElementById('calc-spool').value);
+        const spoolVal = document.getElementById('calc-spool').value;
+        if (!spoolVal) return;
+        const spoolId = parseInt(spoolVal);
         const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
         const time = parseFloat(document.getElementById('calc-time').value) || 0;
         const spool = spools.find(s => s.id === spoolId); if (!spool) return;
@@ -143,13 +146,15 @@
     }
 
     function saveOrder() {
-        const spoolId = parseInt(document.getElementById('calc-spool').value);
+        const spoolVal = document.getElementById('calc-spool').value;
+        if (!spoolVal) { alert("Сначала добавьте катушку!"); return; }
+        const spoolId = parseInt(spoolVal);
         const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
         const time = parseFloat(document.getElementById('calc-time').value) || 0;
         const name = document.getElementById('calc-name').value || "Деталь";
         const spool = spools.find(s => s.id === spoolId);
         
-        if (!spool || spool.weight < weight) { alert("Недостаточно пластика!"); return; }
+        if (!spool || spool.weight < weight) { alert("Недостаточно пластика на этой катушке!"); return; }
         spool.weight -= weight;
         
         const pricePerGram = spool.price / spool.initWeight;
@@ -164,22 +169,25 @@
         const name = document.getElementById('spool-name').value;
         const weight = parseFloat(document.getElementById('spool-weight').value);
         const price = parseFloat(document.getElementById('spool-price').value);
-        if(!name) return;
+        if(!name) { alert("Введите название катушки!"); return; }
         spools.push({ id: Date.now(), name: name, weight: weight, initWeight: weight, price: price });
         document.getElementById('spool-name').value = ''; saveData(); alert("Катушка добавлена!");
     }
 
+    function deleteSpool(id) {
+        if (confirm("Удалить эту катушку из списка?")) {
+            spools = spools.filter(s => s.id !== id);
+            saveData();
+        }
+    }
+
     function updateUI() {
         const summary = document.getElementById('spool-summary'); summary.innerHTML = '';
-        spools.forEach((s, index) => { 
-          spoolsList.innerHTML += `
-            <div class="spool-card" style="position: relative;">
-              <h4>${s.name}</h4>
-              <p>${s.weight}г осталось / Цена: ${s.price}€</p>
-              <button onclick="deleteSpool(${index})" style="position: absolute; right: 10px; top: 10px; background: none; border: none; color: #ff5252; cursor: pointer; font-size: 16px;">🗑️</button>
-            </div>`; 
-});
-
+        if (spools.length === 0) {
+            summary.innerHTML = '<div>У вас пока нет добавленных катушек.</div>';
+        } else {
+            spools.forEach(s => { summary.innerHTML += `<div>🟢 <b>${s.name}</b>: ${s.weight} г осталось</div>`; });
+        }
         
         let totalW = 0; let totalP = 0;
         history.forEach(h => { totalW += h.weight; totalP += h.profit; });
@@ -187,22 +195,26 @@
         document.getElementById('stat-profit').innerText = totalP.toFixed(2) + ' €';
         
         const spoolsList = document.getElementById('spools-list'); spoolsList.innerHTML = '';
-        spools.forEach(s => { spoolsList.innerHTML += `<div class="spool-card"><h4>${s.name}</h4><p>${s.weight}г осталось / Цена: ${s.price}€</p></div>`; });
+        spools.forEach(s => { 
+            spoolsList.innerHTML += `
+                <div class="spool-card" style="position: relative;">
+                    <h4>${s.name}</h4>
+                    <p>${s.weight}г осталось / Цена: ${s.price}€</p>
+                    <button onclick="deleteSpool(${s.id})" style="position: absolute; right: 15px; top: 12px; background: none; border: none; color: #ff5252; cursor: pointer; font-size: 18px; padding: 5px;">🗑️</button>
+                </div>`; 
+        });
         
         const historyList = document.getElementById('history-list'); historyList.innerHTML = '';
-        history.forEach(h => { historyList.innerHTML += `<div class="history-card"><h4>${h.name} <span style="float:right;font-size:12px;color:#888;">${h.date}</span></h4><p>${h.weight}г | Прибыль: <span style="color:#4caf50">${h.profit.toFixed(2)}€</span></p></div>`; });
+        if (history.length === 0) {
+            historyList.innerHTML = '<div>История пуста.</div>';
+        } else {
+            history.forEach(h => { historyList.innerHTML += `<div class="history-card"><h4>${h.name} <span style="float:right;font-size:12px;color:#888;">${h.date}</span></h4><p>${h.weight}г | Себестоимость: <span>${h.price.toFixed(2)}€</span></p></div>`; });
+        }
     }
-    function deleteSpool(index) {
-    if (confirm("Удалить эту катушку из списка?")) {
-        spools.splice(index, 1);
-        saveData();
-    }
-}
-
 
     // Простейший инлайн сервис-воркер для офлайн работы
     const swCode = `
-        const CACHE = 'pd-v2';
+        const CACHE = 'pd-v3';
         self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html']))));
         self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
     `;
@@ -214,4 +226,3 @@
 </script>
 </body>
 </html>
-
