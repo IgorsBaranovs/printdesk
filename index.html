@@ -63,7 +63,7 @@
                 <div class="result-item"><span>Электричество:</span><span id="res-elec">0.00 €</span></div>
                 <div class="result-item"><span>Амортизация:</span><span id="res-amp">0.00 €</span></div>
                 <div class="result-total"><span>Себестоимость:</span><span id="res-cost">0.00 €</span></div>
-                <div class="result-item" style="color:#4caf50; font-weight:bold;"><span>Прибыль (0.05€/г):</span><span id="res-profit">0.00 €</span></div>
+                <div class="result-item" style="color:#4caf50; font-weight:bold;"><span>Прибыль (0.04€/г):</span><span id="res-profit">0.00 €</span></div>
                 <div class="result-total" style="color:#00adb5;"><span>Цена продажи:</span><span id="res-price">0.00 €</span></div>
             </div>
             <button class="btn" onclick="saveOrder()">💾 Сохранить заказ</button>
@@ -96,7 +96,7 @@
 <script>
     const ELEC_COST_PER_HOUR = 0.05;
     const AMORT_COST_PER_HOUR = 0.10;
-    const PROFIT_PER_GRAM = 0.05;
+    const PROFIT_PER_GRAM = 0.04;
 
     let spools = JSON.parse(localStorage.getItem('pd_spools')) || [
         { id: 1, name: "Anycubic PLA Black", weight: 740, price: 18.99, initWeight: 1000 },
