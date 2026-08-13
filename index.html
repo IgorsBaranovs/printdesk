@@ -97,7 +97,9 @@ header{
   margin-bottom:5px
 }
 
-.field input,.field select{
+.field input,
+.field select,
+.field textarea{
   width:100%;
   padding:10px;
   border:1px solid #444;
@@ -105,6 +107,12 @@ header{
   background:#252525;
   color:#fff;
   font-size:15px
+}
+
+.field textarea{
+  min-height:90px;
+  resize:vertical;
+  font-family:Arial,sans-serif
 }
 
 .field input[type="color"]{
@@ -183,6 +191,16 @@ header{
   cursor:pointer
 }
 
+.edit{
+  float:right;
+  background:none;
+  border:0;
+  color:#00adb5;
+  font-size:18px;
+  cursor:pointer;
+  margin-right:5px
+}
+
 .empty{
   color:#999
 }
@@ -205,6 +223,53 @@ header{
   color:#ccc;
   font-size:14px
 }
+
+.spool-meta{
+  color:#aaa;
+  font-size:13px;
+  margin-top:5px
+}
+
+.detail-row{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  padding:9px 0;
+  border-bottom:1px solid #333
+}
+
+.detail-label{
+  color:#999
+}
+
+.detail-value{
+  text-align:right;
+  font-weight:600
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  z-index:20;
+  padding:20px;
+  overflow:auto
+}
+
+.modal-box{
+  max-width:500px;
+  margin:40px auto;
+  background:#1e1e1e;
+  border:1px solid #333;
+  border-radius:12px;
+  padding:18px
+}
+
+.modal-box h3{
+  color:#00adb5;
+  margin-top:0
+}
 </style>
 </head>
 
@@ -222,6 +287,7 @@ header{
 </div>
 
 <div class="grid">
+
 <div class="stat">
 Печать (всего)
 <div class="val" id="total-grams">0 г</div>
@@ -231,6 +297,7 @@ header{
 Прибыль
 <div class="val green" id="profit">0.00 €</div>
 </div>
+
 </div>
 
 <button class="btn" onclick="showPage('calc')">
@@ -318,6 +385,28 @@ header{
 </div>
 
 <div class="field">
+<label>Материал</label>
+<select id="spool-material">
+<option value="">Не указан</option>
+<option value="PLA">PLA</option>
+<option value="PLA+">PLA+</option>
+<option value="PETG">PETG</option>
+<option value="PETG-CF">PETG-CF</option>
+<option value="ASA">ASA</option>
+<option value="ABS">ABS</option>
+<option value="TPU">TPU</option>
+<option value="PC">PC</option>
+<option value="Nylon">Nylon</option>
+<option value="Другой">Другой</option>
+</select>
+</div>
+
+<div class="field">
+<label>Производитель</label>
+<input id="spool-manufacturer" placeholder="Например, Anycubic">
+</div>
+
+<div class="field">
 <label>Цвет</label>
 <input
   type="color"
@@ -327,13 +416,40 @@ header{
 </div>
 
 <div class="field">
-<label>Вес пластика (г)</label>
-<input id="spool-weight" type="number" value="1000">
+<label>Начальный вес (г)</label>
+<input
+  id="spool-weight"
+  type="number"
+  min="1"
+  value="1000"
+>
 </div>
 
 <div class="field">
 <label>Цена катушки (€)</label>
-<input id="spool-price" type="number" step="0.01" value="19.99">
+<input
+  id="spool-price"
+  type="number"
+  step="0.01"
+  min="0"
+  value="19.99"
+>
+</div>
+
+<div class="field">
+<label>Дата покупки</label>
+<input
+  id="spool-purchase-date"
+  type="date"
+>
+</div>
+
+<div class="field">
+<label>Заметки</label>
+<textarea
+  id="spool-notes"
+  placeholder="Например: хорошо печатается при 230°C..."
+></textarea>
 </div>
 
 <button class="btn" onclick="addSpool()">
@@ -346,84 +462,116 @@ header{
 
 </section>
 
-<div id="edit-spool-modal" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.75);
-  z-index:20;
-  padding:20px;
-">
 
-  <div style="
-    max-width:500px;
-    margin:60px auto;
-    background:#1e1e1e;
-    border:1px solid #333;
-    border-radius:12px;
-    padding:18px;
-  ">
+<!-- РЕДАКТИРОВАНИЕ КАТУШКИ -->
 
-    <h3 style="
-      color:#00adb5;
-      margin-top:0;
-    ">
-      ✏️ Редактировать катушку
-    </h3>
+<div id="edit-spool-modal" class="modal">
 
-    <input type="hidden" id="edit-spool-id">
+<div class="modal-box">
 
-    <div class="field">
-      <label>Название катушки</label>
-      <input id="edit-spool-name">
-    </div>
+<h3>✏️ Редактировать катушку</h3>
 
-    <div class="field">
-      <label>Цвет</label>
-      <input
-        type="color"
-        id="edit-spool-color"
-        style="height:45px;padding:3px;cursor:pointer;"
-      >
-    </div>
+<input type="hidden" id="edit-spool-id">
 
-    <div class="field">
-      <label>Текущий остаток (г)</label>
-      <input
-        id="edit-spool-weight"
-        type="number"
-        min="0"
-      >
-    </div>
+<div class="field">
+<label>Название катушки</label>
+<input id="edit-spool-name">
+</div>
 
-    <div class="field">
-      <label>Цена катушки (€)</label>
-      <input
-        id="edit-spool-price"
-        type="number"
-        min="0"
-        step="0.01"
-      >
-    </div>
+<div class="field">
+<label>Материал</label>
+<select id="edit-spool-material">
+<option value="">Не указан</option>
+<option value="PLA">PLA</option>
+<option value="PLA+">PLA+</option>
+<option value="PETG">PETG</option>
+<option value="PETG-CF">PETG-CF</option>
+<option value="ASA">ASA</option>
+<option value="ABS">ABS</option>
+<option value="TPU">TPU</option>
+<option value="PC">PC</option>
+<option value="Nylon">Nylon</option>
+<option value="Другой">Другой</option>
+</select>
+</div>
 
-    <button
-      class="btn"
-      onclick="saveSpoolEdit()"
-    >
-      💾 Сохранить изменения
-    </button>
+<div class="field">
+<label>Производитель</label>
+<input id="edit-spool-manufacturer">
+</div>
 
-    <button
-      class="btn secondary"
-      onclick="closeSpoolEdit()"
-    >
-      Отмена
-    </button>
+<div class="field">
+<label>Цвет</label>
+<input
+  type="color"
+  id="edit-spool-color"
+>
+</div>
 
-  </div>
+<div class="field">
+<label>Начальный вес (г)</label>
+<input
+  id="edit-spool-initial-weight"
+  type="number"
+  readonly
+  style="opacity:.65"
+>
+</div>
+
+<div class="field">
+<label>Текущий остаток (г)</label>
+<input
+  id="edit-spool-weight"
+  type="number"
+  min="0"
+>
+</div>
+
+<div class="field">
+<label>Цена катушки (€)</label>
+<input
+  id="edit-spool-price"
+  type="number"
+  min="0"
+  step="0.01"
+>
+</div>
+
+<div class="field">
+<label>Дата покупки</label>
+<input
+  id="edit-spool-purchase-date"
+  type="date"
+>
+</div>
+
+<div class="field">
+<label>Заметки</label>
+<textarea
+  id="edit-spool-notes"
+></textarea>
+</div>
+
+<button
+  class="btn"
+  onclick="saveSpoolEdit()"
+>
+💾 Сохранить изменения
+</button>
+
+<button
+  class="btn secondary"
+  onclick="closeSpoolEdit()"
+>
+Отмена
+</button>
 
 </div>
 
+</div>
+
+
+<!-- ИСТОРИЯ -->
 
 <section id="page-history" class="page">
 
@@ -433,47 +581,32 @@ header{
 
 <div id="history-list"></div>
 
-<div id="history-modal" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.75);
-  z-index:30;
-  padding:20px;
-">
-
-  <div style="
-    max-width:500px;
-    margin:60px auto;
-    background:#1e1e1e;
-    border:1px solid #333;
-    border-radius:12px;
-    padding:18px;
-  ">
-
-    <h3 style="
-      color:#00adb5;
-      margin-top:0;
-    ">
-      📋 Подробности печати
-    </h3>
-
-    <div id="history-details"></div>
-
-    <button
-      class="btn secondary"
-      onclick="closeHistoryDetails()"
-    >
-      Закрыть
-    </button>
-
-  </div>
-
-</div>
-  
 </div>
 
 </section>
+
+
+<!-- ПОДРОБНОСТИ ИСТОРИИ -->
+
+<div id="history-modal" class="modal">
+
+<div class="modal-box">
+
+<h3>📋 Подробности печати</h3>
+
+<div id="history-details"></div>
+
+<button
+  class="btn secondary"
+  onclick="closeHistoryDetails()"
+>
+Закрыть
+</button>
+
+</div>
+
+</div>
+
 
 </div>
 
@@ -593,6 +726,10 @@ async function load(){
 
       name:x.name,
 
+      material:x.material||'',
+
+      manufacturer:x.manufacturer||'',
+
       weight:Number(x.weight||0),
 
       initWeight:Number(
@@ -601,7 +738,11 @@ async function load(){
 
       price:Number(x.price||0),
 
-      color:x.color||'#888888'
+      color:x.color||'#888888',
+
+      purchaseDate:x.purchase_date||'',
+
+      notes:x.notes||''
 
     }));
 
@@ -644,6 +785,18 @@ async function addSpool(){
     document.getElementById('spool-name')
       .value.trim();
 
+  let material=
+    document.getElementById('spool-material')
+      .value;
+
+  let manufacturer=
+    document.getElementById('spool-manufacturer')
+      .value.trim();
+
+  let color=
+    document.getElementById('spool-color')
+      .value;
+
   let weight=
     +document.getElementById('spool-weight')
       .value;
@@ -652,9 +805,13 @@ async function addSpool(){
     +document.getElementById('spool-price')
       .value;
 
-  let color=
-    document.getElementById('spool-color')
+  let purchaseDate=
+    document.getElementById('spool-purchase-date')
       .value;
+
+  let notes=
+    document.getElementById('spool-notes')
+      .value.trim();
 
 
   if(!name||weight<=0||price<0){
@@ -672,13 +829,21 @@ async function addSpool(){
 
       name,
 
+      material,
+
+      manufacturer,
+
       weight,
 
       initial_weight:weight,
 
       price,
 
-      color
+      color,
+
+      purchase_date:purchaseDate||null,
+
+      notes
 
     })
     .select()
@@ -700,6 +865,10 @@ async function addSpool(){
 
     name:r.data.name,
 
+    material:r.data.material||'',
+
+    manufacturer:r.data.manufacturer||'',
+
     weight:Number(r.data.weight),
 
     initWeight:Number(
@@ -708,13 +877,29 @@ async function addSpool(){
 
     price:Number(r.data.price),
 
-    color:r.data.color||'#888888'
+    color:r.data.color||'#888888',
+
+    purchaseDate:r.data.purchase_date||'',
+
+    notes:r.data.notes||''
 
   });
 
 
   document.getElementById(
     'spool-name'
+  ).value='';
+
+  document.getElementById(
+    'spool-manufacturer'
+  ).value='';
+
+  document.getElementById(
+    'spool-purchase-date'
+  ).value='';
+
+  document.getElementById(
+    'spool-notes'
   ).value='';
 
 
@@ -724,6 +909,7 @@ async function addSpool(){
 
 }
 
+
 function editSpool(id){
 
   let s=spools.find(x=>x.id===id);
@@ -731,20 +917,60 @@ function editSpool(id){
   if(!s)
     return;
 
-  document.getElementById('edit-spool-id').value=s.id;
 
-  document.getElementById('edit-spool-name').value=s.name;
+  document.getElementById(
+    'edit-spool-id'
+  ).value=s.id;
 
-  document.getElementById('edit-spool-color').value=
-    s.color||'#888888';
 
-  document.getElementById('edit-spool-weight').value=
-    s.weight;
+  document.getElementById(
+    'edit-spool-name'
+  ).value=s.name;
 
-  document.getElementById('edit-spool-price').value=
-    s.price;
 
-  document.getElementById('edit-spool-modal').style.display='block';
+  document.getElementById(
+    'edit-spool-material'
+  ).value=s.material||'';
+
+
+  document.getElementById(
+    'edit-spool-manufacturer'
+  ).value=s.manufacturer||'';
+
+
+  document.getElementById(
+    'edit-spool-color'
+  ).value=s.color||'#888888';
+
+
+  document.getElementById(
+    'edit-spool-initial-weight'
+  ).value=s.initWeight;
+
+
+  document.getElementById(
+    'edit-spool-weight'
+  ).value=s.weight;
+
+
+  document.getElementById(
+    'edit-spool-price'
+  ).value=s.price;
+
+
+  document.getElementById(
+    'edit-spool-purchase-date'
+  ).value=s.purchaseDate||'';
+
+
+  document.getElementById(
+    'edit-spool-notes'
+  ).value=s.notes||'';
+
+
+  document.getElementById(
+    'edit-spool-modal'
+  ).style.display='block';
 
 }
 
@@ -767,15 +993,30 @@ async function saveSpoolEdit(){
       ).value
     );
 
+
   let name=
     document.getElementById(
       'edit-spool-name'
     ).value.trim();
 
+
+  let material=
+    document.getElementById(
+      'edit-spool-material'
+    ).value;
+
+
+  let manufacturer=
+    document.getElementById(
+      'edit-spool-manufacturer'
+    ).value.trim();
+
+
   let color=
     document.getElementById(
       'edit-spool-color'
     ).value;
+
 
   let weight=
     Number(
@@ -783,6 +1024,7 @@ async function saveSpoolEdit(){
         'edit-spool-weight'
       ).value
     );
+
 
   let price=
     Number(
@@ -792,14 +1034,34 @@ async function saveSpoolEdit(){
     );
 
 
+  let purchaseDate=
+    document.getElementById(
+      'edit-spool-purchase-date'
+    ).value;
+
+
+  let notes=
+    document.getElementById(
+      'edit-spool-notes'
+    ).value.trim();
+
+
   if(!name)
-    return alert('Введите название катушки.');
+    return alert(
+      'Введите название катушки.'
+    );
+
 
   if(weight<0)
-    return alert('Вес не может быть отрицательным.');
+    return alert(
+      'Вес не может быть отрицательным.'
+    );
+
 
   if(price<0)
-    return alert('Цена не может быть отрицательной.');
+    return alert(
+      'Цена не может быть отрицательной.'
+    );
 
 
   let r=
@@ -809,11 +1071,19 @@ async function saveSpoolEdit(){
 
         name,
 
+        material,
+
+        manufacturer,
+
         color,
 
         weight,
 
-        price
+        price,
+
+        purchase_date:purchaseDate||null,
+
+        notes
 
       })
       .eq('id',id);
@@ -832,15 +1102,24 @@ async function saveSpoolEdit(){
   let s=
     spools.find(x=>x.id===id);
 
+
   if(s){
 
     s.name=name;
+
+    s.material=material;
+
+    s.manufacturer=manufacturer;
 
     s.color=color;
 
     s.weight=weight;
 
     s.price=price;
+
+    s.purchaseDate=purchaseDate||'';
+
+    s.notes=notes;
 
   }
 
@@ -854,7 +1133,8 @@ async function saveSpoolEdit(){
   alert('Катушка обновлена!');
 
 }
-  
+
+
 async function delSpool(id){
 
   if(!confirm('Удалить катушку?'))
@@ -1175,6 +1455,7 @@ async function importLocal(){
 
 }
 
+
 function showHistoryDetails(id){
 
   let h=history.find(x=>x.id===id);
@@ -1182,11 +1463,27 @@ function showHistoryDetails(id){
   if(!h)
     return;
 
-  let color=h.color||'#888888';
+
+  let color=
+    h.color||'#888888';
+
 
   let spoolName=
     h.spool_name||
     'Катушка не указана';
+
+
+  let spool=
+    spools.find(x=>x.name===spoolName);
+
+
+  let material=
+    spool?.material||'';
+
+
+  let manufacturer=
+    spool?.manufacturer||'';
+
 
   document.getElementById(
     'history-details'
@@ -1199,73 +1496,25 @@ function showHistoryDetails(id){
       margin-bottom:10px;
     ">
 
-      <div style="
-        color:#aaa;
-        font-size:13px;
-        margin-bottom:4px;
-      ">
-        Модель
+      <div class="detail-row">
+        <span class="detail-label">Модель</span>
+        <span class="detail-value">
+          ${esc(h.name)}
+        </span>
       </div>
 
-      <div style="
-        font-size:18px;
-        font-weight:bold;
-      ">
-        ${esc(h.name)}
-      </div>
-
-    </div>
-
-
-    <div style="
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    ">
-
-      <div style="
-        background:#252525;
-        border-radius:9px;
-        padding:12px;
-      ">
-
-        <div style="
-          color:#aaa;
-          font-size:13px;
-        ">
-          Дата
-        </div>
-
-        <div style="
-          margin-top:5px;
-          font-weight:bold;
-        ">
+      <div class="detail-row">
+        <span class="detail-label">Дата</span>
+        <span class="detail-value">
           ${esc(h.date)}
-        </div>
-
+        </span>
       </div>
 
-
-      <div style="
-        background:#252525;
-        border-radius:9px;
-        padding:12px;
-      ">
-
-        <div style="
-          color:#aaa;
-          font-size:13px;
-        ">
-          Вес
-        </div>
-
-        <div style="
-          margin-top:5px;
-          font-weight:bold;
-        ">
+      <div class="detail-row">
+        <span class="detail-label">Вес</span>
+        <span class="detail-value">
           ${Number(h.weight).toFixed(0)} г
-        </div>
-
+        </span>
       </div>
 
     </div>
@@ -1275,13 +1524,13 @@ function showHistoryDetails(id){
       background:#252525;
       border-radius:9px;
       padding:12px;
-      margin-top:10px;
+      margin-bottom:10px;
     ">
 
       <div style="
         color:#aaa;
         font-size:13px;
-        margin-bottom:7px;
+        margin-bottom:8px;
       ">
         Катушка
       </div>
@@ -1291,6 +1540,7 @@ function showHistoryDetails(id){
         align-items:center;
         gap:8px;
         font-weight:bold;
+        margin-bottom:10px;
       ">
 
         <span
@@ -1307,6 +1557,36 @@ function showHistoryDetails(id){
 
       </div>
 
+      ${
+        material
+        ?
+        `
+        <div class="detail-row">
+          <span class="detail-label">Материал</span>
+          <span class="detail-value">
+            ${esc(material)}
+          </span>
+        </div>
+        `
+        :
+        ''
+      }
+
+      ${
+        manufacturer
+        ?
+        `
+        <div class="detail-row">
+          <span class="detail-label">Производитель</span>
+          <span class="detail-value">
+            ${esc(manufacturer)}
+          </span>
+        </div>
+        `
+        :
+        ''
+      }
+
     </div>
 
 
@@ -1314,7 +1594,6 @@ function showHistoryDetails(id){
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:10px;
-      margin-top:10px;
     ">
 
       <div style="
@@ -1384,7 +1663,8 @@ function closeHistoryDetails(){
   ).style.display='none';
 
 }
-  
+
+
 function showPage(p){
 
   document
@@ -1471,7 +1751,7 @@ function update(){
             display:flex;
             align-items:center;
             gap:7px;
-            margin-bottom:6px;
+            margin-bottom:7px;
           ">
 
             <span
@@ -1481,8 +1761,28 @@ function update(){
               )};"
             ></span>
 
-            <b>${esc(s.name)}</b>:
-            ${s.weight} г
+            <div>
+
+              <b>${esc(s.name)}</b>
+
+              ${
+                s.material
+                ?
+                `<span style="color:#888">
+                  · ${esc(s.material)}
+                </span>`
+                :
+                ''
+              }
+
+              <div style="
+                color:#aaa;
+                font-size:13px;
+              ">
+                ${s.weight} г
+              </div>
+
+            </div>
 
           </div>
 
@@ -1520,26 +1820,19 @@ function update(){
       <div class="spool">
 
         <button
-  class="delete"
-  onclick="delSpool(${s.id})"
->
-  🗑️
-</button>
+          class="delete"
+          onclick="delSpool(${s.id})"
+        >
+          🗑️
+        </button>
 
-<button
-  style="
-    float:right;
-    background:none;
-    border:0;
-    color:#00adb5;
-    font-size:18px;
-    cursor:pointer;
-    margin-right:5px;
-  "
-  onclick="editSpool(${s.id})"
->
-  ✏️
-</button>
+        <button
+          class="edit"
+          onclick="editSpool(${s.id})"
+        >
+          ✏️
+        </button>
+
 
         <div style="
           display:flex;
@@ -1559,10 +1852,68 @@ function update(){
 
         </div>
 
-        <div>
-          ${s.weight} г осталось ·
-          ${s.price.toFixed(2)} €
+
+        <div class="spool-meta">
+
+          ${
+            s.manufacturer
+            ?
+            `🏭 ${esc(s.manufacturer)}`
+            :
+            ''
+          }
+
+          ${
+            s.material
+            ?
+            ` · 🧪 ${esc(s.material)}`
+            :
+            ''
+          }
+
         </div>
+
+
+        <div style="margin-top:7px">
+
+          📦 ${s.weight} г
+          <span style="color:#777">
+            / ${s.initWeight} г
+          </span>
+
+          · 💶 ${s.price.toFixed(2)} €
+
+        </div>
+
+
+        ${
+          s.purchaseDate
+          ?
+          `
+          <div class="spool-meta">
+            📅 ${esc(s.purchaseDate)}
+          </div>
+          `
+          :
+          ''
+        }
+
+
+        ${
+          s.notes
+          ?
+          `
+          <div style="
+            margin-top:7px;
+            color:#bbb;
+            font-size:13px;
+          ">
+            📝 ${esc(s.notes)}
+          </div>
+          `
+          :
+          ''
+        }
 
       </div>
 
@@ -1590,15 +1941,18 @@ function update(){
           return `
 
             <div
-  class="history"
-  onclick="showHistoryDetails(${h.id})"
-  style="cursor:pointer;transition:.15s;"
-  title="Открыть подробности""
->
+              class="history"
+              onclick="showHistoryDetails(${h.id})"
+              style="
+                cursor:pointer;
+                transition:.15s;
+              "
+              title="Открыть подробности"
+            >
 
-  <b>
-    ${esc(h.name)}
-  </b>
+              <b>
+                ${esc(h.name)}
+              </b>
 
               <span style="
                 float:right;
@@ -1624,7 +1978,9 @@ function update(){
               </div>
 
 
-              <div style="margin-top:7px">
+              <div style="
+                margin-top:7px
+              ">
 
                 ${(+h.weight).toFixed(0)} г ·
                 ${(+h.price).toFixed(2)} €
