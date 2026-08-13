@@ -1075,15 +1075,11 @@ const AMORT = 0.10;
 ========================================================= */
 
 let currentUser = null;
-
 let spools = [];
-
 let history = [];
 
 let realtimeChannel = null;
-
 let realtimeReloadTimer = null;
-
 let realtimeLoading = false;
 
 
@@ -1116,8 +1112,7 @@ function status(text,error=false){
 
     if(!e) return;
 
-    e.textContent =
-        text || '';
+    e.textContent = text || '';
 
     e.style.color =
         error
@@ -1133,10 +1128,7 @@ function debug(text){
         document.getElementById('debug-info');
 
     if(e){
-
-        e.textContent =
-            text;
-
+        e.textContent = text;
     }
 
 }
@@ -1151,19 +1143,14 @@ async function stopRealtime(){
     if(realtimeChannel){
 
         try{
-
             await db.removeChannel(
                 realtimeChannel
             );
-
         }catch(error){
-
             console.error(error);
-
         }
 
         realtimeChannel = null;
-
     }
 
 }
@@ -1177,39 +1164,30 @@ function scheduleRealtimeReload(reason){
     );
 
     if(realtimeReloadTimer){
-
         clearTimeout(
             realtimeReloadTimer
         );
-
     }
 
     realtimeReloadTimer =
         setTimeout(
             async function(){
 
-                realtimeReloadTimer =
-                    null;
+                realtimeReloadTimer = null;
 
                 if(
                     !currentUser ||
                     realtimeLoading
                 ){
-
                     return;
-
                 }
 
                 realtimeLoading = true;
 
                 try{
-
                     await loadData(true);
-
                 }finally{
-
                     realtimeLoading = false;
-
                 }
 
             },
@@ -1222,9 +1200,7 @@ function scheduleRealtimeReload(reason){
 function startRealtime(){
 
     if(!currentUser){
-
         return;
-
     }
 
     stopRealtime();
@@ -1353,7 +1329,6 @@ async function checkAuth(){
     if(result.error){
 
         showLogin();
-
         return false;
 
     }
@@ -1364,7 +1339,6 @@ async function checkAuth(){
     if(!currentUser){
 
         showLogin();
-
         return false;
 
     }
@@ -1480,9 +1454,7 @@ async function logout(){
     await db.auth.signOut();
 
     currentUser = null;
-
     spools = [];
-
     history = [];
 
     showLogin();
@@ -1499,7 +1471,6 @@ async function loadData(isRealtime=false){
     if(!currentUser){
 
         showLogin();
-
         return;
 
     }
@@ -1509,6 +1480,9 @@ async function loadData(isRealtime=false){
         ? '🔄 Синхронизация...'
         : '☁️ Загружаю данные...'
     );
+
+
+    /* ---------- SPOOLS ---------- */
 
     const spoolResult =
         await db
@@ -1525,6 +1499,9 @@ async function loadData(isRealtime=false){
                 }
             );
 
+
+    /* ---------- HISTORY ---------- */
+
     const historyResult =
         await db
             .from('print_history')
@@ -1539,6 +1516,7 @@ async function loadData(isRealtime=false){
                     ascending:false
                 }
             );
+
 
     if(spoolResult.error){
 
@@ -1555,6 +1533,7 @@ async function loadData(isRealtime=false){
 
     }
 
+
     if(historyResult.error){
 
         console.error(
@@ -1569,6 +1548,9 @@ async function loadData(isRealtime=false){
         return;
 
     }
+
+
+    /* ---------- MAP SPOOLS ---------- */
 
     spools =
         (spoolResult.data || [])
@@ -1615,6 +1597,8 @@ async function loadData(isRealtime=false){
             });
 
 
+    /* ---------- MAP HISTORY ---------- */
+
     history =
         (historyResult.data || [])
             .map(function(x){
@@ -1632,13 +1616,6 @@ async function loadData(isRealtime=false){
 
                     cost:
                         Number(x.cost || 0),
-
-                    price:
-                        Number(
-                            x.price ??
-                            x.cost ??
-                            0
-                        ),
 
                     profit:
                         Number(x.profit || 0),
@@ -1684,6 +1661,7 @@ async function loadData(isRealtime=false){
         ' | 🟢 Realtime'
     );
 
+
     status(
         '☁️ Синхронизировано · ' +
         spools.length +
@@ -1691,6 +1669,7 @@ async function loadData(isRealtime=false){
         history.length +
         ' записей'
     );
+
 
     update();
 
@@ -1766,15 +1745,11 @@ function editSpool(id){
 
     const spool =
         spools.find(function(x){
-
             return x.id === id;
-
         });
 
     if(!spool){
-
         return;
-
     }
 
     document
@@ -1859,6 +1834,10 @@ function cancelSpoolEdit(){
 }
 
 
+/* =========================================================
+   SAVE SPOOL
+========================================================= */
+
 async function saveSpool(){
 
     if(!currentUser){
@@ -1925,6 +1904,7 @@ async function saveSpool(){
             .value
             .trim();
 
+
     if(!name){
 
         alert(
@@ -1934,6 +1914,7 @@ async function saveSpool(){
         return;
 
     }
+
 
     if(weight < 0){
 
@@ -1945,6 +1926,7 @@ async function saveSpool(){
 
     }
 
+
     if(price < 0){
 
         alert(
@@ -1954,6 +1936,7 @@ async function saveSpool(){
         return;
 
     }
+
 
     if(editingId){
 
@@ -1987,6 +1970,7 @@ async function saveSpool(){
                     currentUser.id
                 );
 
+
         if(result.error){
 
             alert(
@@ -1998,9 +1982,11 @@ async function saveSpool(){
 
         }
 
+
         alert(
             'Катушка изменена! ☁️'
         );
+
 
     }else{
 
@@ -2013,7 +1999,10 @@ async function saveSpool(){
                     material,
                     color,
                     weight,
-                    initial_weight:weight,
+
+                    initial_weight:
+                        weight,
+
                     price,
 
                     manufacturer:
@@ -2030,6 +2019,7 @@ async function saveSpool(){
 
                 });
 
+
         if(result.error){
 
             alert(
@@ -2041,11 +2031,13 @@ async function saveSpool(){
 
         }
 
+
         alert(
             'Катушка сохранена! ☁️'
         );
 
     }
+
 
     resetSpoolForm();
 
@@ -2063,9 +2055,7 @@ async function delSpool(id){
     if(!confirm(
         'Удалить эту катушку?'
     )){
-
         return;
-
     }
 
     const result =
@@ -2080,6 +2070,7 @@ async function delSpool(id){
                 'user_id',
                 currentUser.id
             );
+
 
     if(result.error){
 
@@ -2108,9 +2099,7 @@ function calculate(){
             .getElementById('calc-spool');
 
     if(!select){
-
         return;
-
     }
 
     const id =
@@ -2118,10 +2107,9 @@ function calculate(){
 
     const spool =
         spools.find(function(x){
-
             return x.id === id;
-
         });
+
 
     if(!spool){
 
@@ -2144,12 +2132,14 @@ function calculate(){
 
     }
 
+
     const weight =
         Number(
             document
                 .getElementById('calc-weight')
                 .value
         ) || 0;
+
 
     const time =
         Number(
@@ -2158,6 +2148,7 @@ function calculate(){
                 .value
         ) || 0;
 
+
     const materialCost =
         weight *
         (
@@ -2165,16 +2156,20 @@ function calculate(){
             spool.initWeight
         );
 
+
     const electricity =
         time * ELEC;
 
+
     const amortization =
         time * AMORT;
+
 
     const cost =
         materialCost +
         electricity +
         amortization;
+
 
     document
         .getElementById('mat')
@@ -2215,6 +2210,7 @@ function fillSelect(){
         document
             .getElementById('calc-spool');
 
+
     if(!spools.length){
 
         e.innerHTML =
@@ -2225,6 +2221,7 @@ function fillSelect(){
         return;
 
     }
+
 
     e.innerHTML =
         spools
@@ -2245,6 +2242,7 @@ function fillSelect(){
 
             })
             .join('');
+
 
     calculate();
 
@@ -2267,6 +2265,7 @@ async function saveOrder(){
 
     }
 
+
     const spoolId =
         Number(
             document
@@ -2274,12 +2273,12 @@ async function saveOrder(){
                 .value
         );
 
+
     const spool =
         spools.find(function(x){
-
             return x.id === spoolId;
-
         });
+
 
     const weight =
         Number(
@@ -2288,12 +2287,14 @@ async function saveOrder(){
                 .value
         ) || 0;
 
+
     const time =
         Number(
             document
                 .getElementById('calc-time')
                 .value
         ) || 0;
+
 
     const name =
         document
@@ -2302,11 +2303,13 @@ async function saveOrder(){
             .trim() ||
         'Деталь';
 
+
     const notes =
         document
             .getElementById('calc-notes')
             .value
             .trim();
+
 
     if(!spool){
 
@@ -2318,6 +2321,7 @@ async function saveOrder(){
 
     }
 
+
     if(weight <= 0){
 
         alert(
@@ -2327,6 +2331,7 @@ async function saveOrder(){
         return;
 
     }
+
 
     if(weight > spool.weight){
 
@@ -2338,6 +2343,7 @@ async function saveOrder(){
 
     }
 
+
     const materialCost =
         weight *
         (
@@ -2345,26 +2351,35 @@ async function saveOrder(){
             spool.initWeight
         );
 
+
     const electricity =
         time * ELEC;
 
+
     const amortization =
         time * AMORT;
+
 
     const cost =
         materialCost +
         electricity +
         amortization;
 
+
     const newWeight =
         spool.weight -
         weight;
+
+
+    /* ---------- UPDATE SPOOL ---------- */
 
     const spoolUpdate =
         await db
             .from('spools')
             .update({
+
                 weight:newWeight
+
             })
             .eq(
                 'id',
@@ -2374,6 +2389,7 @@ async function saveOrder(){
                 'user_id',
                 currentUser.id
             );
+
 
     if(spoolUpdate.error){
 
@@ -2386,6 +2402,14 @@ async function saveOrder(){
 
     }
 
+
+    /*
+       ВАЖНО:
+       price НЕ записываем,
+       потому что такого столбца
+       нет в print_history.
+    */
+
     const historyRow = {
 
         name,
@@ -2393,8 +2417,6 @@ async function saveOrder(){
         weight,
 
         cost,
-
-        price:cost,
 
         profit:0,
 
@@ -2421,18 +2443,34 @@ async function saveOrder(){
 
     };
 
+
     const historyResult =
         await db
             .from('print_history')
-            .insert(historyRow);
+            .insert(
+                historyRow
+            );
+
 
     if(historyResult.error){
+
+        console.error(
+            historyResult.error
+        );
+
+
+        /*
+           Если история не сохранилась,
+           возвращаем вес.
+        */
 
         await db
             .from('spools')
             .update({
+
                 weight:
                     spool.weight
+
             })
             .eq(
                 'id',
@@ -2443,6 +2481,7 @@ async function saveOrder(){
                 currentUser.id
             );
 
+
         alert(
             'Ошибка сохранения истории:\n' +
             historyResult.error.message
@@ -2452,18 +2491,22 @@ async function saveOrder(){
 
     }
 
+
     alert(
         'Заказ сохранён! ☁️'
     );
+
 
     document
         .getElementById('model')
         .value =
             'Деталь';
 
+
     document
         .getElementById('calc-notes')
         .value = '';
+
 
     await loadData();
 
@@ -2473,696 +2516,65 @@ async function saveOrder(){
 
 
 /* =========================================================
-   HISTORY VIEW
-========================================================= */
-
-function openHistory(id){
-
-    const item =
-        history.find(function(x){
-
-            return x.id === id;
-
-        });
-
-    if(!item){
-
-        return;
-
-    }
-
-    let color =
-        item.color || '';
-
-    let spoolName =
-        item.spoolName || '';
-
-    if(
-        !color &&
-        item.spoolId
-    ){
-
-        const spool =
-            spools.find(function(s){
-
-                return s.id === item.spoolId;
-
-            });
-
-        if(spool){
-
-            color =
-                spool.color || '';
-
-            if(!spoolName){
-
-                spoolName =
-                    spool.name;
-
-            }
-
-        }
-
-    }
-
-    if(!color){
-
-        color = '#666666';
-
-    }
-
-    const content =
-        document
-            .getElementById(
-                'history-view-content'
-            );
-
-    content.innerHTML = `
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Модель
-            </div>
-
-            <div class="detail-value">
-                ${esc(item.name)}
-            </div>
-
-        </div>
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Дата
-            </div>
-
-            <div class="detail-value">
-                ${esc(item.date)}
-            </div>
-
-        </div>
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Вес печати
-            </div>
-
-            <div class="detail-value">
-                ⚖️ ${Number(item.weight).toFixed(1)} г
-            </div>
-
-        </div>
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Стоимость
-            </div>
-
-            <div class="detail-value">
-                💰 ${Number(item.price).toFixed(2)} €
-            </div>
-
-        </div>
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Прибыль
-            </div>
-
-            <div class="detail-value">
-                ${Number(item.profit).toFixed(2)} €
-            </div>
-
-        </div>
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Катушка
-            </div>
-
-            <div class="detail-value">
-                ${esc(spoolName || 'Не указана')}
-            </div>
-
-        </div>
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Цвет
-            </div>
-
-            <div class="detail-value detail-color">
-
-                <span
-                    class="big-color"
-                    style="background:${esc(color)}">
-                </span>
-
-                ${esc(color)}
-
-            </div>
-
-        </div>
-
-        <div class="detail-row">
-
-            <div class="detail-label">
-                Заметки
-            </div>
-
-            <div class="detail-value">
-
-                ${
-                    item.notes
-                    ? esc(item.notes)
-                    : '<span style="color:#777">Нет заметок</span>'
-                }
-
-            </div>
-
-        </div>
-
-    `;
-
-    document
-        .getElementById('history-view-edit')
-        .onclick =
-            function(){
-
-                closeHistoryView();
-
-                editHistory(id);
-
-            };
-
-    document
-        .getElementById('history-view-delete')
-        .onclick =
-            function(){
-
-                closeHistoryView();
-
-                deleteHistory(id);
-
-            };
-
-    document
-        .getElementById('history-view-modal')
-        .classList
-        .add('active');
-
-}
-
-
-function closeHistoryView(){
-
-    document
-        .getElementById('history-view-modal')
-        .classList
-        .remove('active');
-
-}
-
-
-/* =========================================================
    HISTORY EDIT
 ========================================================= */
 
-function editHistory(id){
+async function editHistory(id){
 
     const item =
         history.find(function(x){
-
             return x.id === id;
-
         });
 
-    if(!item){
-
-        return;
-
-    }
-
-    document
-        .getElementById('history-edit-id')
-        .value =
-            item.id;
-
-    document
-        .getElementById('history-edit-name')
-        .value =
-            item.name;
-
-    document
-        .getElementById('history-edit-weight')
-        .value =
-            item.weight;
-
-    document
-        .getElementById('history-edit-price')
-        .value =
-            item.price;
-
-    document
-        .getElementById('history-edit-profit')
-        .value =
-            item.profit;
-
-    document
-        .getElementById('history-edit-date')
-        .value =
-            item.date || '';
-
-    document
-        .getElementById('history-edit-notes')
-        .value =
-            item.notes || '';
-
-    document
-        .getElementById('history-edit-color')
-        .value =
-            item.color || '#888888';
-
-    const spoolSelect =
-        document
-            .getElementById(
-                'history-edit-spool'
-            );
-
-    spoolSelect.innerHTML =
-        '<option value="">Катушка не указана</option>' +
-
-        spools
-            .map(function(s){
-
-                const selected =
-                    item.spoolId === s.id
-                    ? ' selected'
-                    : '';
-
-                return `
-                    <option
-                        value="${s.id}"
-                        ${selected}>
-                        ${esc(s.name)}
-                        · ${esc(s.material)}
-                    </option>
-                `;
-
-            })
-            .join('');
-
-    document
-        .getElementById('history-edit-modal')
-        .classList
-        .add('active');
-
-}
-
-
-function closeHistoryEdit(){
-
-    document
-        .getElementById('history-edit-modal')
-        .classList
-        .remove('active');
-
-}
-
-
-async function saveHistoryEdit(){
-
-    const id =
-        Number(
-            document
-                .getElementById('history-edit-id')
-                .value
-        );
-
-    const item =
-        history.find(function(x){
-
-            return x.id === id;
-
-        });
 
     if(!item){
-
         return;
-
     }
 
-    const name =
-        document
-            .getElementById('history-edit-name')
-            .value
-            .trim() ||
-        'Деталь';
 
-    const newWeight =
-        Number(
-            document
-                .getElementById('history-edit-weight')
-                .value
-        ) || 0;
+    /*
+       Редактируем название
+       и заметки.
+    */
 
-    const price =
-        Number(
-            document
-                .getElementById('history-edit-price')
-                .value
-        ) || 0;
-
-    const profit =
-        Number(
-            document
-                .getElementById('history-edit-profit')
-                .value
-        ) || 0;
-
-    const date =
-        document
-            .getElementById('history-edit-date')
-            .value
-            .trim();
-
-    const notes =
-        document
-            .getElementById('history-edit-notes')
-            .value
-            .trim();
-
-    const color =
-        document
-            .getElementById('history-edit-color')
-            .value;
-
-    const spoolIdValue =
-        document
-            .getElementById('history-edit-spool')
-            .value;
-
-    const spoolId =
-        spoolIdValue
-        ? Number(spoolIdValue)
-        : null;
-
-    const selectedSpool =
-        spoolId
-        ? spools.find(function(s){
-
-            return s.id === spoolId;
-
-        })
-        : null;
-
-    if(newWeight < 0){
-
-        alert(
-            'Вес не может быть отрицательным.'
+    const newName =
+        prompt(
+            'Название модели:',
+            item.name
         );
 
+
+    if(newName === null){
         return;
-
     }
 
-    /*
-       Если вес записи изменился,
-       корректируем остаток катушки.
-    */
 
-    const oldWeight =
-        Number(item.weight || 0);
+    const newNotes =
+        prompt(
+            'Заметки:',
+            item.notes || ''
+        );
 
-    const difference =
-        newWeight - oldWeight;
 
-    if(
-        difference !== 0 &&
-        item.spoolId
-    ){
-
-        const oldSpool =
-            spools.find(function(s){
-
-                return s.id === item.spoolId;
-
-            });
-
-        if(oldSpool){
-
-            /*
-               Если вес увеличился,
-               нужно дополнительно списать пластик.
-            */
-
-            if(difference > 0){
-
-                if(
-                    oldSpool.weight <
-                    difference
-                ){
-
-                    alert(
-                        'На старой катушке недостаточно пластика для увеличения веса записи.'
-                    );
-
-                    return;
-
-                }
-
-                const result =
-                    await db
-                        .from('spools')
-                        .update({
-
-                            weight:
-                                oldSpool.weight -
-                                difference
-
-                        })
-                        .eq(
-                            'id',
-                            oldSpool.id
-                        )
-                        .eq(
-                            'user_id',
-                            currentUser.id
-                        );
-
-                if(result.error){
-
-                    alert(
-                        'Ошибка изменения остатка катушки:\n' +
-                        result.error.message
-                    );
-
-                    return;
-
-                }
-
-            }else{
-
-                /*
-                   Вес уменьшился —
-                   возвращаем разницу.
-                */
-
-                const result =
-                    await db
-                        .from('spools')
-                        .update({
-
-                            weight:
-                                oldSpool.weight -
-                                difference
-
-                        })
-                        .eq(
-                            'id',
-                            oldSpool.id
-                        )
-                        .eq(
-                            'user_id',
-                            currentUser.id
-                        );
-
-                if(result.error){
-
-                    alert(
-                        'Ошибка изменения остатка катушки:\n' +
-                        result.error.message
-                    );
-
-                    return;
-
-                }
-
-            }
-
-        }
-
+    if(newNotes === null){
+        return;
     }
 
-    /*
-       Если пользователь поменял катушку,
-       возвращаем старый вес на старую
-       и списываем его с новой.
-    */
-
-    if(
-        spoolId !== item.spoolId &&
-        newWeight > 0
-    ){
-
-        /*
-           Возвращаем вес на старую катушку.
-        */
-
-        if(item.spoolId){
-
-            const oldSpoolResult =
-                await db
-                    .from('spools')
-                    .select('weight')
-                    .eq(
-                        'id',
-                        item.spoolId
-                    )
-                    .eq(
-                        'user_id',
-                        currentUser.id
-                    )
-                    .single();
-
-            if(
-                !oldSpoolResult.error &&
-                oldSpoolResult.data
-            ){
-
-                await db
-                    .from('spools')
-                    .update({
-
-                        weight:
-                            Number(
-                                oldSpoolResult
-                                    .data
-                                    .weight || 0
-                            ) +
-                            oldWeight
-
-                    })
-                    .eq(
-                        'id',
-                        item.spoolId
-                    )
-                    .eq(
-                        'user_id',
-                        currentUser.id
-                    );
-
-            }
-
-        }
-
-        /*
-           Списываем с новой катушки.
-        */
-
-        if(selectedSpool){
-
-            if(
-                selectedSpool.weight <
-                newWeight
-            ){
-
-                alert(
-                    'На выбранной катушке недостаточно пластика.'
-                );
-
-                await loadData();
-
-                return;
-
-            }
-
-            const newSpoolResult =
-                await db
-                    .from('spools')
-                    .update({
-
-                        weight:
-                            selectedSpool.weight -
-                            newWeight
-
-                    })
-                    .eq(
-                        'id',
-                        selectedSpool.id
-                    )
-                    .eq(
-                        'user_id',
-                        currentUser.id
-                    );
-
-            if(newSpoolResult.error){
-
-                alert(
-                    'Ошибка обновления новой катушки:\n' +
-                    newSpoolResult.error.message
-                );
-
-                await loadData();
-
-                return;
-
-            }
-
-        }
-
-    }
-
-    const historyUpdate = {
-
-        name,
-
-        weight:newWeight,
-
-        price,
-
-        cost:price,
-
-        profit,
-
-        date:
-            date || null,
-
-        spool_id:
-            spoolId,
-
-        spool_name:
-            selectedSpool
-            ? selectedSpool.name
-            : null,
-
-        color,
-
-        notes:
-            notes || null
-
-    };
 
     const result =
         await db
             .from('print_history')
-            .update(historyUpdate)
+            .update({
+
+                name:
+                    newName.trim() ||
+                    'Деталь',
+
+                notes:
+                    newNotes.trim() ||
+                    null
+
+            })
             .eq(
                 'id',
                 id
@@ -3172,6 +2584,7 @@ async function saveHistoryEdit(){
                 currentUser.id
             );
 
+
     if(result.error){
 
         alert(
@@ -3179,19 +2592,102 @@ async function saveHistoryEdit(){
             result.error.message
         );
 
-        await loadData();
-
         return;
 
     }
 
-    closeHistoryEdit();
 
     await loadData();
 
-    alert(
-        'Запись истории изменена! ☁️'
-    );
+}
+
+
+/* =========================================================
+   OPEN HISTORY CARD
+========================================================= */
+
+function openHistory(id){
+
+    const item =
+        history.find(function(x){
+            return x.id === id;
+        });
+
+
+    if(!item){
+        return;
+    }
+
+
+    let color =
+        item.color || '';
+
+
+    let spoolName =
+        item.spoolName || '';
+
+
+    if(
+        !color &&
+        item.spoolId
+    ){
+
+        const spool =
+            spools.find(function(s){
+                return s.id === item.spoolId;
+            });
+
+
+        if(spool){
+
+            color =
+                spool.color || '';
+
+            if(!spoolName){
+                spoolName =
+                    spool.name;
+            }
+
+        }
+
+    }
+
+
+    if(!color){
+        color = '#666666';
+    }
+
+
+    const text =
+        'Модель: ' +
+        item.name +
+        '\n\n' +
+
+        'Вес: ' +
+        Number(item.weight).toFixed(0) +
+        ' г\n\n' +
+
+        'Стоимость: ' +
+        Number(item.cost).toFixed(2) +
+        ' €\n\n' +
+
+        'Катушка: ' +
+        (spoolName || 'Не указана') +
+        '\n\n' +
+
+        'Дата: ' +
+        item.date +
+        '\n\n' +
+
+        'Цвет: ' +
+        color +
+        '\n\n' +
+
+        'Заметки:\n' +
+        (item.notes || 'Нет заметок');
+
+
+    alert(text);
 
 }
 
@@ -3212,18 +2708,19 @@ async function deleteHistory(id){
 
     }
 
+
     const item =
         history.find(function(x){
-
             return x.id === id;
-
         });
 
+
     if(!item){
-
         return;
-
     }
+
+
+    /* ---------- DELETE HISTORY ---------- */
 
     const result =
         await db
@@ -3238,6 +2735,7 @@ async function deleteHistory(id){
                 currentUser.id
             );
 
+
     if(result.error){
 
         alert(
@@ -3248,6 +2746,9 @@ async function deleteHistory(id){
         return;
 
     }
+
+
+    /* ---------- RESTORE FILAMENT ---------- */
 
     if(
         item.spoolId &&
@@ -3268,6 +2769,7 @@ async function deleteHistory(id){
                 )
                 .single();
 
+
         if(
             !spoolResult.error &&
             spoolResult.data
@@ -3277,7 +2779,10 @@ async function deleteHistory(id){
                 Number(
                     spoolResult.data.weight || 0
                 ) +
-                Number(item.weight || 0);
+                Number(
+                    item.weight || 0
+                );
+
 
             await db
                 .from('spools')
@@ -3300,6 +2805,7 @@ async function deleteHistory(id){
 
     }
 
+
     await loadData();
 
 }
@@ -3321,6 +2827,7 @@ function showPage(page){
 
         });
 
+
     document
         .querySelectorAll('.nav div')
         .forEach(function(x){
@@ -3331,15 +2838,18 @@ function showPage(page){
 
         });
 
+
     const pageElement =
         document.getElementById(
             'page-' + page
         );
 
+
     const navElement =
         document.getElementById(
             'nav-' + page
         );
+
 
     if(pageElement){
 
@@ -3349,6 +2859,7 @@ function showPage(page){
 
     }
 
+
     if(navElement){
 
         navElement
@@ -3357,11 +2868,13 @@ function showPage(page){
 
     }
 
+
     if(page === 'calc'){
 
         fillSelect();
 
     }
+
 
     update();
 
@@ -3374,13 +2887,17 @@ function showPage(page){
 
 function update(){
 
-    /*
-       SUMMARY
-    */
+    /* ---------- SUMMARY ---------- */
 
     const summary =
         document
             .getElementById('summary');
+
+
+    if(!summary){
+        return;
+    }
+
 
     if(!spools.length){
 
@@ -3422,9 +2939,7 @@ function update(){
     }
 
 
-    /*
-       TOTAL
-    */
+    /* ---------- TOTAL ---------- */
 
     const total =
         history.reduce(
@@ -3439,6 +2954,7 @@ function update(){
             0
         );
 
+
     document
         .getElementById('total-grams')
         .textContent =
@@ -3446,9 +2962,7 @@ function update(){
             ' г';
 
 
-    /*
-       PROFIT
-    */
+    /* ---------- PROFIT ---------- */
 
     const profit =
         history.reduce(
@@ -3463,6 +2977,7 @@ function update(){
             0
         );
 
+
     document
         .getElementById('profit')
         .textContent =
@@ -3470,9 +2985,9 @@ function update(){
             ' €';
 
 
-    /*
+    /* =====================================================
        SPOOLS
-    */
+    ===================================================== */
 
     document
         .getElementById('spools-list')
@@ -3483,6 +2998,7 @@ function update(){
                     const color =
                         s.color ||
                         '#888888';
+
 
                     return `
                         <div class="spool">
@@ -3495,6 +3011,7 @@ function update(){
 
                             </button>
 
+
                             <button
                                 class="edit"
                                 onclick="editSpool(${s.id})">
@@ -3502,6 +3019,7 @@ function update(){
                                 ✏️
 
                             </button>
+
 
                             <div class="spool-name">
 
@@ -3513,6 +3031,7 @@ function update(){
                                 ${esc(s.name)}
 
                             </div>
+
 
                             <div class="spool-meta">
 
@@ -3528,6 +3047,7 @@ function update(){
 
                             </div>
 
+
                             ${
                                 s.manufacturer
                                 ? `
@@ -3541,6 +3061,7 @@ function update(){
                                 : ''
                             }
 
+
                             ${
                                 s.purchaseDate
                                 ? `
@@ -3553,6 +3074,7 @@ function update(){
                                 `
                                 : ''
                             }
+
 
                             ${
                                 s.notes
@@ -3571,15 +3093,16 @@ function update(){
                 .join('');
 
 
-    /*
+    /* =====================================================
        HISTORY
-    */
+    ===================================================== */
 
     const historyElement =
         document
             .getElementById(
                 'history-list'
             );
+
 
     if(!history.length){
 
@@ -3592,6 +3115,7 @@ function update(){
 
     }
 
+
     historyElement.innerHTML =
         history
             .map(function(h){
@@ -3599,8 +3123,16 @@ function update(){
                 let color =
                     h.color || '';
 
+
                 let spoolName =
                     h.spoolName || '';
+
+
+                /*
+                   Старые записи:
+                   если цвет не был сохранён,
+                   берём его из текущей катушки.
+                */
 
                 if(
                     !color &&
@@ -3616,6 +3148,7 @@ function update(){
                             );
 
                         });
+
 
                     if(spool){
 
@@ -3633,17 +3166,17 @@ function update(){
 
                 }
 
+
                 if(!color){
-
-                    color =
-                        '#666666';
-
+                    color = '#666666';
                 }
+
 
                 return `
                     <div
                         class="history"
-                        onclick="openHistory(${h.id})">
+                        onclick="openHistory(${h.id})"
+                        style="cursor:pointer">
 
                         <button
                             class="delete"
@@ -3656,6 +3189,7 @@ function update(){
 
                         </button>
 
+
                         <button
                             class="edit"
                             onclick="
@@ -3666,6 +3200,7 @@ function update(){
                             ✏️
 
                         </button>
+
 
                         <div class="history-title">
 
@@ -3680,19 +3215,21 @@ function update(){
 
                         </div>
 
+
                         <div class="history-info">
 
                             ⚖️
-                            ${Number(h.weight).toFixed(1)}
+                            ${Number(h.weight).toFixed(0)}
                             г
 
                             ·
 
                             💰
-                            ${Number(h.price).toFixed(2)}
+                            ${Number(h.cost).toFixed(2)}
                             €
 
                         </div>
+
 
                         <div class="history-color">
 
@@ -3709,6 +3246,7 @@ function update(){
 
                         </div>
 
+
                         ${
                             h.notes
                             ? `
@@ -3719,8 +3257,16 @@ function update(){
                             : ''
                         }
 
-                        <div class="history-open">
-                            Нажмите, чтобы открыть подробности
+
+                        <div
+                            style="
+                                margin-top:10px;
+                                color:#777;
+                                font-size:12px;
+                            ">
+
+                            👆 Нажмите, чтобы открыть
+
                         </div>
 
                     </div>
@@ -3730,44 +3276,6 @@ function update(){
             .join('');
 
 }
-
-
-/* =========================================================
-   MODAL CLICK OUTSIDE
-========================================================= */
-
-document.addEventListener(
-    'click',
-    function(event){
-
-        const view =
-            document.getElementById(
-                'history-view-modal'
-            );
-
-        const edit =
-            document.getElementById(
-                'history-edit-modal'
-            );
-
-        if(
-            event.target === view
-        ){
-
-            closeHistoryView();
-
-        }
-
-        if(
-            event.target === edit
-        ){
-
-            closeHistoryEdit();
-
-        }
-
-    }
-);
 
 
 /* =========================================================
@@ -3782,6 +3290,7 @@ db.auth.onAuthStateChange(
             event
         );
 
+
         if(
             session &&
             session.user
@@ -3792,8 +3301,10 @@ db.auth.onAuthStateChange(
                 currentUser.id !==
                     session.user.id;
 
+
             currentUser =
                 session.user;
+
 
             if(changed){
 
@@ -3804,10 +3315,12 @@ db.auth.onAuthStateChange(
                     .classList
                     .add('hidden');
 
+
                 document
                     .getElementById('app')
                     .classList
                     .remove('hidden');
+
 
                 document
                     .getElementById(
@@ -3815,6 +3328,7 @@ db.auth.onAuthStateChange(
                     )
                     .textContent =
                         currentUser.email || '—';
+
 
                 await loadData();
 
