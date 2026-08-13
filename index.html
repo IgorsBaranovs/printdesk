@@ -782,6 +782,8 @@ history=(h.data||[]).map(x=>({
     new Date(x.created_at)
       .toLocaleDateString('ru-RU'),
 
+  spool_id:Number(x.spool_id)||null,
+
   spool_name:x.spool_name||'',
 
   color:x.color||'#888888',
@@ -1318,29 +1320,31 @@ async function saveOrder(){
   }
 
 
-  let r=
-    await db
-      .from('print_history')
-      .insert({
+let r=
+  await db
+    .from('print_history')
+    .insert({
 
-        name,
+      name,
 
-        weight:w,
+      weight:w,
 
-        cost,
+      cost,
 
-        profit:0,
+      profit:0,
 
-        date:new Date()
-          .toLocaleDateString('ru-RU'),
+      date:new Date()
+        .toLocaleDateString('ru-RU'),
 
-spool_name:s.name,
+      spool_id:s.id,
 
-color:s.color||'#888888',
+      spool_name:s.name,
 
-notes:document.getElementById('calc-notes').value.trim()
+      color:s.color||'#888888',
 
-})
+      notes:document.getElementById('calc-notes').value.trim()
+
+    })
       .select()
       .single();
 
@@ -1745,9 +1749,10 @@ async function deleteHistory(id){
   ))
     return;
 
-  // Находим катушку по названию
+  // Находим именно ту катушку,
+  // из которой была сделана печать
   let s=spools.find(
-    x=>x.name===h.spool_name
+    x=>x.id===h.spool_id
   );
 
   // Если катушка найдена — возвращаем вес
