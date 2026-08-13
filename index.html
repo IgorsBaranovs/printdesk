@@ -2243,14 +2243,21 @@ async function init(){
     return;
   }
 
-  currentUser=data.session.user;
+currentUser=data.session.user;
 
-  console.log(
-    'Авторизован:',
-    currentUser.email
-  );
+alert(
+  'Авторизован: ' +
+  currentUser.email +
+  '\nID: ' +
+  currentUser.id
+);
 
-  load();
+console.log(
+  'Авторизован:',
+  currentUser.email
+);
+
+load();
 
 }
 
