@@ -1231,70 +1231,124 @@ function status(text,error=false){
 
 async function load(){
 
-  status(
-    '☁️ Загружаю данные...'
-  );
+  status('☁️ Загружаю данные...');
+
+  const s = await db
+    .from('spools')
+    .select('*')
+    .order('created_at',{ascending:true});
+
+  const h = await db
+    .from('print_history')
+    .select('*')
+    .order('created_at',{ascending:false});
 
 
-  try{
+  // Показываем настоящую ошибку Supabase
+  if(s.error){
 
-    const [
-      spoolsResult,
-      historyResult
-    ] =
-      await Promise.all([
+    console.error('SPools ERROR:',s.error);
 
-        db
-          .from('spools')
-          .select('*')
-          .order(
-            'created_at',
-            {
-              ascending:true
-            }
-          ),
+    status(
+      '❌ Ошибка spools: ' +
+      s.error.message,
+      true
+    );
 
-        db
-          .from('print_history')
-          .select('*')
-          .order(
-            'created_at',
-            {
-              ascending:false
-            }
-          )
+    alert(
+      'Ошибка таблицы spools:\n\n' +
+      s.error.message +
+      '\n\nКод: ' +
+      (s.error.code || 'нет')
+    );
 
-      ]);
+    return;
+  }
 
 
-    if(
-      spoolsResult.error ||
-      historyResult.error
-    ){
+  if(h.error){
 
-      console.error(
-        spoolsResult.error ||
-        historyResult.error
-      );
+    console.error('History ERROR:',h.error);
+
+    status(
+      '❌ Ошибка print_history: ' +
+      h.error.message,
+      true
+    );
+
+    alert(
+      'Ошибка таблицы print_history:\n\n' +
+      h.error.message +
+      '\n\nКод: ' +
+      (h.error.code || 'нет')
+    );
+
+    return;
+  }
 
 
-      spools =
-        local('pd_spools');
+  spools=(s.data||[]).map(x=>({
 
-      history =
-        local('pd_history');
+    id:Number(x.id),
+
+    name:x.name,
+
+    material:x.material||'',
+
+    manufacturer:x.manufacturer||'',
+
+    weight:Number(x.weight||0),
+
+    initWeight:Number(
+      x.initial_weight||1000
+    ),
+
+    price:Number(x.price||0),
+
+    color:x.color||'#888888',
+
+    purchaseDate:x.purchase_date||'',
+
+    notes:x.notes||''
+
+  }));
 
 
-      status(
-        '⚠️ Ошибка облака — используются локальные данные',
-        true
-      );
+  history=(h.data||[]).map(x=>({
 
-      update();
+    id:Number(x.id),
 
-      return;
+    name:x.name,
 
-    }
+    weight:Number(x.weight||0),
+
+    price:Number(x.cost||0),
+
+    profit:Number(x.profit||0),
+
+    date:x.date ||
+      new Date(x.created_at)
+        .toLocaleDateString('ru-RU'),
+
+    spool_id:
+      Number(x.spool_id)||null,
+
+    spool_name:
+      x.spool_name||'',
+
+    color:
+      x.color||'#888888',
+
+    notes:
+      x.notes||''
+
+  }));
+
+
+  status('☁️ Синхронизировано');
+
+  update();
+}
 
 
     /* ================================= */
