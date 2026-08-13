@@ -339,6 +339,25 @@ header{
 <input id="calc-time" type="number" value="4" oninput="calculate()">
 </div>
 
+<div class="field">
+<label>Заметки</label>
+<textarea
+  id="calc-notes"
+  placeholder="Например: первый тест, немного снизить скорость..."
+  style="
+    width:100%;
+    min-height:80px;
+    padding:10px;
+    border:1px solid #444;
+    border-radius:7px;
+    background:#252525;
+    color:#fff;
+    font-size:15px;
+    resize:vertical;
+  "
+></textarea>
+</div> 
+
 <div class="result">
 <span>Материал</span>
 <span id="mat">0.00 €</span>
@@ -747,27 +766,29 @@ async function load(){
     }));
 
 
-    history=(h.data||[]).map(x=>({
+history=(h.data||[]).map(x=>({
 
-      id:Number(x.id),
+  id:Number(x.id),
 
-      name:x.name,
+  name:x.name,
 
-      weight:Number(x.weight||0),
+  weight:Number(x.weight||0),
 
-      price:Number(x.cost||0),
+  price:Number(x.cost||0),
 
-      profit:Number(x.profit||0),
+  profit:Number(x.profit||0),
 
-      date:x.date||
-        new Date(x.created_at)
-          .toLocaleDateString('ru-RU'),
+  date:x.date||
+    new Date(x.created_at)
+      .toLocaleDateString('ru-RU'),
 
-      spool_name:x.spool_name||'',
+  spool_name:x.spool_name||'',
 
-      color:x.color||'#888888'
+  color:x.color||'#888888',
 
-    }));
+  notes:x.notes||''
+
+}));
 
 
     status('☁️ Синхронизировано');
@@ -1313,11 +1334,13 @@ async function saveOrder(){
         date:new Date()
           .toLocaleDateString('ru-RU'),
 
-        spool_name:s.name,
+spool_name:s.name,
 
-        color:s.color||'#888888'
+color:s.color||'#888888',
 
-      })
+notes:document.getElementById('calc-notes').value.trim()
+
+})
       .select()
       .single();
 
@@ -1645,6 +1668,34 @@ function showHistoryDetails(id){
       </div>
 
     </div>
+
+   ${h.notes ? `
+
+  <div style="
+    background:#252525;
+    border-radius:9px;
+    padding:12px;
+    margin-top:10px;
+  ">
+
+    <div style="
+      color:#aaa;
+      font-size:13px;
+      margin-bottom:7px;
+    ">
+      📝 Заметки
+    </div>
+
+    <div style="
+      white-space:pre-wrap;
+      line-height:1.4;
+    ">
+      ${esc(h.notes)}
+    </div>
+
+  </div>
+
+` : ''}
 
   `;
 
@@ -1978,14 +2029,24 @@ function update(){
               </div>
 
 
-              <div style="
-                margin-top:7px
-              ">
+              <div style="margin-top:7px">
 
-                ${(+h.weight).toFixed(0)} г ·
-                ${(+h.price).toFixed(2)} €
+  ${(+h.weight).toFixed(0)} г ·
+  ${(+h.price).toFixed(2)} €
 
-              </div>
+</div>
+
+${h.notes ? `
+  <div style="
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px dashed #444;
+    color:#aaa;
+    font-size:13px;
+  ">
+    📝 ${esc(h.notes)}
+  </div>
+` : ''}
 
             </div>
 
