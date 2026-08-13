@@ -1698,7 +1698,23 @@ function showHistoryDetails(id){
 ` : ''}
 
   `;
+  
+document.getElementById(
+  'history-details'
+).innerHTML+=`
 
+  <button
+    class="btn"
+    style="
+      background:#8b2020;
+      margin-top:15px;
+    "
+    onclick="deleteHistory(${h.id})"
+  >
+    🗑️ Удалить печать
+  </button>
+
+`;
 
   document.getElementById(
     'history-modal'
@@ -1713,6 +1729,79 @@ function closeHistoryDetails(){
     'history-modal'
   ).style.display='none';
 
+}
+
+async function deleteHistory(id){
+
+  let h=history.find(x=>x.id===id);
+
+  if(!h)
+    return;
+
+  if(!confirm(
+    `Удалить печать "${h.name}"?\n\n` +
+    `Вес: ${Number(h.weight).toFixed(0)} г\n\n` +
+    `Вес будет возвращён в остаток катушки.`
+  ))
+    return;
+
+  // Находим катушку по названию
+  let s=spools.find(
+    x=>x.name===h.spool_name
+  );
+
+  // Если катушка найдена — возвращаем вес
+  if(s){
+
+    let newWeight=
+      Number(s.weight)+Number(h.weight);
+
+    let spoolUpdate=
+      await db
+        .from('spools')
+        .update({
+          weight:newWeight
+        })
+        .eq('id',s.id);
+
+    if(spoolUpdate.error){
+
+      return alert(
+        'Не удалось вернуть вес в катушку: '+
+        spoolUpdate.error.message
+      );
+
+    }
+
+    s.weight=newWeight;
+
+  }
+
+  // Удаляем запись истории
+  let r=
+    await db
+      .from('print_history')
+      .delete()
+      .eq('id',id);
+
+  if(r.error){
+
+    return alert(
+      'Ошибка удаления: '+
+      r.error.message
+    );
+
+  }
+
+  // Удаляем из памяти
+  history=
+    history.filter(x=>x.id!==id);
+
+  closeHistoryDetails();
+
+  update();
+
+  alert('Печать удалена.');
 }
 
 
