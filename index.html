@@ -96,6 +96,13 @@ header{
     background:#7a2222;
 }
 
+.btn.small{
+    width:auto;
+    padding:8px 12px;
+    margin:8px 5px 0 0;
+    font-size:14px;
+}
+
 .field{
     margin-bottom:12px;
 }
@@ -208,6 +215,16 @@ header{
     cursor:pointer;
 }
 
+.edit{
+    float:right;
+    background:none;
+    border:0;
+    color:#00adb5;
+    font-size:18px;
+    cursor:pointer;
+    margin-right:8px;
+}
+
 .empty{
     color:#999;
     padding:10px 0;
@@ -222,6 +239,13 @@ header{
     color:#aaa;
     margin-top:6px;
     font-size:14px;
+}
+
+.spool-notes{
+    color:#888;
+    margin-top:8px;
+    font-size:13px;
+    white-space:pre-wrap;
 }
 
 .color-dot{
@@ -260,6 +284,16 @@ header{
     font-size:13px;
 }
 
+.history-notes{
+    background:#252525;
+    border-radius:7px;
+    padding:9px;
+    margin-top:10px;
+    color:#bbb;
+    font-size:13px;
+    white-space:pre-wrap;
+}
+
 .login-box{
     max-width:450px;
     margin:50px auto;
@@ -280,10 +314,6 @@ header{
     font-size:14px;
 }
 
-.success{
-    color:#4caf50;
-}
-
 .debug{
     background:#171717;
     border:1px solid #333;
@@ -298,6 +328,16 @@ header{
 .hidden{
     display:none;
 }
+
+.edit-mode{
+    border-color:#00adb5;
+}
+
+.edit-title{
+    color:#00adb5;
+    font-weight:bold;
+    margin-bottom:12px;
+}
 </style>
 </head>
 
@@ -307,7 +347,7 @@ header{
     🖨 PrintDesk
 </header>
 
-<!-- ================= LOGIN ================= -->
+<!-- LOGIN -->
 
 <div id="login-screen" class="container hidden">
 
@@ -342,7 +382,7 @@ header{
 </div>
 
 
-<!-- ================= APP ================= -->
+<!-- APP -->
 
 <div id="app" class="hidden">
 
@@ -369,7 +409,7 @@ header{
     </div>
 
 
-    <!-- ================= MAIN ================= -->
+    <!-- MAIN -->
 
     <section id="page-main" class="page active">
 
@@ -383,7 +423,6 @@ header{
 
         </div>
 
-
         <div class="grid">
 
             <div class="stat">
@@ -395,7 +434,6 @@ header{
                     0 г
                 </div>
             </div>
-
 
             <div class="stat">
                 Прибыль
@@ -409,7 +447,6 @@ header{
 
         </div>
 
-
         <button
             class="btn"
             onclick="showPage('calc')">
@@ -417,7 +454,6 @@ header{
             📦 Новый расчёт
 
         </button>
-
 
         <button
             class="btn secondary"
@@ -427,16 +463,12 @@ header{
 
         </button>
 
-
-        <div
-            id="status"
-            class="status">
-        </div>
+        <div id="status" class="status"></div>
 
     </section>
 
 
-    <!-- ================= CALCULATOR ================= -->
+    <!-- CALCULATOR -->
 
     <section id="page-calc" class="page">
 
@@ -445,7 +477,6 @@ header{
             <h3>
                 Новый расчёт
             </h3>
-
 
             <div class="field">
 
@@ -458,7 +489,6 @@ header{
                     value="Деталь">
 
             </div>
-
 
             <div class="field">
 
@@ -473,7 +503,6 @@ header{
 
             </div>
 
-
             <div class="field">
 
                 <label>
@@ -487,7 +516,6 @@ header{
                     oninput="calculate()">
 
             </div>
-
 
             <div class="field">
 
@@ -504,73 +532,59 @@ header{
 
             </div>
 
+            <div class="field">
 
-            <div class="result">
+                <label>
+                    Заметки
+                </label>
 
-                <span>
-                    Материал
-                </span>
-
-                <span id="mat">
-                    0.00 €
-                </span>
-
-            </div>
-
-
-            <div class="result">
-
-                <span>
-                    Электричество
-                </span>
-
-                <span id="elec">
-                    0.00 €
-                </span>
+                <textarea
+                    id="calc-notes"
+                    placeholder="Например: печать для клиента, без поддержки..."></textarea>
 
             </div>
 
-
             <div class="result">
 
-                <span>
-                    Амортизация
-                </span>
+                <span>Материал</span>
 
-                <span id="amort">
-                    0.00 €
-                </span>
+                <span id="mat">0.00 €</span>
 
             </div>
 
+            <div class="result">
+
+                <span>Электричество</span>
+
+                <span id="elec">0.00 €</span>
+
+            </div>
+
+            <div class="result">
+
+                <span>Амортизация</span>
+
+                <span id="amort">0.00 €</span>
+
+            </div>
 
             <div class="result total">
 
-                <span>
-                    Себестоимость
-                </span>
+                <span>Себестоимость</span>
 
-                <span id="cost">
-                    0.00 €
-                </span>
+                <span id="cost">0.00 €</span>
 
             </div>
-
 
             <div
                 class="result total"
                 style="color:#00adb5">
 
-                <span>
-                    Итоговая цена
-                </span>
+                <span>Итоговая цена</span>
 
-                <span id="price">
-                    0.00 €
-                </span>
+                <span id="price">0.00 €</span>
 
             </div>
-
 
             <button
                 class="btn"
@@ -585,22 +599,26 @@ header{
     </section>
 
 
-    <!-- ================= SPOOLS ================= -->
+    <!-- SPOOLS -->
 
     <section id="page-spools" class="page">
 
-        <div class="card">
+        <div class="card" id="spool-form-card">
 
-            <h3>
-                Добавить катушку
-            </h3>
+            <div id="spool-form-title">
+                <h3>
+                    Добавить катушку
+                </h3>
+            </div>
 
+            <input
+                id="editing-spool-id"
+                type="hidden"
+                value="">
 
             <div class="field">
 
-                <label>
-                    Название
-                </label>
+                <label>Название</label>
 
                 <input
                     id="spool-name"
@@ -608,53 +626,27 @@ header{
 
             </div>
 
-
             <div class="field">
 
-                <label>
-                    Материал
-                </label>
+                <label>Материал</label>
 
                 <select id="spool-material">
 
-                    <option value="PLA">
-                        PLA
-                    </option>
-
-                    <option value="PLA+">
-                        PLA+
-                    </option>
-
-                    <option value="PETG">
-                        PETG
-                    </option>
-
-                    <option value="ASA">
-                        ASA
-                    </option>
-
-                    <option value="ABS">
-                        ABS
-                    </option>
-
-                    <option value="TPU">
-                        TPU
-                    </option>
-
-                    <option value="Другой">
-                        Другой
-                    </option>
+                    <option value="PLA">PLA</option>
+                    <option value="PLA+">PLA+</option>
+                    <option value="PETG">PETG</option>
+                    <option value="ASA">ASA</option>
+                    <option value="ABS">ABS</option>
+                    <option value="TPU">TPU</option>
+                    <option value="Другой">Другой</option>
 
                 </select>
 
             </div>
 
-
             <div class="field">
 
-                <label>
-                    Цвет
-                </label>
+                <label>Цвет</label>
 
                 <input
                     id="spool-color"
@@ -664,12 +656,9 @@ header{
 
             </div>
 
-
             <div class="field">
 
-                <label>
-                    Вес пластика (г)
-                </label>
+                <label>Вес пластика (г)</label>
 
                 <input
                     id="spool-weight"
@@ -678,12 +667,9 @@ header{
 
             </div>
 
-
             <div class="field">
 
-                <label>
-                    Цена катушки (€)
-                </label>
+                <label>Цена катушки (€)</label>
 
                 <input
                     id="spool-price"
@@ -693,24 +679,17 @@ header{
 
             </div>
 
-
             <div class="field">
 
-                <label>
-                    Производитель
-                </label>
+                <label>Производитель</label>
 
-                <input
-                    id="spool-manufacturer">
+                <input id="spool-manufacturer">
 
             </div>
 
-
             <div class="field">
 
-                <label>
-                    Дата покупки
-                </label>
+                <label>Дата покупки</label>
 
                 <input
                     id="spool-purchase-date"
@@ -718,36 +697,40 @@ header{
 
             </div>
 
-
             <div class="field">
 
-                <label>
-                    Заметки
-                </label>
+                <label>Заметки</label>
 
-                <textarea
-                    id="spool-notes"></textarea>
+                <textarea id="spool-notes"></textarea>
 
             </div>
 
-
             <button
+                id="spool-save-button"
                 class="btn"
-                onclick="addSpool()">
+                onclick="saveSpool()">
 
                 ➕ Добавить катушку
 
             </button>
 
-        </div>
+            <button
+                id="spool-cancel-button"
+                class="btn secondary hidden"
+                onclick="cancelSpoolEdit()">
 
+                Отмена
+
+            </button>
+
+        </div>
 
         <div id="spools-list"></div>
 
     </section>
 
 
-    <!-- ================= HISTORY ================= -->
+    <!-- HISTORY -->
 
     <section id="page-history" class="page">
 
@@ -766,7 +749,7 @@ header{
 </div>
 
 
-<!-- ================= NAV ================= -->
+<!-- NAV -->
 
 <div class="nav">
 
@@ -780,7 +763,6 @@ header{
 
     </div>
 
-
     <div
         id="nav-calc"
         onclick="showPage('calc')">
@@ -790,7 +772,6 @@ header{
 
     </div>
 
-
     <div
         id="nav-spools"
         onclick="showPage('spools')">
@@ -799,7 +780,6 @@ header{
         Катушки
 
     </div>
-
 
     <div
         id="nav-history"
@@ -852,332 +832,11 @@ let spools = [];
 
 let history = [];
 
-
-/* =========================================================
-   REALTIME
-========================================================= */
-
-/*
-   Канал Supabase Realtime.
-
-   Он будет следить за:
-   - spools
-   - print_history
-
-   Только за записями текущего пользователя.
-*/
-
 let realtimeChannel = null;
-
-
-/*
-   Флаг загрузки.
-
-   Нужен, чтобы несколько Realtime-событий,
-   пришедших практически одновременно,
-   не запускали десятки загрузок подряд.
-*/
-
-let realtimeLoading = false;
 
 let realtimeReloadTimer = null;
 
-
-/*
-   Запускаем Realtime
-*/
-
-function startRealtime(){
-
-    if(!currentUser){
-
-        return;
-
-    }
-
-
-    /*
-       Если старый канал существует —
-       сначала удаляем его.
-    */
-
-    stopRealtime();
-
-
-    const userId =
-        currentUser.id;
-
-
-    console.log(
-        'Realtime: запускаем для пользователя',
-        userId
-    );
-
-
-    debug(
-        'User ID: ' +
-        userId +
-        ' | Realtime подключается...'
-    );
-
-
-    realtimeChannel =
-        db
-            .channel(
-                'printdesk-realtime-' +
-                userId
-            )
-
-
-            /*
-               КАТУШКИ
-            */
-
-            .on(
-                'postgres_changes',
-                {
-                    event:'*',
-                    schema:'public',
-                    table:'spools',
-                    filter:
-                        'user_id=eq.' +
-                        userId
-                },
-                function(payload){
-
-                    console.log(
-                        'Realtime spools:',
-                        payload
-                    );
-
-
-                    scheduleRealtimeReload(
-                        'Изменились катушки'
-                    );
-
-                }
-            )
-
-
-            /*
-               ИСТОРИЯ
-            */
-
-            .on(
-                'postgres_changes',
-                {
-                    event:'*',
-                    schema:'public',
-                    table:'print_history',
-                    filter:
-                        'user_id=eq.' +
-                        userId
-                },
-                function(payload){
-
-                    console.log(
-                        'Realtime history:',
-                        payload
-                    );
-
-
-                    scheduleRealtimeReload(
-                        'Изменилась история'
-                    );
-
-                }
-            )
-
-
-            /*
-               Подписываемся
-            */
-
-            .subscribe(
-                function(status){
-
-                    console.log(
-                        'Realtime status:',
-                        status
-                    );
-
-
-                    if(status === 'SUBSCRIBED'){
-
-                        console.log(
-                            'Realtime успешно подключён'
-                        );
-
-
-                        debug(
-                            'User ID: ' +
-                            userId +
-                            ' | 🟢 Realtime подключён'
-                        );
-
-                    }
-
-
-                    if(status === 'CHANNEL_ERROR'){
-
-                        console.error(
-                            'Realtime CHANNEL_ERROR'
-                        );
-
-
-                        debug(
-                            'User ID: ' +
-                            userId +
-                            ' | 🔴 Ошибка Realtime'
-                        );
-
-                    }
-
-
-                    if(status === 'TIMED_OUT'){
-
-                        console.error(
-                            'Realtime TIMED_OUT'
-                        );
-
-
-                        debug(
-                            'User ID: ' +
-                            userId +
-                            ' | 🟠 Realtime timeout'
-                        );
-
-                    }
-
-
-                    if(status === 'CLOSED'){
-
-                        console.log(
-                            'Realtime канал закрыт'
-                        );
-
-                    }
-
-                }
-            );
-
-}
-
-
-/*
-   Останавливаем Realtime
-*/
-
-async function stopRealtime(){
-
-    if(!realtimeChannel){
-
-        return;
-
-    }
-
-
-    console.log(
-        'Realtime: закрываем канал'
-    );
-
-
-    try{
-
-        await db.removeChannel(
-            realtimeChannel
-        );
-
-    }catch(error){
-
-        console.error(
-            'Ошибка закрытия Realtime:',
-            error
-        );
-
-    }
-
-
-    realtimeChannel =
-        null;
-
-}
-
-
-/*
-   Планируем обновление.
-
-   Если одновременно пришло несколько
-   событий, например при сохранении заказа:
-
-   UPDATE spools
-   +
-   INSERT print_history
-
-   мы не будем делать две загрузки подряд.
-*/
-
-function scheduleRealtimeReload(reason){
-
-    console.log(
-        'Realtime событие:',
-        reason
-    );
-
-
-    if(realtimeReloadTimer){
-
-        clearTimeout(
-            realtimeReloadTimer
-        );
-
-    }
-
-
-    realtimeReloadTimer =
-        setTimeout(
-            async function(){
-
-                realtimeReloadTimer =
-                    null;
-
-
-                if(!currentUser){
-
-                    return;
-
-                }
-
-
-                if(realtimeLoading){
-
-                    return;
-
-                }
-
-
-                realtimeLoading =
-                    true;
-
-
-                try{
-
-                    await loadData(
-                        true
-                    );
-
-                }finally{
-
-                    realtimeLoading =
-                        false;
-
-                }
-
-            },
-            250
-        );
-
-}
+let realtimeLoading = false;
 
 
 /* =========================================================
@@ -1187,7 +846,7 @@ function scheduleRealtimeReload(reason){
 function esc(value){
 
     return String(value ?? '')
-        .replace(/[&<>"']/g, function(c){
+        .replace(/[&<>"']/g,function(c){
 
             return {
                 '&':'&amp;',
@@ -1202,7 +861,7 @@ function esc(value){
 }
 
 
-function status(text, error=false){
+function status(text,error=false){
 
     const e =
         document.getElementById('status');
@@ -1236,8 +895,203 @@ function debug(text){
 
 
 /* =========================================================
+   REALTIME
+========================================================= */
+
+async function stopRealtime(){
+
+    if(realtimeChannel){
+
+        try{
+
+            await db.removeChannel(
+                realtimeChannel
+            );
+
+        }catch(error){
+
+            console.error(error);
+
+        }
+
+        realtimeChannel = null;
+
+    }
+
+}
+
+
+function scheduleRealtimeReload(reason){
+
+    console.log(
+        'Realtime:',
+        reason
+    );
+
+    if(realtimeReloadTimer){
+
+        clearTimeout(
+            realtimeReloadTimer
+        );
+
+    }
+
+    realtimeReloadTimer =
+        setTimeout(
+            async function(){
+
+                realtimeReloadTimer =
+                    null;
+
+                if(
+                    !currentUser ||
+                    realtimeLoading
+                ){
+
+                    return;
+
+                }
+
+                realtimeLoading = true;
+
+                try{
+
+                    await loadData(true);
+
+                }finally{
+
+                    realtimeLoading = false;
+
+                }
+
+            },
+            300
+        );
+
+}
+
+
+function startRealtime(){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+    stopRealtime();
+
+    const userId =
+        currentUser.id;
+
+    realtimeChannel =
+        db
+            .channel(
+                'printdesk-' + userId
+            )
+
+            .on(
+                'postgres_changes',
+                {
+                    event:'*',
+                    schema:'public',
+                    table:'spools',
+                    filter:
+                        'user_id=eq.' + userId
+                },
+                function(payload){
+
+                    console.log(
+                        'Realtime spools:',
+                        payload
+                    );
+
+                    scheduleRealtimeReload(
+                        'Изменились катушки'
+                    );
+
+                }
+            )
+
+            .on(
+                'postgres_changes',
+                {
+                    event:'*',
+                    schema:'public',
+                    table:'print_history',
+                    filter:
+                        'user_id=eq.' + userId
+                },
+                function(payload){
+
+                    console.log(
+                        'Realtime history:',
+                        payload
+                    );
+
+                    scheduleRealtimeReload(
+                        'Изменилась история'
+                    );
+
+                }
+            )
+
+            .subscribe(
+                function(state){
+
+                    console.log(
+                        'Realtime status:',
+                        state
+                    );
+
+                    if(
+                        state === 'SUBSCRIBED'
+                    ){
+
+                        debug(
+                            'User ID: ' +
+                            userId +
+                            ' | 🟢 Realtime подключён'
+                        );
+
+                    }
+
+                    if(
+                        state === 'CHANNEL_ERROR'
+                    ){
+
+                        debug(
+                            'User ID: ' +
+                            userId +
+                            ' | 🔴 Ошибка Realtime'
+                        );
+
+                    }
+
+                }
+            );
+
+}
+
+
+/* =========================================================
    AUTH
 ========================================================= */
+
+function showLogin(){
+
+    document
+        .getElementById('login-screen')
+        .classList
+        .remove('hidden');
+
+    document
+        .getElementById('app')
+        .classList
+        .add('hidden');
+
+}
+
 
 async function checkAuth(){
 
@@ -1245,16 +1099,10 @@ async function checkAuth(){
         'Проверяю авторизацию...'
     );
 
-
     const result =
         await db.auth.getUser();
 
-
     if(result.error){
-
-        console.error(
-            result.error
-        );
 
         showLogin();
 
@@ -1262,10 +1110,8 @@ async function checkAuth(){
 
     }
 
-
     currentUser =
         result.data.user;
-
 
     if(!currentUser){
 
@@ -1275,55 +1121,26 @@ async function checkAuth(){
 
     }
 
-
     document
         .getElementById('login-screen')
-        .classList.add('hidden');
-
+        .classList
+        .add('hidden');
 
     document
         .getElementById('app')
-        .classList.remove('hidden');
-
+        .classList
+        .remove('hidden');
 
     document
         .getElementById('user-email')
         .textContent =
             currentUser.email || '—';
 
-
-    debug(
-        'User ID: ' +
-        currentUser.id
-    );
-
-
     await loadData();
-
-
-    /*
-       После первоначальной загрузки
-       запускаем Realtime.
-    */
 
     startRealtime();
 
-
     return true;
-
-}
-
-
-function showLogin(){
-
-    document
-        .getElementById('login-screen')
-        .classList.remove('hidden');
-
-
-    document
-        .getElementById('app')
-        .classList.add('hidden');
 
 }
 
@@ -1336,21 +1153,16 @@ async function login(){
             .value
             .trim();
 
-
     const password =
         document
             .getElementById('login-password')
             .value;
 
-
     const error =
         document
             .getElementById('login-error');
 
-
-    error.textContent =
-        '';
-
+    error.textContent = '';
 
     if(!email || !password){
 
@@ -1361,7 +1173,6 @@ async function login(){
 
     }
 
-
     const result =
         await db.auth.signInWithPassword({
 
@@ -1370,12 +1181,7 @@ async function login(){
 
         });
 
-
     if(result.error){
-
-        console.error(
-            result.error
-        );
 
         error.textContent =
             result.error.message;
@@ -1384,33 +1190,25 @@ async function login(){
 
     }
 
-
     currentUser =
         result.data.user;
 
-
     document
         .getElementById('login-screen')
-        .classList.add('hidden');
-
+        .classList
+        .add('hidden');
 
     document
         .getElementById('app')
-        .classList.remove('hidden');
-
+        .classList
+        .remove('hidden');
 
     document
         .getElementById('user-email')
         .textContent =
             currentUser.email || '—';
 
-
     await loadData();
-
-
-    /*
-       Запускаем Realtime после входа.
-    */
 
     startRealtime();
 
@@ -1421,30 +1219,23 @@ async function logout(){
 
     await stopRealtime();
 
-
     if(realtimeReloadTimer){
 
         clearTimeout(
             realtimeReloadTimer
         );
 
-        realtimeReloadTimer =
-            null;
+        realtimeReloadTimer = null;
 
     }
 
-
     await db.auth.signOut();
 
-
-    currentUser =
-        null;
-
+    currentUser = null;
 
     spools = [];
 
     history = [];
-
 
     showLogin();
 
@@ -1459,42 +1250,17 @@ async function loadData(isRealtime=false){
 
     if(!currentUser){
 
-        debug(
-            'Нет авторизованного пользователя'
-        );
-
         showLogin();
 
         return;
 
     }
 
-
-    if(isRealtime){
-
-        status(
-            '🔄 Получаю изменения...'
-        );
-
-    }else{
-
-        status(
-            '☁️ Загружаю данные...'
-        );
-
-    }
-
-
-    debug(
-        'User ID: ' +
-        currentUser.id +
-        ' | загружаю данные...'
+    status(
+        isRealtime
+        ? '🔄 Синхронизация...'
+        : '☁️ Загружаю данные...'
     );
-
-
-    /*
-       КАТУШКИ
-    */
 
     const spoolResult =
         await db
@@ -1511,11 +1277,6 @@ async function loadData(isRealtime=false){
                 }
             );
 
-
-    /*
-       ИСТОРИЯ
-    */
-
     const historyResult =
         await db
             .from('print_history')
@@ -1531,76 +1292,35 @@ async function loadData(isRealtime=false){
                 }
             );
 
-
-    console.log(
-        'SPOOLS:',
-        spoolResult
-    );
-
-
-    console.log(
-        'HISTORY:',
-        historyResult
-    );
-
-
-    /*
-       ОШИБКИ
-    */
-
     if(spoolResult.error){
 
         console.error(
-            'Ошибка spools:',
             spoolResult.error
         );
-
-
-        debug(
-            'Ошибка spools: ' +
-            spoolResult.error.message
-        );
-
 
         status(
             '❌ Ошибка загрузки катушек',
             true
         );
 
-
         return;
 
     }
 
-
     if(historyResult.error){
 
         console.error(
-            'Ошибка history:',
             historyResult.error
         );
-
-
-        debug(
-            'Ошибка history: ' +
-            historyResult.error.message
-        );
-
 
         status(
             '❌ Ошибка загрузки истории',
             true
         );
 
-
         return;
 
     }
-
-
-    /*
-       ПРЕОБРАЗОВАНИЕ КАТУШЕК
-    */
 
     spools =
         (spoolResult.data || [])
@@ -1608,24 +1328,26 @@ async function loadData(isRealtime=false){
 
                 return {
 
-                    id:
-                        Number(x.id),
+                    id:Number(x.id),
 
                     name:
-                        x.name || 'Без названия',
+                        x.name ||
+                        'Без названия',
 
                     material:
                         x.material || '',
 
                     color:
-                        x.color || '#888888',
+                        x.color ||
+                        '#888888',
 
                     weight:
                         Number(x.weight || 0),
 
                     initWeight:
                         Number(
-                            x.initial_weight || 1000
+                            x.initial_weight ||
+                            1000
                         ),
 
                     price:
@@ -1645,21 +1367,17 @@ async function loadData(isRealtime=false){
             });
 
 
-    /*
-       ПРЕОБРАЗОВАНИЕ ИСТОРИИ
-    */
-
     history =
         (historyResult.data || [])
             .map(function(x){
 
                 return {
 
-                    id:
-                        Number(x.id),
+                    id:Number(x.id),
 
                     name:
-                        x.name || 'Деталь',
+                        x.name ||
+                        'Деталь',
 
                     weight:
                         Number(x.weight || 0),
@@ -1668,7 +1386,7 @@ async function loadData(isRealtime=false){
                         Number(x.cost || 0),
 
                     price:
-                        Number(x.cost || 0),
+                        Number(x.price ?? x.cost ?? 0),
 
                     profit:
                         Number(x.profit || 0),
@@ -1694,7 +1412,10 @@ async function loadData(isRealtime=false){
                         x.spool_name || '',
 
                     color:
-                        x.color || ''
+                        x.color || '',
+
+                    notes:
+                        x.notes || ''
 
                 };
 
@@ -1711,7 +1432,6 @@ async function loadData(isRealtime=false){
         ' | 🟢 Realtime'
     );
 
-
     status(
         '☁️ Синхронизировано · ' +
         spools.length +
@@ -1720,17 +1440,174 @@ async function loadData(isRealtime=false){
         ' записей'
     );
 
-
     update();
 
 }
 
 
 /* =========================================================
-   ADD SPOOL
+   SPOOL FORM
 ========================================================= */
 
-async function addSpool(){
+function resetSpoolForm(){
+
+    document
+        .getElementById('editing-spool-id')
+        .value = '';
+
+    document
+        .getElementById('spool-name')
+        .value = '';
+
+    document
+        .getElementById('spool-material')
+        .value = 'PLA';
+
+    document
+        .getElementById('spool-color')
+        .value = '#00adb5';
+
+    document
+        .getElementById('spool-weight')
+        .value = '1000';
+
+    document
+        .getElementById('spool-price')
+        .value = '19.99';
+
+    document
+        .getElementById('spool-manufacturer')
+        .value = '';
+
+    document
+        .getElementById('spool-purchase-date')
+        .value = '';
+
+    document
+        .getElementById('spool-notes')
+        .value = '';
+
+    document
+        .getElementById('spool-form-card')
+        .classList
+        .remove('edit-mode');
+
+    document
+        .getElementById('spool-form-title')
+        .innerHTML =
+            '<h3>Добавить катушку</h3>';
+
+    document
+        .getElementById('spool-save-button')
+        .textContent =
+            '➕ Добавить катушку';
+
+    document
+        .getElementById('spool-cancel-button')
+        .classList
+        .add('hidden');
+
+}
+
+
+function editSpool(id){
+
+    const spool =
+        spools.find(function(x){
+
+            return x.id === id;
+
+        });
+
+    if(!spool){
+
+        return;
+
+    }
+
+    document
+        .getElementById('editing-spool-id')
+        .value =
+            spool.id;
+
+    document
+        .getElementById('spool-name')
+        .value =
+            spool.name;
+
+    document
+        .getElementById('spool-material')
+        .value =
+            spool.material || 'PLA';
+
+    document
+        .getElementById('spool-color')
+        .value =
+            spool.color || '#00adb5';
+
+    document
+        .getElementById('spool-weight')
+        .value =
+            spool.weight;
+
+    document
+        .getElementById('spool-price')
+        .value =
+            spool.price;
+
+    document
+        .getElementById('spool-manufacturer')
+        .value =
+            spool.manufacturer || '';
+
+    document
+        .getElementById('spool-purchase-date')
+        .value =
+            spool.purchaseDate || '';
+
+    document
+        .getElementById('spool-notes')
+        .value =
+            spool.notes || '';
+
+    document
+        .getElementById('spool-form-card')
+        .classList
+        .add('edit-mode');
+
+    document
+        .getElementById('spool-form-title')
+        .innerHTML =
+            '<div class="edit-title">✏️ Редактирование катушки</div>';
+
+    document
+        .getElementById('spool-save-button')
+        .textContent =
+            '💾 Сохранить изменения';
+
+    document
+        .getElementById('spool-cancel-button')
+        .classList
+        .remove('hidden');
+
+    showPage('spools');
+
+    window.scrollTo({
+        top:0,
+        behavior:'smooth'
+    });
+
+}
+
+
+function cancelSpoolEdit(){
+
+    resetSpoolForm();
+
+}
+
+
+async function saveSpool(){
 
     if(!currentUser){
 
@@ -1742,6 +1619,12 @@ async function addSpool(){
 
     }
 
+    const editingId =
+        Number(
+            document
+                .getElementById('editing-spool-id')
+                .value
+        ) || null;
 
     const name =
         document
@@ -1749,18 +1632,15 @@ async function addSpool(){
             .value
             .trim();
 
-
     const material =
         document
             .getElementById('spool-material')
             .value;
 
-
     const color =
         document
             .getElementById('spool-color')
             .value;
-
 
     const weight =
         Number(
@@ -1769,7 +1649,6 @@ async function addSpool(){
                 .value
         );
 
-
     const price =
         Number(
             document
@@ -1777,26 +1656,22 @@ async function addSpool(){
                 .value
         );
 
-
     const manufacturer =
         document
             .getElementById('spool-manufacturer')
             .value
             .trim();
 
-
     const purchaseDate =
         document
             .getElementById('spool-purchase-date')
             .value || null;
-
 
     const notes =
         document
             .getElementById('spool-notes')
             .value
             .trim();
-
 
     if(!name){
 
@@ -1808,17 +1683,15 @@ async function addSpool(){
 
     }
 
-
-    if(weight <= 0){
+    if(weight < 0){
 
         alert(
-            'Вес должен быть больше 0.'
+            'Вес не может быть отрицательным.'
         );
 
         return;
 
     }
-
 
     if(price < 0){
 
@@ -1830,98 +1703,96 @@ async function addSpool(){
 
     }
 
+    if(editingId){
 
-    const row = {
+        const result =
+            await db
+                .from('spools')
+                .update({
 
-        name,
-        material,
-        color,
-        weight,
-        initial_weight:weight,
-        price,
+                    name,
+                    material,
+                    color,
+                    weight,
+                    price,
+                    manufacturer:
+                        manufacturer || null,
+                    purchase_date:
+                        purchaseDate,
+                    notes:
+                        notes || null
 
-        manufacturer:
-            manufacturer || null,
+                })
+                .eq(
+                    'id',
+                    editingId
+                )
+                .eq(
+                    'user_id',
+                    currentUser.id
+                );
 
-        purchase_date:
-            purchaseDate,
+        if(result.error){
 
-        notes:
-            notes || null,
+            alert(
+                'Ошибка редактирования:\n' +
+                result.error.message
+            );
 
-        user_id:
-            currentUser.id
+            return;
 
-    };
-
-
-    console.log(
-        'Добавляем катушку:',
-        row
-    );
-
-
-    const result =
-        await db
-            .from('spools')
-            .insert(row)
-            .select()
-            .single();
-
-
-    if(result.error){
-
-        console.error(
-            result.error
-        );
-
+        }
 
         alert(
-            'Ошибка добавления катушки:\n' +
-            result.error.message
+            'Катушка изменена! ☁️'
         );
 
+    }else{
 
-        return;
+        const result =
+            await db
+                .from('spools')
+                .insert({
+
+                    name,
+                    material,
+                    color,
+                    weight,
+                    initial_weight:weight,
+                    price,
+
+                    manufacturer:
+                        manufacturer || null,
+
+                    purchase_date:
+                        purchaseDate,
+
+                    notes:
+                        notes || null,
+
+                    user_id:
+                        currentUser.id
+
+                });
+
+        if(result.error){
+
+            alert(
+                'Ошибка добавления:\n' +
+                result.error.message
+            );
+
+            return;
+
+        }
+
+        alert(
+            'Катушка сохранена! ☁️'
+        );
 
     }
 
-
-    alert(
-        'Катушка сохранена! ☁️'
-    );
-
-
-    /*
-       Очищаем форму
-    */
-
-    document
-        .getElementById('spool-name')
-        .value = '';
-
-
-    document
-        .getElementById('spool-manufacturer')
-        .value = '';
-
-
-    document
-        .getElementById('spool-purchase-date')
-        .value = '';
-
-
-    document
-        .getElementById('spool-notes')
-        .value = '';
-
-
-    /*
-       Мгновенно обновляем это устройство.
-
-       На остальных устройствах обновление
-       придёт через Realtime.
-    */
+    resetSpoolForm();
 
     await loadData();
 
@@ -1942,7 +1813,6 @@ async function delSpool(id){
 
     }
 
-
     const result =
         await db
             .from('spools')
@@ -1956,7 +1826,6 @@ async function delSpool(id){
                 currentUser.id
             );
 
-
     if(result.error){
 
         alert(
@@ -1964,16 +1833,9 @@ async function delSpool(id){
             result.error.message
         );
 
-
         return;
 
     }
-
-
-    /*
-       Это устройство обновляем сразу.
-       Остальные получат DELETE через Realtime.
-    */
 
     await loadData();
 
@@ -1990,64 +1852,42 @@ function calculate(){
         document
             .getElementById('calc-spool');
 
-
     if(!select){
 
         return;
 
     }
 
-
     const id =
         Number(select.value);
 
-
     const spool =
-        spools.find(
-            function(x){
+        spools.find(function(x){
 
-                return x.id === id;
+            return x.id === id;
 
-            }
-        );
-
+        });
 
     if(!spool){
 
-        document
-            .getElementById('mat')
-            .textContent =
-                '0.00 €';
+        [
+            'mat',
+            'elec',
+            'amort',
+            'cost',
+            'price'
+        ].forEach(function(id){
 
+            document
+                .getElementById(id)
+                .textContent =
+                    '0.00 €';
 
-        document
-            .getElementById('elec')
-            .textContent =
-                '0.00 €';
-
-
-        document
-            .getElementById('amort')
-            .textContent =
-                '0.00 €';
-
-
-        document
-            .getElementById('cost')
-            .textContent =
-                '0.00 €';
-
-
-        document
-            .getElementById('price')
-            .textContent =
-                '0.00 €';
-
+        });
 
         return;
 
     }
-
 
     const weight =
         Number(
@@ -2056,14 +1896,12 @@ function calculate(){
                 .value
         ) || 0;
 
-
     const time =
         Number(
             document
                 .getElementById('calc-time')
                 .value
         ) || 0;
-
 
     const materialCost =
         weight *
@@ -2072,20 +1910,16 @@ function calculate(){
             spool.initWeight
         );
 
-
     const electricity =
         time * ELEC;
 
-
     const amortization =
         time * AMORT;
-
 
     const cost =
         materialCost +
         electricity +
         amortization;
-
 
     document
         .getElementById('mat')
@@ -2093,13 +1927,11 @@ function calculate(){
             materialCost.toFixed(2) +
             ' €';
 
-
     document
         .getElementById('elec')
         .textContent =
             electricity.toFixed(2) +
             ' €';
-
 
     document
         .getElementById('amort')
@@ -2107,13 +1939,11 @@ function calculate(){
             amortization.toFixed(2) +
             ' €';
 
-
     document
         .getElementById('cost')
         .textContent =
             cost.toFixed(2) +
             ' €';
-
 
     document
         .getElementById('price')
@@ -2124,29 +1954,22 @@ function calculate(){
 }
 
 
-/* =========================================================
-   FILL SPOOL SELECT
-========================================================= */
-
 function fillSelect(){
 
     const e =
         document
             .getElementById('calc-spool');
 
-
     if(!spools.length){
 
         e.innerHTML =
             '<option value="">Нет катушек</option>';
-
 
         calculate();
 
         return;
 
     }
-
 
     e.innerHTML =
         spools
@@ -2167,7 +1990,6 @@ function fillSelect(){
 
             })
             .join('');
-
 
     calculate();
 
@@ -2190,7 +2012,6 @@ async function saveOrder(){
 
     }
 
-
     const spoolId =
         Number(
             document
@@ -2198,16 +2019,12 @@ async function saveOrder(){
                 .value
         );
 
-
     const spool =
-        spools.find(
-            function(x){
+        spools.find(function(x){
 
-                return x.id === spoolId;
+            return x.id === spoolId;
 
-            }
-        );
-
+        });
 
     const weight =
         Number(
@@ -2216,14 +2033,12 @@ async function saveOrder(){
                 .value
         ) || 0;
 
-
     const time =
         Number(
             document
                 .getElementById('calc-time')
                 .value
         ) || 0;
-
 
     const name =
         document
@@ -2232,6 +2047,11 @@ async function saveOrder(){
             .trim() ||
         'Деталь';
 
+    const notes =
+        document
+            .getElementById('calc-notes')
+            .value
+            .trim();
 
     if(!spool){
 
@@ -2243,7 +2063,6 @@ async function saveOrder(){
 
     }
 
-
     if(weight <= 0){
 
         alert(
@@ -2253,7 +2072,6 @@ async function saveOrder(){
         return;
 
     }
-
 
     if(weight > spool.weight){
 
@@ -2265,7 +2083,6 @@ async function saveOrder(){
 
     }
 
-
     const materialCost =
         weight *
         (
@@ -2273,29 +2090,20 @@ async function saveOrder(){
             spool.initWeight
         );
 
-
     const electricity =
         time * ELEC;
 
-
     const amortization =
         time * AMORT;
-
 
     const cost =
         materialCost +
         electricity +
         amortization;
 
-
     const newWeight =
         spool.weight -
         weight;
-
-
-    /*
-       Сначала обновляем катушку
-    */
 
     const spoolUpdate =
         await db
@@ -2314,7 +2122,6 @@ async function saveOrder(){
                 currentUser.id
             );
 
-
     if(spoolUpdate.error){
 
         alert(
@@ -2322,19 +2129,9 @@ async function saveOrder(){
             spoolUpdate.error.message
         );
 
-
         return;
 
     }
-
-
-    /*
-       Создаём историю
-
-       ВАЖНО:
-       цвет сохраняем непосредственно
-       в истории.
-    */
 
     const historyRow = {
 
@@ -2361,24 +2158,18 @@ async function saveOrder(){
         spool_id:
             spool.id,
 
+        notes:
+            notes || null,
+
         user_id:
             currentUser.id
 
     };
 
-
     const historyResult =
         await db
             .from('print_history')
-            .insert(historyRow)
-            .select()
-            .single();
-
-
-    /*
-       Если история не записалась —
-       возвращаем вес катушки назад.
-    */
+            .insert(historyRow);
 
     if(historyResult.error){
 
@@ -2399,42 +2190,230 @@ async function saveOrder(){
                 currentUser.id
             );
 
-
-        console.error(
-            historyResult.error
-        );
-
-
         alert(
             'Ошибка сохранения истории:\n' +
             historyResult.error.message
         );
 
-
         return;
 
     }
-
 
     alert(
         'Заказ сохранён! ☁️'
     );
 
+    document
+        .getElementById('model')
+        .value =
+            'Деталь';
 
-    /*
-       Обновляем текущее устройство.
-
-       Второе устройство получит:
-       UPDATE spools
-       +
-       INSERT print_history
-       через Realtime.
-    */
+    document
+        .getElementById('calc-notes')
+        .value = '';
 
     await loadData();
 
-
     showPage('main');
+
+}
+
+
+/* =========================================================
+   EDIT HISTORY
+========================================================= */
+
+async function editHistory(id){
+
+    const item =
+        history.find(function(x){
+
+            return x.id === id;
+
+        });
+
+    if(!item){
+
+        return;
+
+    }
+
+    const newName =
+        prompt(
+            'Название модели:',
+            item.name
+        );
+
+    if(newName === null){
+
+        return;
+
+    }
+
+    const newNotes =
+        prompt(
+            'Заметки:',
+            item.notes || ''
+        );
+
+    if(newNotes === null){
+
+        return;
+
+    }
+
+    const result =
+        await db
+            .from('print_history')
+            .update({
+
+                name:
+                    newName.trim() ||
+                    'Деталь',
+
+                notes:
+                    newNotes.trim() ||
+                    null
+
+            })
+            .eq(
+                'id',
+                id
+            )
+            .eq(
+                'user_id',
+                currentUser.id
+            );
+
+    if(result.error){
+
+        alert(
+            'Ошибка редактирования истории:\n' +
+            result.error.message
+        );
+
+        return;
+
+    }
+
+    await loadData();
+
+}
+
+
+/* =========================================================
+   DELETE HISTORY
+========================================================= */
+
+async function deleteHistory(id){
+
+    if(!confirm(
+        'Удалить эту запись из истории?\n\n' +
+        'Использованный пластик будет возвращён ' +
+        'на соответствующую катушку.'
+    )){
+
+        return;
+
+    }
+
+    const item =
+        history.find(function(x){
+
+            return x.id === id;
+
+        });
+
+    if(!item){
+
+        return;
+
+    }
+
+    /*
+       Сначала удаляем историю.
+    */
+
+    const result =
+        await db
+            .from('print_history')
+            .delete()
+            .eq(
+                'id',
+                id
+            )
+            .eq(
+                'user_id',
+                currentUser.id
+            );
+
+    if(result.error){
+
+        alert(
+            'Ошибка удаления истории:\n' +
+            result.error.message
+        );
+
+        return;
+
+    }
+
+    /*
+       Возвращаем пластик на катушку.
+    */
+
+    if(
+        item.spoolId &&
+        Number(item.weight) > 0
+    ){
+
+        const spoolResult =
+            await db
+                .from('spools')
+                .select('weight')
+                .eq(
+                    'id',
+                    item.spoolId
+                )
+                .eq(
+                    'user_id',
+                    currentUser.id
+                )
+                .single();
+
+        if(
+            !spoolResult.error &&
+            spoolResult.data
+        ){
+
+            const restoredWeight =
+                Number(
+                    spoolResult.data.weight || 0
+                ) +
+                Number(item.weight || 0);
+
+            await db
+                .from('spools')
+                .update({
+
+                    weight:
+                        restoredWeight
+
+                })
+                .eq(
+                    'id',
+                    item.spoolId
+                )
+                .eq(
+                    'user_id',
+                    currentUser.id
+                );
+
+        }
+
+    }
+
+    await loadData();
 
 }
 
@@ -2455,7 +2434,6 @@ function showPage(page){
 
         });
 
-
     document
         .querySelectorAll('.nav div')
         .forEach(function(x){
@@ -2466,20 +2444,15 @@ function showPage(page){
 
         });
 
-
     const pageElement =
-        document
-            .getElementById(
-                'page-' + page
-            );
-
+        document.getElementById(
+            'page-' + page
+        );
 
     const navElement =
-        document
-            .getElementById(
-                'nav-' + page
-            );
-
+        document.getElementById(
+            'nav-' + page
+        );
 
     if(pageElement){
 
@@ -2489,7 +2462,6 @@ function showPage(page){
 
     }
 
-
     if(navElement){
 
         navElement
@@ -2498,13 +2470,11 @@ function showPage(page){
 
     }
 
-
     if(page === 'calc'){
 
         fillSelect();
 
     }
-
 
     update();
 
@@ -2525,7 +2495,6 @@ function update(){
         document
             .getElementById('summary');
 
-
     if(!spools.length){
 
         summary.innerHTML =
@@ -2539,28 +2508,22 @@ function update(){
             spools
                 .map(function(s){
 
-                    const color =
-                        s.color ||
-                        '#888888';
-
-
                     return `
                         <div style="padding:7px 0">
 
                             <span
                                 class="color-dot"
-                                style="background:${esc(color)}">
+                                style="background:${esc(
+                                    s.color || '#888888'
+                                )}">
                             </span>
 
                             <b>
                                 ${esc(s.name)}
                             </b>
 
-                            <span
-                                style="color:#aaa">
-
+                            <span style="color:#aaa">
                                 — ${s.weight} г
-
                             </span>
 
                         </div>
@@ -2573,7 +2536,7 @@ function update(){
 
 
     /*
-       TOTAL GRAMS
+       TOTAL
     */
 
     const total =
@@ -2582,14 +2545,12 @@ function update(){
 
                 return sum +
                     (
-                        Number(x.weight) ||
-                        0
+                        Number(x.weight) || 0
                     );
 
             },
             0
         );
-
 
     document
         .getElementById('total-grams')
@@ -2608,14 +2569,12 @@ function update(){
 
                 return sum +
                     (
-                        Number(x.profit) ||
-                        0
+                        Number(x.profit) || 0
                     );
 
             },
             0
         );
-
 
     document
         .getElementById('profit')
@@ -2625,7 +2584,7 @@ function update(){
 
 
     /*
-       SPOOLS LIST
+       SPOOLS
     */
 
     document
@@ -2638,7 +2597,6 @@ function update(){
                         s.color ||
                         '#888888';
 
-
                     return `
                         <div class="spool">
 
@@ -2650,6 +2608,13 @@ function update(){
 
                             </button>
 
+                            <button
+                                class="edit"
+                                onclick="editSpool(${s.id})">
+
+                                ✏️
+
+                            </button>
 
                             <div class="spool-name">
 
@@ -2661,7 +2626,6 @@ function update(){
                                 ${esc(s.name)}
 
                             </div>
-
 
                             <div class="spool-meta">
 
@@ -2677,17 +2641,39 @@ function update(){
 
                             </div>
 
-
                             ${
                                 s.manufacturer
                                 ? `
                                     <div class="spool-meta">
-
                                         Производитель:
-                                        ${esc(s.manufacturer)}
-
+                                        ${esc(
+                                            s.manufacturer
+                                        )}
                                     </div>
-                                  `
+                                `
+                                : ''
+                            }
+
+                            ${
+                                s.purchaseDate
+                                ? `
+                                    <div class="spool-meta">
+                                        Куплена:
+                                        ${esc(
+                                            s.purchaseDate
+                                        )}
+                                    </div>
+                                `
+                                : ''
+                            }
+
+                            ${
+                                s.notes
+                                ? `
+                                    <div class="spool-notes">
+                                        📝 ${esc(s.notes)}
+                                    </div>
+                                `
                                 : ''
                             }
 
@@ -2708,7 +2694,6 @@ function update(){
                 'history-list'
             );
 
-
     if(!history.length){
 
         historyElement.innerHTML =
@@ -2720,28 +2705,19 @@ function update(){
 
     }
 
-
     historyElement.innerHTML =
         history
             .map(function(h){
 
-                /*
-                   Пытаемся определить
-                   цвет несколькими способами.
-                */
-
                 let color =
                     h.color || '';
-
 
                 let spoolName =
                     h.spoolName || '';
 
-
                 /*
-                   Если у старой записи
-                   нет color, но есть spool_id —
-                   ищем катушку.
+                   Для старых записей,
+                   где цвет не был сохранён.
                 */
 
                 if(
@@ -2750,24 +2726,19 @@ function update(){
                 ){
 
                     const spool =
-                        spools.find(
-                            function(s){
+                        spools.find(function(s){
 
-                                return (
-                                    s.id ===
-                                    h.spoolId
-                                );
+                            return (
+                                s.id ===
+                                h.spoolId
+                            );
 
-                            }
-                        );
-
+                        });
 
                     if(spool){
 
                         color =
-                            spool.color ||
-                            '';
-
+                            spool.color || '';
 
                         if(!spoolName){
 
@@ -2780,7 +2751,6 @@ function update(){
 
                 }
 
-
                 if(!color){
 
                     color =
@@ -2788,9 +2758,24 @@ function update(){
 
                 }
 
-
                 return `
                     <div class="history">
+
+                        <button
+                            class="delete"
+                            onclick="deleteHistory(${h.id})">
+
+                            🗑️
+
+                        </button>
+
+                        <button
+                            class="edit"
+                            onclick="editHistory(${h.id})">
+
+                            ✏️
+
+                        </button>
 
                         <div class="history-title">
 
@@ -2805,19 +2790,19 @@ function update(){
 
                         </div>
 
-
                         <div class="history-info">
 
+                            ⚖️
                             ${Number(h.weight).toFixed(0)}
                             г
 
                             ·
 
+                            💰
                             ${Number(h.price).toFixed(2)}
                             €
 
                         </div>
-
 
                         <div class="history-color">
 
@@ -2834,6 +2819,16 @@ function update(){
 
                         </div>
 
+                        ${
+                            h.notes
+                            ? `
+                                <div class="history-notes">
+                                    📝 ${esc(h.notes)}
+                                </div>
+                            `
+                            : ''
+                        }
+
                     </div>
                 `;
 
@@ -2848,62 +2843,54 @@ function update(){
 ========================================================= */
 
 db.auth.onAuthStateChange(
-    async function(event, session){
+    async function(event,session){
 
         console.log(
             'Auth event:',
             event
         );
 
+        if(
+            session &&
+            session.user
+        ){
 
-        if(session && session.user){
-
-            /*
-               Не запускаем повторно всё,
-               если пользователь уже авторизован.
-            */
-
-            const wasDifferentUser =
+            const changed =
                 !currentUser ||
-                currentUser.id !== session.user.id;
-
+                currentUser.id !==
+                    session.user.id;
 
             currentUser =
                 session.user;
 
-
-            if(wasDifferentUser){
+            if(changed){
 
                 document
-                    .getElementById('login-screen')
+                    .getElementById(
+                        'login-screen'
+                    )
                     .classList
                     .add('hidden');
-
 
                 document
                     .getElementById('app')
                     .classList
                     .remove('hidden');
 
-
                 document
-                    .getElementById('user-email')
+                    .getElementById(
+                        'user-email'
+                    )
                     .textContent =
                         currentUser.email || '—';
 
-
                 await loadData();
-
 
                 startRealtime();
 
             }
 
         }else{
-
-            /*
-               Пользователь вышел.
-            */
 
             await stopRealtime();
 
