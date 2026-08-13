@@ -277,6 +277,68 @@ header{
 
 <header>🖨 PrintDesk</header>
 
+<div id="login-screen" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#121212;
+  z-index:100;
+  padding:20px;
+">
+
+  <div style="
+    max-width:400px;
+    margin:100px auto;
+    background:#1e1e1e;
+    border:1px solid #333;
+    border-radius:12px;
+    padding:20px;
+  ">
+
+    <h2 style="
+      text-align:center;
+      color:#00adb5;
+      margin-top:0;
+    ">
+      🖨 PrintDesk
+    </h2>
+
+    <div class="field">
+      <label>Email</label>
+      <input
+        id="login-email"
+        type="email"
+        placeholder="Введите email"
+      >
+    </div>
+
+    <div class="field">
+      <label>Пароль</label>
+      <input
+        id="login-password"
+        type="password"
+        placeholder="Введите пароль"
+      >
+    </div>
+
+    <button class="btn" onclick="login()">
+      🔐 Войти
+    </button>
+
+    <div
+      id="login-error"
+      style="
+        color:#ff5252;
+        text-align:center;
+        margin-top:12px;
+        min-height:20px;
+      "
+    ></div>
+
+  </div>
+
+</div>
+  
 <div class="container">
 
 <section id="page-main" class="page active">
@@ -2174,7 +2236,9 @@ async function init(){
 
   if(!data.session){
 
-    alert('Пользователь не авторизован.');
+    document.getElementById(
+      'login-screen'
+    ).style.display='block';
 
     return;
   }
@@ -2190,7 +2254,70 @@ async function init(){
 
 }
 
-init();
+
+async function login(){
+
+  const email=
+    document.getElementById(
+      'login-email'
+    ).value.trim();
+
+  const password=
+    document.getElementById(
+      'login-password'
+    ).value;
+
+  const errorElement=
+    document.getElementById(
+      'login-error'
+    );
+
+  errorElement.textContent='';
+
+
+  if(!email||!password){
+
+    errorElement.textContent=
+      'Введите email и пароль.';
+
+    return;
+
+  }
+
+
+  const {data,error}=
+    await db.auth.signInWithPassword({
+
+      email,
+
+      password
+
+    });
+
+
+  if(error){
+
+    console.error(error);
+
+    errorElement.textContent=
+      'Ошибка входа: '+error.message;
+
+    return;
+
+  }
+
+
+  currentUser=data.user;
+
+
+  document.getElementById(
+    'login-screen'
+  ).style.display='none';
+
+
+  load();
+
+}
 
 </script>
 
