@@ -351,6 +351,7 @@ header{
     <!-- USER -->
 
     <div class="user-info">
+
         Пользователь:
         <b id="user-email">—</b>
 
@@ -364,6 +365,7 @@ header{
         <div id="debug-info" class="debug">
             Подключение к облаку...
         </div>
+
     </div>
 
 
@@ -852,6 +854,333 @@ let history = [];
 
 
 /* =========================================================
+   REALTIME
+========================================================= */
+
+/*
+   Канал Supabase Realtime.
+
+   Он будет следить за:
+   - spools
+   - print_history
+
+   Только за записями текущего пользователя.
+*/
+
+let realtimeChannel = null;
+
+
+/*
+   Флаг загрузки.
+
+   Нужен, чтобы несколько Realtime-событий,
+   пришедших практически одновременно,
+   не запускали десятки загрузок подряд.
+*/
+
+let realtimeLoading = false;
+
+let realtimeReloadTimer = null;
+
+
+/*
+   Запускаем Realtime
+*/
+
+function startRealtime(){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+    /*
+       Если старый канал существует —
+       сначала удаляем его.
+    */
+
+    stopRealtime();
+
+
+    const userId =
+        currentUser.id;
+
+
+    console.log(
+        'Realtime: запускаем для пользователя',
+        userId
+    );
+
+
+    debug(
+        'User ID: ' +
+        userId +
+        ' | Realtime подключается...'
+    );
+
+
+    realtimeChannel =
+        db
+            .channel(
+                'printdesk-realtime-' +
+                userId
+            )
+
+
+            /*
+               КАТУШКИ
+            */
+
+            .on(
+                'postgres_changes',
+                {
+                    event:'*',
+                    schema:'public',
+                    table:'spools',
+                    filter:
+                        'user_id=eq.' +
+                        userId
+                },
+                function(payload){
+
+                    console.log(
+                        'Realtime spools:',
+                        payload
+                    );
+
+
+                    scheduleRealtimeReload(
+                        'Изменились катушки'
+                    );
+
+                }
+            )
+
+
+            /*
+               ИСТОРИЯ
+            */
+
+            .on(
+                'postgres_changes',
+                {
+                    event:'*',
+                    schema:'public',
+                    table:'print_history',
+                    filter:
+                        'user_id=eq.' +
+                        userId
+                },
+                function(payload){
+
+                    console.log(
+                        'Realtime history:',
+                        payload
+                    );
+
+
+                    scheduleRealtimeReload(
+                        'Изменилась история'
+                    );
+
+                }
+            )
+
+
+            /*
+               Подписываемся
+            */
+
+            .subscribe(
+                function(status){
+
+                    console.log(
+                        'Realtime status:',
+                        status
+                    );
+
+
+                    if(status === 'SUBSCRIBED'){
+
+                        console.log(
+                            'Realtime успешно подключён'
+                        );
+
+
+                        debug(
+                            'User ID: ' +
+                            userId +
+                            ' | 🟢 Realtime подключён'
+                        );
+
+                    }
+
+
+                    if(status === 'CHANNEL_ERROR'){
+
+                        console.error(
+                            'Realtime CHANNEL_ERROR'
+                        );
+
+
+                        debug(
+                            'User ID: ' +
+                            userId +
+                            ' | 🔴 Ошибка Realtime'
+                        );
+
+                    }
+
+
+                    if(status === 'TIMED_OUT'){
+
+                        console.error(
+                            'Realtime TIMED_OUT'
+                        );
+
+
+                        debug(
+                            'User ID: ' +
+                            userId +
+                            ' | 🟠 Realtime timeout'
+                        );
+
+                    }
+
+
+                    if(status === 'CLOSED'){
+
+                        console.log(
+                            'Realtime канал закрыт'
+                        );
+
+                    }
+
+                }
+            );
+
+}
+
+
+/*
+   Останавливаем Realtime
+*/
+
+async function stopRealtime(){
+
+    if(!realtimeChannel){
+
+        return;
+
+    }
+
+
+    console.log(
+        'Realtime: закрываем канал'
+    );
+
+
+    try{
+
+        await db.removeChannel(
+            realtimeChannel
+        );
+
+    }catch(error){
+
+        console.error(
+            'Ошибка закрытия Realtime:',
+            error
+        );
+
+    }
+
+
+    realtimeChannel =
+        null;
+
+}
+
+
+/*
+   Планируем обновление.
+
+   Если одновременно пришло несколько
+   событий, например при сохранении заказа:
+
+   UPDATE spools
+   +
+   INSERT print_history
+
+   мы не будем делать две загрузки подряд.
+*/
+
+function scheduleRealtimeReload(reason){
+
+    console.log(
+        'Realtime событие:',
+        reason
+    );
+
+
+    if(realtimeReloadTimer){
+
+        clearTimeout(
+            realtimeReloadTimer
+        );
+
+    }
+
+
+    realtimeReloadTimer =
+        setTimeout(
+            async function(){
+
+                realtimeReloadTimer =
+                    null;
+
+
+                if(!currentUser){
+
+                    return;
+
+                }
+
+
+                if(realtimeLoading){
+
+                    return;
+
+                }
+
+
+                realtimeLoading =
+                    true;
+
+
+                try{
+
+                    await loadData(
+                        true
+                    );
+
+                }finally{
+
+                    realtimeLoading =
+                        false;
+
+                }
+
+            },
+            250
+        );
+
+}
+
+
+/* =========================================================
    HELPERS
 ========================================================= */
 
@@ -916,8 +1245,10 @@ async function checkAuth(){
         'Проверяю авторизацию...'
     );
 
+
     const result =
         await db.auth.getUser();
+
 
     if(result.error){
 
@@ -969,6 +1300,15 @@ async function checkAuth(){
 
     await loadData();
 
+
+    /*
+       После первоначальной загрузки
+       запускаем Realtime.
+    */
+
+    startRealtime();
+
+
     return true;
 
 }
@@ -979,6 +1319,7 @@ function showLogin(){
     document
         .getElementById('login-screen')
         .classList.remove('hidden');
+
 
     document
         .getElementById('app')
@@ -1066,18 +1407,44 @@ async function login(){
 
     await loadData();
 
+
+    /*
+       Запускаем Realtime после входа.
+    */
+
+    startRealtime();
+
 }
 
 
 async function logout(){
 
+    await stopRealtime();
+
+
+    if(realtimeReloadTimer){
+
+        clearTimeout(
+            realtimeReloadTimer
+        );
+
+        realtimeReloadTimer =
+            null;
+
+    }
+
+
     await db.auth.signOut();
+
 
     currentUser =
         null;
 
+
     spools = [];
+
     history = [];
+
 
     showLogin();
 
@@ -1088,7 +1455,7 @@ async function logout(){
    LOAD DATA
 ========================================================= */
 
-async function loadData(){
+async function loadData(isRealtime=false){
 
     if(!currentUser){
 
@@ -1103,9 +1470,19 @@ async function loadData(){
     }
 
 
-    status(
-        '☁️ Загружаю данные...'
-    );
+    if(isRealtime){
+
+        status(
+            '🔄 Получаю изменения...'
+        );
+
+    }else{
+
+        status(
+            '☁️ Загружаю данные...'
+        );
+
+    }
 
 
     debug(
@@ -1160,6 +1537,7 @@ async function loadData(){
         spoolResult
     );
 
+
     console.log(
         'HISTORY:',
         historyResult
@@ -1177,15 +1555,18 @@ async function loadData(){
             spoolResult.error
         );
 
+
         debug(
             'Ошибка spools: ' +
             spoolResult.error.message
         );
 
+
         status(
             '❌ Ошибка загрузки катушек',
             true
         );
+
 
         return;
 
@@ -1199,15 +1580,18 @@ async function loadData(){
             historyResult.error
         );
 
+
         debug(
             'Ошибка history: ' +
             historyResult.error.message
         );
 
+
         status(
             '❌ Ошибка загрузки истории',
             true
         );
+
 
         return;
 
@@ -1323,7 +1707,8 @@ async function loadData(){
         ' | Катушек: ' +
         spools.length +
         ' | Истории: ' +
-        history.length
+        history.length +
+        ' | 🟢 Realtime'
     );
 
 
@@ -1490,10 +1875,12 @@ async function addSpool(){
             result.error
         );
 
+
         alert(
             'Ошибка добавления катушки:\n' +
             result.error.message
         );
+
 
         return;
 
@@ -1513,18 +1900,28 @@ async function addSpool(){
         .getElementById('spool-name')
         .value = '';
 
+
     document
         .getElementById('spool-manufacturer')
         .value = '';
+
 
     document
         .getElementById('spool-purchase-date')
         .value = '';
 
+
     document
         .getElementById('spool-notes')
         .value = '';
 
+
+    /*
+       Мгновенно обновляем это устройство.
+
+       На остальных устройствах обновление
+       придёт через Realtime.
+    */
 
     await loadData();
 
@@ -1550,7 +1947,10 @@ async function delSpool(id){
         await db
             .from('spools')
             .delete()
-            .eq('id', id)
+            .eq(
+                'id',
+                id
+            )
             .eq(
                 'user_id',
                 currentUser.id
@@ -1564,10 +1964,16 @@ async function delSpool(id){
             result.error.message
         );
 
+
         return;
 
     }
 
+
+    /*
+       Это устройство обновляем сразу.
+       Остальные получат DELETE через Realtime.
+    */
 
     await loadData();
 
@@ -1613,25 +2019,30 @@ function calculate(){
             .textContent =
                 '0.00 €';
 
+
         document
             .getElementById('elec')
             .textContent =
                 '0.00 €';
+
 
         document
             .getElementById('amort')
             .textContent =
                 '0.00 €';
 
+
         document
             .getElementById('cost')
             .textContent =
                 '0.00 €';
 
+
         document
             .getElementById('price')
             .textContent =
                 '0.00 €';
+
 
         return;
 
@@ -1728,6 +2139,7 @@ function fillSelect(){
 
         e.innerHTML =
             '<option value="">Нет катушек</option>';
+
 
         calculate();
 
@@ -1910,6 +2322,7 @@ async function saveOrder(){
             spoolUpdate.error.message
         );
 
+
         return;
 
     }
@@ -1917,6 +2330,10 @@ async function saveOrder(){
 
     /*
        Создаём историю
+
+       ВАЖНО:
+       цвет сохраняем непосредственно
+       в истории.
     */
 
     const historyRow = {
@@ -1993,6 +2410,7 @@ async function saveOrder(){
             historyResult.error.message
         );
 
+
         return;
 
     }
@@ -2002,6 +2420,16 @@ async function saveOrder(){
         'Заказ сохранён! ☁️'
     );
 
+
+    /*
+       Обновляем текущее устройство.
+
+       Второе устройство получит:
+       UPDATE spools
+       +
+       INSERT print_history
+       через Realtime.
+    */
 
     await loadData();
 
@@ -2118,6 +2546,7 @@ function update(){
 
                     return `
                         <div style="padding:7px 0">
+
                             <span
                                 class="color-dot"
                                 style="background:${esc(color)}">
@@ -2129,8 +2558,11 @@ function update(){
 
                             <span
                                 style="color:#aaa">
+
                                 — ${s.weight} г
+
                             </span>
+
                         </div>
                     `;
 
@@ -2218,6 +2650,7 @@ function update(){
 
                             </button>
 
+
                             <div class="spool-name">
 
                                 <span
@@ -2229,11 +2662,13 @@ function update(){
 
                             </div>
 
+
                             <div class="spool-meta">
 
                                 ${esc(s.material)}
 
                                 · осталось
+
                                 <b>
                                     ${s.weight} г
                                 </b>
@@ -2242,12 +2677,15 @@ function update(){
 
                             </div>
 
+
                             ${
                                 s.manufacturer
                                 ? `
                                     <div class="spool-meta">
+
                                         Производитель:
                                         ${esc(s.manufacturer)}
+
                                     </div>
                                   `
                                 : ''
@@ -2330,6 +2768,7 @@ function update(){
                             spool.color ||
                             '';
 
+
                         if(!spoolName){
 
                             spoolName =
@@ -2409,17 +2848,64 @@ function update(){
 ========================================================= */
 
 db.auth.onAuthStateChange(
-    function(event, session){
+    async function(event, session){
 
         console.log(
             'Auth event:',
             event
         );
 
+
         if(session && session.user){
+
+            /*
+               Не запускаем повторно всё,
+               если пользователь уже авторизован.
+            */
+
+            const wasDifferentUser =
+                !currentUser ||
+                currentUser.id !== session.user.id;
+
 
             currentUser =
                 session.user;
+
+
+            if(wasDifferentUser){
+
+                document
+                    .getElementById('login-screen')
+                    .classList
+                    .add('hidden');
+
+
+                document
+                    .getElementById('app')
+                    .classList
+                    .remove('hidden');
+
+
+                document
+                    .getElementById('user-email')
+                    .textContent =
+                        currentUser.email || '—';
+
+
+                await loadData();
+
+
+                startRealtime();
+
+            }
+
+        }else{
+
+            /*
+               Пользователь вышел.
+            */
+
+            await stopRealtime();
 
         }
 
