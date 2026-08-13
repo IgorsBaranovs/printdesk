@@ -1236,43 +1236,23 @@ async function load(){
   console.log('=== PRINTDESK CLOUD TEST ===');
   console.log('Пользователь:', currentUser);
 
-
-  // =========================
-  // КАТУШКИ
-  // =========================
-
   const s = await db
     .from('spools')
     .select('*')
-    .order('created_at',{ascending:true});
+    .order('created_at', { ascending:true });
 
-
-  console.log('SPools response:',s);
-
-
-  // =========================
-  // ИСТОРИЯ
-  // =========================
+  console.log('SPools response:', s);
 
   const h = await db
     .from('print_history')
     .select('*')
-    .order('created_at',{ascending:false});
+    .order('created_at', { ascending:false });
 
-
-  console.log('History response:',h);
-
-
-  // =========================
-  // ОШИБКИ
-  // =========================
+  console.log('History response:', h);
 
   if(s.error){
 
-    console.error(
-      'ОШИБКА SPools:',
-      s.error
-    );
+    console.error('ОШИБКА SPools:', s.error);
 
     status(
       '❌ Ошибка таблицы spools',
@@ -1289,13 +1269,9 @@ async function load(){
     return;
   }
 
-
   if(h.error){
 
-    console.error(
-      'ОШИБКА HISTORY:',
-      h.error
-    );
+    console.error('ОШИБКА HISTORY:', h.error);
 
     status(
       '❌ Ошибка таблицы print_history',
@@ -1312,11 +1288,6 @@ async function load(){
     return;
   }
 
-
-  // =========================
-  // ПОКАЗЫВАЕМ ЧТО ПРИШЛО
-  // =========================
-
   console.log(
     'Катушек получено:',
     (s.data || []).length
@@ -1327,222 +1298,78 @@ async function load(){
     (h.data || []).length
   );
 
-
   alert(
     'Облако отвечает!\n\n' +
-
     'Пользователь:\n' +
     (currentUser?.email || 'нет') +
-
     '\n\nКатушек в облаке: ' +
     (s.data || []).length +
-
     '\nЗаписей истории: ' +
     (h.data || []).length
   );
 
+  spools = (s.data || []).map(x => ({
 
-  // =========================
-  // ПРЕОБРАЗОВАНИЕ КАТУШЕК
-  // =========================
+    id: Number(x.id),
 
-  spools=(s.data||[]).map(x=>({
+    name: x.name,
 
-    id:Number(x.id),
+    material: x.material || '',
 
-    name:x.name,
+    manufacturer: x.manufacturer || '',
 
-    material:x.material||'',
+    weight: Number(x.weight || 0),
 
-    manufacturer:x.manufacturer||'',
-
-    weight:Number(x.weight||0),
-
-    initWeight:Number(
-      x.initial_weight||1000
+    initWeight: Number(
+      x.initial_weight || 1000
     ),
 
-    price:Number(x.price||0),
+    price: Number(x.price || 0),
 
-    color:x.color||'#888888',
+    color: x.color || '#888888',
 
-    purchaseDate:x.purchase_date||'',
+    purchaseDate: x.purchase_date || '',
 
-    notes:x.notes||''
+    notes: x.notes || ''
 
   }));
 
+  history = (h.data || []).map(x => ({
 
-  // =========================
-  // ПРЕОБРАЗОВАНИЕ ИСТОРИИ
-  // =========================
+    id: Number(x.id),
 
-  history=(h.data||[]).map(x=>({
+    name: x.name,
 
-    id:Number(x.id),
+    weight: Number(x.weight || 0),
 
-    name:x.name,
+    price: Number(x.cost || 0),
 
-    weight:Number(x.weight||0),
+    profit: Number(x.profit || 0),
 
-    price:Number(x.cost||0),
-
-    profit:Number(x.profit||0),
-
-    date:x.date ||
+    date:
+      x.date ||
       new Date(x.created_at)
         .toLocaleDateString('ru-RU'),
 
     spool_id:
-      Number(x.spool_id)||null,
+      Number(x.spool_id) || null,
 
     spool_name:
-      x.spool_name||'',
+      x.spool_name || '',
 
     color:
-      x.color||'#888888',
+      x.color || '#888888',
 
     notes:
-      x.notes||''
+      x.notes || ''
 
   }));
 
-
-  status(
-    '☁️ Синхронизировано'
-  );
+  status('☁️ Синхронизировано');
 
   update();
 
 }
-
-
-    /* ================================= */
-    /* КАТУШКИ */
-    /* ================================= */
-
-    spools =
-      (spoolsResult.data || [])
-      .map(x => ({
-
-        id:
-          Number(x.id),
-
-        name:
-          x.name,
-
-        material:
-          x.material || '',
-
-        manufacturer:
-          x.manufacturer || '',
-
-        weight:
-          Number(x.weight || 0),
-
-        initWeight:
-          Number(
-            x.initial_weight || 1000
-          ),
-
-        price:
-          Number(x.price || 0),
-
-        color:
-          x.color || '#888888',
-
-        purchaseDate:
-          x.purchase_date || '',
-
-        notes:
-          x.notes || ''
-
-      }));
-
-
-    /* ================================= */
-    /* ИСТОРИЯ */
-    /* ================================= */
-
-    history =
-      (historyResult.data || [])
-      .map(x => ({
-
-        id:
-          Number(x.id),
-
-        name:
-          x.name,
-
-        weight:
-          Number(x.weight || 0),
-
-        price:
-          Number(x.cost || 0),
-
-        profit:
-          Number(x.profit || 0),
-
-        date:
-          x.date ||
-          (
-            x.created_at
-              ? new Date(
-                  x.created_at
-                ).toLocaleDateString(
-                  'ru-RU'
-                )
-              : ''
-          ),
-
-        spool_id:
-          x.spool_id
-            ? Number(x.spool_id)
-            : null,
-
-        spool_name:
-          x.spool_name || '',
-
-        color:
-          x.color || '#888888',
-
-        notes:
-          x.notes || ''
-
-      }));
-
-
-    status(
-      `☁️ Синхронизировано: ${spools.length} катушек, ${history.length} печатей`
-    );
-
-
-    console.log(
-      'PrintDesk:',
-      {
-        user:currentUser,
-        spools,
-        history
-      }
-    );
-
-
-    update();
-
-  }catch(error){
-
-    console.error(error);
-
-    status(
-      '⚠️ Ошибка загрузки: ' +
-      error.message,
-      true
-    );
-
-  }
-
-}
-
 
 /* ========================================= */
 /* ДОБАВЛЕНИЕ КАТУШКИ */
