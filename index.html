@@ -671,6 +671,7 @@ const AMORT=0.10;
 
 let spools=[];
 let history=[];
+let currentUser=null;
 
 
 const esc=s=>String(s??'').replace(
@@ -2155,7 +2156,41 @@ ${h.notes ? `
 }
 
 
-load();
+async function init(){
+
+  const {data,error} =
+    await db.auth.getSession();
+
+  if(error){
+
+    console.error(error);
+
+    return alert(
+      'Ошибка проверки авторизации: '+
+      error.message
+    );
+
+  }
+
+  if(!data.session){
+
+    alert('Пользователь не авторизован.');
+
+    return;
+  }
+
+  currentUser=data.session.user;
+
+  console.log(
+    'Авторизован:',
+    currentUser.email
+  );
+
+  load();
+
+}
+
+init();
 
 </script>
 
