@@ -433,6 +433,44 @@ header{
 
 <div id="history-list"></div>
 
+<div id="history-modal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  z-index:30;
+  padding:20px;
+">
+
+  <div style="
+    max-width:500px;
+    margin:60px auto;
+    background:#1e1e1e;
+    border:1px solid #333;
+    border-radius:12px;
+    padding:18px;
+  ">
+
+    <h3 style="
+      color:#00adb5;
+      margin-top:0;
+    ">
+      📋 Подробности печати
+    </h3>
+
+    <div id="history-details"></div>
+
+    <button
+      class="btn secondary"
+      onclick="closeHistoryDetails()"
+    >
+      Закрыть
+    </button>
+
+  </div>
+
+</div>
+  
 </div>
 
 </section>
@@ -1137,7 +1175,216 @@ async function importLocal(){
 
 }
 
+function showHistoryDetails(id){
 
+  let h=history.find(x=>x.id===id);
+
+  if(!h)
+    return;
+
+  let color=h.color||'#888888';
+
+  let spoolName=
+    h.spool_name||
+    'Катушка не указана';
+
+  document.getElementById(
+    'history-details'
+  ).innerHTML=`
+
+    <div style="
+      background:#252525;
+      border-radius:9px;
+      padding:12px;
+      margin-bottom:10px;
+    ">
+
+      <div style="
+        color:#aaa;
+        font-size:13px;
+        margin-bottom:4px;
+      ">
+        Модель
+      </div>
+
+      <div style="
+        font-size:18px;
+        font-weight:bold;
+      ">
+        ${esc(h.name)}
+      </div>
+
+    </div>
+
+
+    <div style="
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    ">
+
+      <div style="
+        background:#252525;
+        border-radius:9px;
+        padding:12px;
+      ">
+
+        <div style="
+          color:#aaa;
+          font-size:13px;
+        ">
+          Дата
+        </div>
+
+        <div style="
+          margin-top:5px;
+          font-weight:bold;
+        ">
+          ${esc(h.date)}
+        </div>
+
+      </div>
+
+
+      <div style="
+        background:#252525;
+        border-radius:9px;
+        padding:12px;
+      ">
+
+        <div style="
+          color:#aaa;
+          font-size:13px;
+        ">
+          Вес
+        </div>
+
+        <div style="
+          margin-top:5px;
+          font-weight:bold;
+        ">
+          ${Number(h.weight).toFixed(0)} г
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div style="
+      background:#252525;
+      border-radius:9px;
+      padding:12px;
+      margin-top:10px;
+    ">
+
+      <div style="
+        color:#aaa;
+        font-size:13px;
+        margin-bottom:7px;
+      ">
+        Катушка
+      </div>
+
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+        font-weight:bold;
+      ">
+
+        <span
+          class="color-dot"
+          style="
+            width:20px;
+            height:20px;
+            margin:0;
+            background:${esc(color)};
+          "
+        ></span>
+
+        ${esc(spoolName)}
+
+      </div>
+
+    </div>
+
+
+    <div style="
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    ">
+
+      <div style="
+        background:#252525;
+        border-radius:9px;
+        padding:12px;
+      ">
+
+        <div style="
+          color:#aaa;
+          font-size:13px;
+        ">
+          Себестоимость
+        </div>
+
+        <div style="
+          margin-top:5px;
+          font-size:18px;
+          font-weight:bold;
+        ">
+          ${Number(h.price).toFixed(2)} €
+        </div>
+
+      </div>
+
+
+      <div style="
+        background:#252525;
+        border-radius:9px;
+        padding:12px;
+      ">
+
+        <div style="
+          color:#aaa;
+          font-size:13px;
+        ">
+          Прибыль
+        </div>
+
+        <div style="
+          margin-top:5px;
+          font-size:18px;
+          font-weight:bold;
+          color:#4caf50;
+        ">
+          ${Number(h.profit).toFixed(2)} €
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  document.getElementById(
+    'history-modal'
+  ).style.display='block';
+
+}
+
+
+function closeHistoryDetails(){
+
+  document.getElementById(
+    'history-modal'
+  ).style.display='none';
+
+}
+  
 function showPage(p){
 
   document
@@ -1342,11 +1589,16 @@ function update(){
 
           return `
 
-            <div class="history">
+            <div
+  class="history"
+  onclick="showHistoryDetails(${h.id})"
+  style="cursor:pointer;transition:.15s;"
+  title="Открыть подробности""
+>
 
-              <b>
-                ${esc(h.name)}
-              </b>
+  <b>
+    ${esc(h.name)}
+  </b>
 
               <span style="
                 float:right;
