@@ -1,8 +1,24 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta
+    name="theme-color"
+    content="#1e1e1e">
+
+<meta
+    name="apple-mobile-web-app-capable"
+    content="yes">
+
+<meta
+    name="apple-mobile-web-app-status-bar-style"
+    content="black-translucent">
 
 <title>PrintDesk</title>
 
@@ -10,27 +26,53 @@
 
 <style>
 
+/* =========================================================
+   GLOBAL
+========================================================= */
+
 *{
     box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
 body{
     margin:0;
     background:#121212;
     color:#eee;
-    font-family:Arial,sans-serif;
-    padding-bottom:75px;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+    padding-bottom:85px;
 }
 
+
+/* =========================================================
+   HEADER
+========================================================= */
+
 header{
-    padding:16px;
+    padding:10px 16px;
     text-align:center;
     background:#1e1e1e;
-    color:#00adb5;
-    font-size:21px;
-    font-weight:700;
     border-bottom:1px solid #333;
 }
+
+header img{
+    width:auto;
+    height:155px;
+    max-width:90%;
+    object-fit:contain;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
 
 .container{
     max-width:650px;
@@ -38,20 +80,36 @@ header{
     padding:15px;
 }
 
+
+/* =========================================================
+   CARDS
+========================================================= */
+
 .card,
 .spool,
 .history{
     background:#1e1e1e;
     border:1px solid #333;
-    border-radius:12px;
-    padding:15px;
+    border-radius:14px;
+    padding:18px;
     margin-bottom:15px;
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.15);
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .card h3{
     color:#00adb5;
     margin:0 0 14px;
 }
+
+
+/* =========================================================
+   GRID / STATS
+========================================================= */
 
 .grid{
     display:grid;
@@ -61,13 +119,14 @@ header{
 
 .stat{
     background:#252525;
-    border-radius:9px;
-    padding:12px;
+    border-radius:10px;
+    padding:14px;
     text-align:center;
+    border:1px solid #333;
 }
 
 .val{
-    font-size:19px;
+    font-size:20px;
     font-weight:bold;
     margin-top:5px;
 }
@@ -76,25 +135,49 @@ header{
     color:#4caf50;
 }
 
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
 .btn{
     width:100%;
     border:0;
-    border-radius:8px;
-    padding:12px;
+    border-radius:10px;
+    padding:14px;
     margin-top:10px;
     background:#00adb5;
     color:#fff;
     font-size:16px;
     font-weight:700;
     cursor:pointer;
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
+}
+
+.btn:active{
+    transform:scale(0.98);
+}
+
+.btn:hover{
+    background:#008c93;
 }
 
 .btn.secondary{
     background:#333;
 }
 
+.btn.secondary:hover{
+    background:#444;
+}
+
 .btn.danger{
     background:#7a2222;
+}
+
+.btn.danger:hover{
+    background:#9e2b2b;
 }
 
 .btn.small{
@@ -104,27 +187,40 @@ header{
     font-size:14px;
 }
 
+
+/* =========================================================
+   FORM
+========================================================= */
+
 .field{
-    margin-bottom:12px;
+    margin-bottom:14px;
 }
 
 .field label{
     display:block;
     color:#aaa;
     font-size:14px;
-    margin-bottom:5px;
+    margin-bottom:6px;
 }
 
 .field input,
 .field select,
 .field textarea{
     width:100%;
-    padding:10px;
+    padding:12px;
     border:1px solid #444;
-    border-radius:7px;
+    border-radius:8px;
     background:#252525;
     color:#fff;
     font-size:15px;
+    outline:none;
+    transition:border-color 0.2s ease;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+    border-color:#00adb5;
 }
 
 .field textarea{
@@ -132,46 +228,70 @@ header{
     resize:vertical;
 }
 
+
+/* =========================================================
+   CALCULATOR
+========================================================= */
+
 .result{
     display:flex;
     justify-content:space-between;
-    padding:8px 0;
+    padding:10px 0;
     border-bottom:1px dashed #444;
 }
 
 .total{
     font-weight:700;
     font-size:18px;
-    padding:10px 0;
+    padding:12px 0;
 }
+
+
+/* =========================================================
+   PAGES
+========================================================= */
 
 .page{
     display:none;
+    opacity:0;
+    transform:translateY(8px);
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
 }
 
 .page.active{
     display:block;
+    opacity:1;
+    transform:translateY(0);
 }
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
 
 .nav{
     position:fixed;
     bottom:0;
     left:0;
     right:0;
-    height:68px;
+    height:70px;
     background:#1e1e1e;
     border-top:1px solid #333;
     display:flex;
     z-index:10;
+    backdrop-filter:blur(10px);
 }
 
 .nav div{
     flex:1;
     text-align:center;
-    padding:8px 3px;
+    padding:10px 3px;
     color:#888;
     font-size:12px;
     cursor:pointer;
+    transition:color 0.2s ease;
 }
 
 .nav .active{
@@ -181,31 +301,74 @@ header{
 
 .nav span{
     display:block;
-    font-size:19px;
-    margin-bottom:2px;
+    font-size:20px;
+    margin-bottom:3px;
+    transition:transform 0.2s ease;
 }
+
+.nav .active span{
+    transform:translateY(-2px);
+}
+
+
+/* =========================================================
+   USER BLOCK
+   НАХОДИТСЯ ПОСЛЕ ОСНОВНОГО МЕНЮ
+========================================================= */
+
+.user-section{
+    max-width:650px;
+    margin:0 auto;
+    padding:0 15px;
+}
+
+.user-info{
+    background:#191919;
+    border:1px solid #333;
+    border-radius:10px;
+    padding:12px;
+    font-size:13px;
+    color:#aaa;
+    margin-bottom:10px;
+}
+
+.user-info b{
+    color:#00adb5;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
 
 .status{
     text-align:center;
     color:#aaa;
     font-size:13px;
     min-height:20px;
-    margin-top:10px;
+    margin-top:12px;
 }
 
-.user-info{
-    background:#191919;
+
+/* =========================================================
+   DEBUG
+========================================================= */
+
+.debug{
+    background:#171717;
     border:1px solid #333;
     border-radius:8px;
     padding:10px;
-    font-size:13px;
-    color:#aaa;
-    margin-bottom:15px;
+    margin-top:12px;
+    font-size:12px;
+    color:#888;
+    word-break:break-all;
 }
 
-.user-info b{
-    color:#00adb5;
-}
+
+/* =========================================================
+   SPOOLS
+========================================================= */
 
 .delete{
     float:right;
@@ -214,6 +377,13 @@ header{
     color:#ff5252;
     font-size:18px;
     cursor:pointer;
+    padding:2px 6px;
+    border-radius:4px;
+    transition:background 0.2s ease;
+}
+
+.delete:hover{
+    background:rgba(255,82,82,0.15);
 }
 
 .edit{
@@ -224,11 +394,13 @@ header{
     font-size:18px;
     cursor:pointer;
     margin-right:8px;
+    padding:2px 6px;
+    border-radius:4px;
+    transition:background 0.2s ease;
 }
 
-.empty{
-    color:#999;
-    padding:10px 0;
+.edit:hover{
+    background:rgba(0,173,181,0.15);
 }
 
 .spool-name{
@@ -247,6 +419,9 @@ header{
     margin-top:8px;
     font-size:13px;
     white-space:pre-wrap;
+    background:#171717;
+    padding:8px;
+    border-radius:6px;
 }
 
 .color-dot{
@@ -257,15 +432,22 @@ header{
     border:1px solid #777;
     vertical-align:middle;
     margin-right:7px;
+    box-shadow:
+        0 0 4px rgba(0,0,0,0.5);
 }
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
 
 .history{
     cursor:pointer;
-    transition:.15s;
 }
 
 .history:hover{
     border-color:#00adb5;
+    transform:translateY(-2px);
 }
 
 .history-title{
@@ -310,7 +492,33 @@ header{
     margin-top:10px;
     color:#00adb5;
     font-size:12px;
+    font-weight:600;
 }
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-state{
+    text-align:center;
+    padding:30px 15px;
+    color:#777;
+    background:#191919;
+    border:1px dashed #333;
+    border-radius:12px;
+    margin:10px 0;
+}
+
+.empty-state-icon{
+    font-size:36px;
+    margin-bottom:8px;
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
 
 .login-box{
     max-width:450px;
@@ -332,19 +540,13 @@ header{
     font-size:14px;
 }
 
-.debug{
-    background:#171717;
-    border:1px solid #333;
-    border-radius:8px;
-    padding:10px;
-    margin-top:12px;
-    font-size:12px;
-    color:#888;
-    word-break:break-all;
-}
+
+/* =========================================================
+   OTHER
+========================================================= */
 
 .hidden{
-    display:none;
+    display:none !important;
 }
 
 .edit-mode{
@@ -358,23 +560,27 @@ header{
 }
 
 
-/* =========================
-   MODAL
-========================= */
+/* =========================================================
+   MODALS
+========================================================= */
 
 .modal{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.75);
+    background:rgba(0,0,0,.8);
     display:none;
     align-items:center;
     justify-content:center;
     padding:15px;
     z-index:100;
+    backdrop-filter:blur(4px);
+    opacity:0;
+    transition:opacity 0.2s ease;
 }
 
 .modal.active{
     display:flex;
+    opacity:1;
 }
 
 .modal-box{
@@ -384,8 +590,14 @@ header{
     overflow:auto;
     background:#1e1e1e;
     border:1px solid #444;
-    border-radius:14px;
-    padding:18px;
+    border-radius:16px;
+    padding:20px;
+    transform:scale(0.95);
+    transition:transform 0.2s ease;
+}
+
+.modal.active .modal-box{
+    transform:scale(1);
 }
 
 .modal-header{
@@ -406,6 +618,11 @@ header{
     color:#aaa;
     font-size:28px;
     cursor:pointer;
+    line-height:1;
+}
+
+.close:hover{
+    color:#fff;
 }
 
 .detail-row{
@@ -434,21 +651,77 @@ header{
     color:#bbb;
 }
 
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:500px){
+
+    header img{
+        height:125px;
+    }
+
+    .container{
+        padding:12px;
+    }
+
+    .user-section{
+        padding:0 12px;
+    }
+
+    .card,
+    .spool,
+    .history{
+        padding:15px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL SCREEN
+========================================================= */
+
+@media(max-width:360px){
+
+    .nav div{
+        font-size:11px;
+    }
+
+    .nav span{
+        font-size:18px;
+    }
+
+}
+
 </style>
+
 </head>
 
 <body>
 
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
 <header>
-    🖨 PrintDesk
+
+    <img
+        src="logo.png"
+        alt="PrintDesk">
+
 </header>
 
 
-<!-- =========================
-     LOGIN
-========================= -->
+<!-- =========================================================
+     LOGIN SCREEN
+========================================================= -->
 
-<div id="login-screen" class="container hidden">
+<div
+    id="login-screen"
+    class="container hidden">
 
     <div class="login-box">
 
@@ -459,20 +732,43 @@ header{
             </div>
 
             <div class="field">
-                <label>Email</label>
-                <input id="login-email" type="email">
+
+                <label>
+                    Email
+                </label>
+
+                <input
+                    id="login-email"
+                    type="email"
+                    placeholder="you@example.com">
+
             </div>
 
             <div class="field">
-                <label>Пароль</label>
-                <input id="login-password" type="password">
+
+                <label>
+                    Пароль
+                </label>
+
+                <input
+                    id="login-password"
+                    type="password"
+                    placeholder="••••••••">
+
             </div>
 
-            <button class="btn" onclick="login()">
+            <button
+                class="btn"
+                onclick="login()">
+
                 🔐 Войти
+
             </button>
 
-            <div id="login-error" class="error"></div>
+            <div
+                id="login-error"
+                class="error">
+            </div>
 
         </div>
 
@@ -481,431 +777,609 @@ header{
 </div>
 
 
-<!-- =========================
-     APP
-========================= -->
+<!-- =========================================================
+     APPLICATION
+========================================================= -->
 
-<div id="app" class="hidden">
+<div
+    id="app"
+    class="hidden">
 
-<div class="container">
-
-
-<!-- USER -->
-
-<div class="user-info">
-
-    Пользователь:
-    <b id="user-email">—</b>
-
-    <button
-        class="btn secondary"
-        style="margin-top:8px"
-        onclick="logout()">
-
-        Выйти
-
-    </button>
-
-    <div id="debug-info" class="debug">
-        Подключение к облаку...
-    </div>
-
-</div>
+    <div class="container">
 
 
-<!-- =========================
-     MAIN
-========================= -->
+        <!-- =================================================
+             MAIN
+        ================================================= -->
 
-<section id="page-main" class="page active">
+        <section
+            id="page-main"
+            class="page active">
 
-    <div class="card">
+            <div class="card">
 
-        <h3>
-            Текущие остатки пластика
-        </h3>
+                <h3>
+                    Текущие остатки пластика
+                </h3>
 
-        <div id="summary"></div>
-
-    </div>
-
-    <div class="grid">
-
-        <div class="stat">
-            Печать (всего)
-
-            <div
-                class="val"
-                id="total-grams">
-
-                0 г
+                <div id="summary"></div>
 
             </div>
 
-        </div>
 
-        <div class="stat">
-            Прибыль
+            <div class="grid">
 
-            <div
-                class="val green"
-                id="profit">
+                <div class="stat">
 
-                0.00 €
+                    Печать (всего)
+
+                    <div
+                        class="val"
+                        id="total-grams">
+
+                        0 г
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    Прибыль
+
+                    <div
+                        class="val green"
+                        id="profit">
+
+                        0.00 €
+
+                    </div>
+
+                </div>
 
             </div>
 
-        </div>
+
+            <button
+                class="btn"
+                onclick="showPage('calc')">
+
+                📦 Новый расчёт
+
+            </button>
+
+
+            <button
+                class="btn secondary"
+                onclick="loadData()">
+
+                🔄 Обновить данные
+
+            </button>
+
+
+            <div
+                id="status"
+                class="status">
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CALCULATOR
+        ================================================= -->
+
+        <section
+            id="page-calc"
+            class="page">
+
+            <div class="card">
+
+                <h3>
+                    Новый расчёт
+                </h3>
+
+
+                <div class="field">
+
+                    <label>
+                        Название модели
+                    </label>
+
+                    <input
+                        id="model"
+                        value="Деталь">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Катушка
+                    </label>
+
+                    <select
+                        id="calc-spool"
+                        onchange="calculate()">
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Вес модели (г)
+                    </label>
+
+                    <input
+                        id="calc-weight"
+                        type="number"
+                        value="100"
+                        oninput="calculate()">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Время печати (ч)
+                    </label>
+
+                    <input
+                        id="calc-time"
+                        type="number"
+                        value="4"
+                        step="0.1"
+                        oninput="calculate()">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Заметки
+                    </label>
+
+                    <textarea
+                        id="calc-notes"
+                        placeholder="Например: печать для клиента...">
+                    </textarea>
+
+                </div>
+
+
+                <div class="result">
+
+                    <span>
+                        Материал
+                    </span>
+
+                    <span id="mat">
+                        0.00 €
+                    </span>
+
+                </div>
+
+
+                <div class="result">
+
+                    <span>
+                        Электричество
+                    </span>
+
+                    <span id="elec">
+                        0.00 €
+                    </span>
+
+                </div>
+
+
+                <div class="result">
+
+                    <span>
+                        Амортизация
+                    </span>
+
+                    <span id="amort">
+                        0.00 €
+                    </span>
+
+                </div>
+
+
+                <div class="result total">
+
+                    <span>
+                        Себестоимость
+                    </span>
+
+                    <span id="cost">
+                        0.00 €
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="result total"
+                    style="color:#00adb5">
+
+                    <span>
+                        Итоговая цена
+                    </span>
+
+                    <span id="price">
+                        0.00 €
+                    </span>
+
+                </div>
+
+
+                <button
+                    class="btn"
+                    onclick="saveOrder()">
+
+                    💾 Сохранить заказ
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SPOOLS
+        ================================================= -->
+
+        <section
+            id="page-spools"
+            class="page">
+
+            <div
+                class="card"
+                id="spool-form-card">
+
+
+                <div id="spool-form-title">
+
+                    <h3>
+                        Добавить катушку
+                    </h3>
+
+                </div>
+
+
+                <input
+                    id="editing-spool-id"
+                    type="hidden"
+                    value="">
+
+
+                <div class="field">
+
+                    <label>
+                        Название
+                    </label>
+
+                    <input
+                        id="spool-name"
+                        placeholder="Anycubic PLA Black">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Материал
+                    </label>
+
+                    <select
+                        id="spool-material">
+
+                        <option value="PLA">
+                            PLA
+                        </option>
+
+                        <option value="PLA+">
+                            PLA+
+                        </option>
+
+                        <option value="PETG">
+                            PETG
+                        </option>
+
+                        <option value="ASA">
+                            ASA
+                        </option>
+
+                        <option value="ABS">
+                            ABS
+                        </option>
+
+                        <option value="TPU">
+                            TPU
+                        </option>
+
+                        <option value="Другой">
+                            Другой
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Цвет
+                    </label>
+
+                    <input
+                        id="spool-color"
+                        type="color"
+                        value="#00adb5"
+                        style="height:45px;padding:3px">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Вес пластика (г)
+                    </label>
+
+                    <input
+                        id="spool-weight"
+                        type="number"
+                        value="1000">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Цена катушки (€)
+                    </label>
+
+                    <input
+                        id="spool-price"
+                        type="number"
+                        step="0.01"
+                        value="19.99">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Производитель
+                    </label>
+
+                    <input
+                        id="spool-manufacturer">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Дата покупки
+                    </label>
+
+                    <input
+                        id="spool-purchase-date"
+                        type="date">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Заметки
+                    </label>
+
+                    <textarea
+                        id="spool-notes">
+                    </textarea>
+
+                </div>
+
+
+                <button
+                    id="spool-save-button"
+                    class="btn"
+                    onclick="saveSpool()">
+
+                    ➕ Добавить катушку
+
+                </button>
+
+
+                <button
+                    id="spool-cancel-button"
+                    class="btn secondary hidden"
+                    onclick="cancelSpoolEdit()">
+
+                    Отмена
+
+                </button>
+
+            </div>
+
+
+            <div id="spools-list"></div>
+
+        </section>
+
+
+        <!-- =================================================
+             HISTORY
+        ================================================= -->
+
+        <section
+            id="page-history"
+            class="page">
+
+            <div class="card">
+
+                <div
+                    style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:center;
+                        margin-bottom:14px;
+                    ">
+
+                    <h3 style="margin:0;">
+
+                        История заказов
+
+                    </h3>
+
+
+                    <button
+                        class="btn secondary small"
+                        style="margin:0;"
+                        onclick="exportHistoryCSV()">
+
+                        📥 Экспорт CSV
+
+                    </button>
+
+                </div>
+
+
+                <div id="history-list"></div>
+
+            </div>
+
+        </section>
+
 
     </div>
 
-    <button
-        class="btn"
-        onclick="showPage('calc')">
 
-        📦 Новый расчёт
+    <!-- =====================================================
+         MAIN NAVIGATION
+    ====================================================== -->
 
-    </button>
-
-    <button
-        class="btn secondary"
-        onclick="loadData()">
-
-        🔄 Обновить данные
-
-    </button>
-
-    <div id="status" class="status"></div>
-
-</section>
-
-
-<!-- =========================
-     CALCULATOR
-========================= -->
-
-<section id="page-calc" class="page">
-
-    <div class="card">
-
-        <h3>
-            Новый расчёт
-        </h3>
-
-        <div class="field">
-
-            <label>
-                Название модели
-            </label>
-
-            <input
-                id="model"
-                value="Деталь">
-
-        </div>
-
-        <div class="field">
-
-            <label>
-                Катушка
-            </label>
-
-            <select
-                id="calc-spool"
-                onchange="calculate()">
-            </select>
-
-        </div>
-
-        <div class="field">
-
-            <label>
-                Вес модели (г)
-            </label>
-
-            <input
-                id="calc-weight"
-                type="number"
-                value="100"
-                oninput="calculate()">
-
-        </div>
-
-        <div class="field">
-
-            <label>
-                Время печати (ч)
-            </label>
-
-            <input
-                id="calc-time"
-                type="number"
-                value="4"
-                step="0.1"
-                oninput="calculate()">
-
-        </div>
-
-        <div class="field">
-
-            <label>
-                Заметки
-            </label>
-
-            <textarea
-                id="calc-notes"
-                placeholder="Например: печать для клиента..."></textarea>
-
-        </div>
-
-        <div class="result">
-            <span>Материал</span>
-            <span id="mat">0.00 €</span>
-        </div>
-
-        <div class="result">
-            <span>Электричество</span>
-            <span id="elec">0.00 €</span>
-        </div>
-
-        <div class="result">
-            <span>Амортизация</span>
-            <span id="amort">0.00 €</span>
-        </div>
-
-        <div class="result total">
-            <span>Себестоимость</span>
-            <span id="cost">0.00 €</span>
-        </div>
+    <div class="nav">
 
         <div
-            class="result total"
-            style="color:#00adb5">
+            id="nav-main"
+            class="active"
+            onclick="showPage('main')">
 
-            <span>Итоговая цена</span>
-            <span id="price">0.00 €</span>
+            <span>
+                🏠
+            </span>
+
+            Главная
 
         </div>
 
-        <button
-            class="btn"
-            onclick="saveOrder()">
 
-            💾 Сохранить заказ
+        <div
+            id="nav-calc"
+            onclick="showPage('calc')">
 
-        </button>
+            <span>
+                🧮
+            </span>
+
+            Расчёт
+
+        </div>
+
+
+        <div
+            id="nav-spools"
+            onclick="showPage('spools')">
+
+            <span>
+                🧵
+            </span>
+
+            Катушки
+
+        </div>
+
+
+        <div
+            id="nav-history"
+            onclick="showPage('history')">
+
+            <span>
+                📋
+            </span>
+
+            История
+
+        </div>
 
     </div>
 
-</section>
+
+    <!-- =====================================================
+         USER BLOCK
+
+         ВАЖНО:
+         Блок пользователя находится ПОСЛЕ основного меню.
+    ====================================================== -->
+
+    <div class="user-section">
+
+        <div class="user-info">
+
+            Пользователь:
+
+            <b id="user-email">
+                —
+            </b>
 
 
-<!-- =========================
-     SPOOLS
-========================= -->
+            <button
+                class="btn secondary"
+                style="margin-top:8px"
+                onclick="logout()">
 
-<section id="page-spools" class="page">
+                Выйти
 
-    <div class="card" id="spool-form-card">
+            </button>
 
-        <div id="spool-form-title">
 
-            <h3>
-                Добавить катушку
-            </h3>
+            <div
+                id="debug-info"
+                class="debug">
 
-        </div>
+                Подключение к облаку...
 
-        <input
-            id="editing-spool-id"
-            type="hidden"
-            value="">
-
-        <div class="field">
-
-            <label>Название</label>
-
-            <input
-                id="spool-name"
-                placeholder="Anycubic PLA Black">
-
-        </div>
-
-        <div class="field">
-
-            <label>Материал</label>
-
-            <select id="spool-material">
-
-                <option value="PLA">PLA</option>
-                <option value="PLA+">PLA+</option>
-                <option value="PETG">PETG</option>
-                <option value="ASA">ASA</option>
-                <option value="ABS">ABS</option>
-                <option value="TPU">TPU</option>
-                <option value="Другой">Другой</option>
-
-            </select>
+            </div>
 
         </div>
-
-        <div class="field">
-
-            <label>Цвет</label>
-
-            <input
-                id="spool-color"
-                type="color"
-                value="#00adb5"
-                style="height:45px;padding:3px">
-
-        </div>
-
-        <div class="field">
-
-            <label>Вес пластика (г)</label>
-
-            <input
-                id="spool-weight"
-                type="number"
-                value="1000">
-
-        </div>
-
-        <div class="field">
-
-            <label>Цена катушки (€)</label>
-
-            <input
-                id="spool-price"
-                type="number"
-                step="0.01"
-                value="19.99">
-
-        </div>
-
-        <div class="field">
-
-            <label>Производитель</label>
-
-            <input id="spool-manufacturer">
-
-        </div>
-
-        <div class="field">
-
-            <label>Дата покупки</label>
-
-            <input
-                id="spool-purchase-date"
-                type="date">
-
-        </div>
-
-        <div class="field">
-
-            <label>Заметки</label>
-
-            <textarea id="spool-notes"></textarea>
-
-        </div>
-
-        <button
-            id="spool-save-button"
-            class="btn"
-            onclick="saveSpool()">
-
-            ➕ Добавить катушку
-
-        </button>
-
-        <button
-            id="spool-cancel-button"
-            class="btn secondary hidden"
-            onclick="cancelSpoolEdit()">
-
-            Отмена
-
-        </button>
-
-    </div>
-
-    <div id="spools-list"></div>
-
-</section>
-
-
-<!-- =========================
-     HISTORY
-========================= -->
-
-<section id="page-history" class="page">
-
-    <div class="card">
-
-        <h3>
-            История заказов
-        </h3>
-
-        <div id="history-list"></div>
-
-    </div>
-
-</section>
-
-
-</div>
-
-
-<!-- NAV -->
-
-<div class="nav">
-
-    <div
-        id="nav-main"
-        class="active"
-        onclick="showPage('main')">
-
-        <span>🏠</span>
-        Главная
-
-    </div>
-
-    <div
-        id="nav-calc"
-        onclick="showPage('calc')">
-
-        <span>🧮</span>
-        Расчёт
-
-    </div>
-
-    <div
-        id="nav-spools"
-        onclick="showPage('spools')">
-
-        <span>🧵</span>
-        Катушки
-
-    </div>
-
-    <div
-        id="nav-history"
-        onclick="showPage('history')">
-
-        <span>📋</span>
-        История
 
     </div>
 
 </div>
 
-</div>
 
-
-<!-- =========================
+<!-- =========================================================
      HISTORY VIEW MODAL
-========================= -->
+========================================================= -->
 
 <div
     id="history-modal"
@@ -916,11 +1390,13 @@ header{
         class="modal-box"
         onclick="event.stopPropagation()">
 
+
         <div class="modal-header">
 
             <h3>
                 📋 Запись истории
             </h3>
+
 
             <button
                 class="close"
@@ -932,16 +1408,19 @@ header{
 
         </div>
 
-        <div id="history-modal-content"></div>
+
+        <div
+            id="history-modal-content">
+        </div>
 
     </div>
 
 </div>
 
 
-<!-- =========================
+<!-- =========================================================
      HISTORY EDIT MODAL
-========================= -->
+========================================================= -->
 
 <div
     id="history-edit-modal"
@@ -952,11 +1431,13 @@ header{
         class="modal-box"
         onclick="event.stopPropagation()">
 
+
         <div class="modal-header">
 
             <h3>
                 ✏️ Редактирование истории
             </h3>
+
 
             <button
                 class="close"
@@ -968,9 +1449,11 @@ header{
 
         </div>
 
+
         <input
             type="hidden"
             id="editing-history-id">
+
 
         <div class="field">
 
@@ -982,6 +1465,7 @@ header{
                 id="history-edit-name">
 
         </div>
+
 
         <div class="field">
 
@@ -996,6 +1480,7 @@ header{
 
         </div>
 
+
         <div class="field">
 
             <label>
@@ -1008,6 +1493,7 @@ header{
                 step="0.01">
 
         </div>
+
 
         <div class="field">
 
@@ -1022,6 +1508,7 @@ header{
 
         </div>
 
+
         <div class="field">
 
             <label>
@@ -1029,9 +1516,11 @@ header{
             </label>
 
             <textarea
-                id="history-edit-notes"></textarea>
+                id="history-edit-notes">
+            </textarea>
 
         </div>
+
 
         <button
             class="btn"
@@ -1040,6 +1529,7 @@ header{
             💾 Сохранить изменения
 
         </button>
+
 
         <button
             class="btn secondary"
@@ -1258,7 +1748,7 @@ function startRealtime(){
                     filter:
                         'user_id=eq.' + userId
                 },
-                function(payload){
+                function(){
 
                     scheduleRealtimeReload(
                         'Изменились катушки'
@@ -1276,7 +1766,7 @@ function startRealtime(){
                     filter:
                         'user_id=eq.' + userId
                 },
-                function(payload){
+                function(){
 
                     scheduleRealtimeReload(
                         'Изменилась история'
@@ -1495,6 +1985,7 @@ async function loadData(isRealtime=false){
         : '☁️ Загружаю данные...'
     );
 
+
     const spoolResult =
         await db
             .from('spools')
@@ -1509,6 +2000,7 @@ async function loadData(isRealtime=false){
                     ascending:true
                 }
             );
+
 
     const historyResult =
         await db
@@ -1525,6 +2017,7 @@ async function loadData(isRealtime=false){
                 }
             );
 
+
     if(spoolResult.error){
 
         console.error(
@@ -1540,6 +2033,7 @@ async function loadData(isRealtime=false){
 
     }
 
+
     if(historyResult.error){
 
         console.error(
@@ -1554,6 +2048,7 @@ async function loadData(isRealtime=false){
         return;
 
     }
+
 
     spools =
         (spoolResult.data || [])
@@ -1662,6 +2157,7 @@ async function loadData(isRealtime=false){
         ' | 🟢 Realtime'
     );
 
+
     status(
         '☁️ Синхронизировано · ' +
         spools.length +
@@ -1669,6 +2165,7 @@ async function loadData(isRealtime=false){
         history.length +
         ' записей'
     );
+
 
     update();
 
@@ -1849,6 +2346,7 @@ async function saveSpool(){
 
     }
 
+
     const editingId =
         Number(
             document
@@ -1856,21 +2354,25 @@ async function saveSpool(){
                 .value
         ) || null;
 
+
     const name =
         document
             .getElementById('spool-name')
             .value
             .trim();
 
+
     const material =
         document
             .getElementById('spool-material')
             .value;
 
+
     const color =
         document
             .getElementById('spool-color')
             .value;
+
 
     const weight =
         Number(
@@ -1879,6 +2381,7 @@ async function saveSpool(){
                 .value
         );
 
+
     const price =
         Number(
             document
@@ -1886,22 +2389,26 @@ async function saveSpool(){
                 .value
         );
 
+
     const manufacturer =
         document
             .getElementById('spool-manufacturer')
             .value
             .trim();
 
+
     const purchaseDate =
         document
             .getElementById('spool-purchase-date')
             .value || null;
+
 
     const notes =
         document
             .getElementById('spool-notes')
             .value
             .trim();
+
 
     if(!name){
 
@@ -1913,6 +2420,7 @@ async function saveSpool(){
 
     }
 
+
     if(weight < 0){
 
         alert(
@@ -1923,6 +2431,7 @@ async function saveSpool(){
 
     }
 
+
     if(price < 0){
 
         alert(
@@ -1932,6 +2441,7 @@ async function saveSpool(){
         return;
 
     }
+
 
     if(editingId){
 
@@ -1965,6 +2475,7 @@ async function saveSpool(){
                     currentUser.id
                 );
 
+
         if(result.error){
 
             alert(
@@ -1976,9 +2487,6 @@ async function saveSpool(){
 
         }
 
-        alert(
-            'Катушка изменена! ☁️'
-        );
 
     }else{
 
@@ -2011,6 +2519,7 @@ async function saveSpool(){
 
                 });
 
+
         if(result.error){
 
             alert(
@@ -2022,11 +2531,8 @@ async function saveSpool(){
 
         }
 
-        alert(
-            'Катушка сохранена! ☁️'
-        );
-
     }
+
 
     resetSpoolForm();
 
@@ -2049,6 +2555,7 @@ async function delSpool(id){
 
     }
 
+
     const result =
         await db
             .from('spools')
@@ -2062,6 +2569,7 @@ async function delSpool(id){
                 currentUser.id
             );
 
+
     if(result.error){
 
         alert(
@@ -2072,6 +2580,7 @@ async function delSpool(id){
         return;
 
     }
+
 
     await loadData();
 
@@ -2088,14 +2597,17 @@ function calculate(){
         document
             .getElementById('calc-spool');
 
+
     if(!select){
 
         return;
 
     }
 
+
     const id =
         Number(select.value);
+
 
     const spool =
         spools.find(function(x){
@@ -2103,6 +2615,7 @@ function calculate(){
             return x.id === id;
 
         });
+
 
     if(!spool){
 
@@ -2125,12 +2638,14 @@ function calculate(){
 
     }
 
+
     const weight =
         Number(
             document
                 .getElementById('calc-weight')
                 .value
         ) || 0;
+
 
     const time =
         Number(
@@ -2139,23 +2654,28 @@ function calculate(){
                 .value
         ) || 0;
 
+
     const materialCost =
         weight *
         (
             spool.price /
-            spool.initWeight
+            (spool.initWeight || 1000)
         );
+
 
     const electricity =
         time * ELEC;
 
+
     const amortization =
         time * AMORT;
+
 
     const cost =
         materialCost +
         electricity +
         amortization;
+
 
     document
         .getElementById('mat')
@@ -2163,11 +2683,13 @@ function calculate(){
             materialCost.toFixed(2) +
             ' €';
 
+
     document
         .getElementById('elec')
         .textContent =
             electricity.toFixed(2) +
             ' €';
+
 
     document
         .getElementById('amort')
@@ -2175,11 +2697,13 @@ function calculate(){
             amortization.toFixed(2) +
             ' €';
 
+
     document
         .getElementById('cost')
         .textContent =
             cost.toFixed(2) +
             ' €';
+
 
     document
         .getElementById('price')
@@ -2196,6 +2720,7 @@ function fillSelect(){
         document
             .getElementById('calc-spool');
 
+
     if(!spools.length){
 
         e.innerHTML =
@@ -2206,6 +2731,7 @@ function fillSelect(){
         return;
 
     }
+
 
     e.innerHTML =
         spools
@@ -2226,6 +2752,7 @@ function fillSelect(){
 
             })
             .join('');
+
 
     calculate();
 
@@ -2248,12 +2775,14 @@ async function saveOrder(){
 
     }
 
+
     const spoolId =
         Number(
             document
                 .getElementById('calc-spool')
                 .value
         );
+
 
     const spool =
         spools.find(function(x){
@@ -2262,12 +2791,14 @@ async function saveOrder(){
 
         });
 
+
     const weight =
         Number(
             document
                 .getElementById('calc-weight')
                 .value
         ) || 0;
+
 
     const time =
         Number(
@@ -2276,6 +2807,7 @@ async function saveOrder(){
                 .value
         ) || 0;
 
+
     const name =
         document
             .getElementById('model')
@@ -2283,11 +2815,13 @@ async function saveOrder(){
             .trim() ||
         'Деталь';
 
+
     const notes =
         document
             .getElementById('calc-notes')
             .value
             .trim();
+
 
     if(!spool){
 
@@ -2299,6 +2833,7 @@ async function saveOrder(){
 
     }
 
+
     if(weight <= 0){
 
         alert(
@@ -2308,6 +2843,7 @@ async function saveOrder(){
         return;
 
     }
+
 
     if(weight > spool.weight){
 
@@ -2319,32 +2855,33 @@ async function saveOrder(){
 
     }
 
+
     const materialCost =
         weight *
         (
             spool.price /
-            spool.initWeight
+            (spool.initWeight || 1000)
         );
+
 
     const electricity =
         time * ELEC;
 
+
     const amortization =
         time * AMORT;
+
 
     const cost =
         materialCost +
         electricity +
         amortization;
 
+
     const newWeight =
         spool.weight -
         weight;
 
-
-    /*
-       Сначала уменьшаем катушку.
-    */
 
     const spoolUpdate =
         await db
@@ -2363,6 +2900,7 @@ async function saveOrder(){
                 currentUser.id
             );
 
+
     if(spoolUpdate.error){
 
         alert(
@@ -2374,13 +2912,6 @@ async function saveOrder(){
 
     }
 
-
-    /*
-       ВАЖНО:
-       price здесь НЕТ.
-       В таблице print_history
-       такого столбца нет.
-    */
 
     const historyRow = {
 
@@ -2424,11 +2955,6 @@ async function saveOrder(){
 
     if(historyResult.error){
 
-        /*
-           Откатываем расход пластика,
-           если история не сохранилась.
-        */
-
         await db
             .from('spools')
             .update({
@@ -2446,6 +2972,7 @@ async function saveOrder(){
                 currentUser.id
             );
 
+
         alert(
             'Ошибка сохранения истории:\n' +
             historyResult.error.message
@@ -2455,18 +2982,17 @@ async function saveOrder(){
 
     }
 
-    alert(
-        'Заказ сохранён! ☁️'
-    );
 
     document
         .getElementById('model')
         .value =
             'Деталь';
 
+
     document
         .getElementById('calc-notes')
         .value = '';
+
 
     await loadData();
 
@@ -2476,7 +3002,7 @@ async function saveOrder(){
 
 
 /* =========================================================
-   OPEN HISTORY CARD
+   OPEN HISTORY
 ========================================================= */
 
 function openHistory(id){
@@ -2488,23 +3014,22 @@ function openHistory(id){
 
         });
 
+
     if(!item){
 
         return;
 
     }
 
+
     let color =
         item.color || '#666666';
 
+
     let spoolName =
-        item.spoolName || 'Неизвестная катушка';
+        item.spoolName ||
+        'Неизвестная катушка';
 
-
-    /*
-       Если это старая запись,
-       пытаемся найти катушку.
-    */
 
     if(
         (!item.color || !item.spoolName) &&
@@ -2518,6 +3043,7 @@ function openHistory(id){
 
             });
 
+
         if(spool){
 
             if(!item.color){
@@ -2526,6 +3052,7 @@ function openHistory(id){
                     spool.color || '#666666';
 
             }
+
 
             if(!item.spoolName){
 
@@ -2657,13 +3184,17 @@ function openHistory(id){
 
         <button
             class="btn danger"
-            onclick="deleteHistory(${item.id});closeHistoryModal()">
+            onclick="
+                deleteHistory(${item.id});
+                closeHistoryModal();
+            ">
 
             🗑️ Удалить запись
 
         </button>
 
     `;
+
 
     document
         .getElementById('history-modal')
@@ -2684,6 +3215,7 @@ function closeHistoryModal(event){
         return;
 
     }
+
 
     document
         .getElementById('history-modal')
@@ -2706,13 +3238,16 @@ function editHistory(id){
 
         });
 
+
     if(!item){
 
         return;
 
     }
 
+
     closeHistoryModal();
+
 
     document
         .getElementById(
@@ -2721,12 +3256,14 @@ function editHistory(id){
         .value =
             item.id;
 
+
     document
         .getElementById(
             'history-edit-name'
         )
         .value =
             item.name;
+
 
     document
         .getElementById(
@@ -2735,12 +3272,14 @@ function editHistory(id){
         .value =
             item.weight;
 
+
     document
         .getElementById(
             'history-edit-cost'
         )
         .value =
             item.cost;
+
 
     document
         .getElementById(
@@ -2749,12 +3288,14 @@ function editHistory(id){
         .value =
             item.date;
 
+
     document
         .getElementById(
             'history-edit-notes'
         )
         .value =
             item.notes || '';
+
 
     document
         .getElementById(
@@ -2779,6 +3320,7 @@ function closeHistoryEditModal(event){
         return;
 
     }
+
 
     document
         .getElementById(
@@ -2805,6 +3347,7 @@ async function saveHistoryEdit(){
                 .value
         );
 
+
     const item =
         history.find(function(x){
 
@@ -2812,11 +3355,13 @@ async function saveHistoryEdit(){
 
         });
 
+
     if(!item){
 
         return;
 
     }
+
 
     const name =
         document
@@ -2827,6 +3372,7 @@ async function saveHistoryEdit(){
             .trim() ||
         'Деталь';
 
+
     const newWeight =
         Number(
             document
@@ -2835,6 +3381,7 @@ async function saveHistoryEdit(){
                 )
                 .value
         );
+
 
     const newCost =
         Number(
@@ -2845,6 +3392,7 @@ async function saveHistoryEdit(){
                 .value
         );
 
+
     const date =
         document
             .getElementById(
@@ -2852,6 +3400,7 @@ async function saveHistoryEdit(){
             )
             .value
             .trim();
+
 
     const notes =
         document
@@ -2872,6 +3421,7 @@ async function saveHistoryEdit(){
 
     }
 
+
     if(newCost < 0){
 
         alert(
@@ -2882,26 +3432,6 @@ async function saveHistoryEdit(){
 
     }
 
-
-    /*
-       Если вес изменился,
-       корректируем катушку.
-
-       Было потрачено:
-       oldWeight
-
-       Теперь должно быть:
-       newWeight
-
-       Разница:
-       oldWeight - newWeight
-
-       Например:
-       было 100 г
-       стало 120 г
-       значит нужно убрать
-       ещё 20 г.
-    */
 
     const difference =
         item.weight -
@@ -2927,6 +3457,7 @@ async function saveHistoryEdit(){
                 )
                 .single();
 
+
         if(spoolResult.error){
 
             alert(
@@ -2938,21 +3469,18 @@ async function saveHistoryEdit(){
 
         }
 
+
         const currentWeight =
             Number(
                 spoolResult.data.weight || 0
             );
 
-        /*
-           Если новый вес больше,
-           нужно дополнительно списать
-           пластик.
-        */
 
         if(difference < 0){
 
             const extra =
                 Math.abs(difference);
+
 
             if(currentWeight < extra){
 
@@ -2966,9 +3494,11 @@ async function saveHistoryEdit(){
 
         }
 
+
         const finalWeight =
             currentWeight +
             difference;
+
 
         const spoolUpdate =
             await db
@@ -2987,6 +3517,7 @@ async function saveHistoryEdit(){
                     'user_id',
                     currentUser.id
                 );
+
 
         if(spoolUpdate.error){
 
@@ -3034,11 +3565,6 @@ async function saveHistoryEdit(){
 
     if(result.error){
 
-        /*
-           Если история не обновилась,
-           пытаемся вернуть изменение катушки.
-        */
-
         if(
             difference !== 0 &&
             item.spoolId
@@ -3058,6 +3584,7 @@ async function saveHistoryEdit(){
                     )
                     .single();
 
+
             if(
                 !spoolResult.error &&
                 spoolResult.data
@@ -3068,6 +3595,7 @@ async function saveHistoryEdit(){
                         spoolResult.data.weight || 0
                     ) -
                     difference;
+
 
                 await db
                     .from('spools')
@@ -3090,6 +3618,7 @@ async function saveHistoryEdit(){
 
         }
 
+
         alert(
             'Ошибка редактирования истории:\n' +
             result.error.message
@@ -3098,6 +3627,7 @@ async function saveHistoryEdit(){
         return;
 
     }
+
 
     closeHistoryEditModal();
 
@@ -3122,12 +3652,14 @@ async function deleteHistory(id){
 
     }
 
+
     const item =
         history.find(function(x){
 
             return x.id === id;
 
         });
+
 
     if(!item){
 
@@ -3148,6 +3680,7 @@ async function deleteHistory(id){
                 'user_id',
                 currentUser.id
             );
+
 
     if(result.error){
 
@@ -3180,6 +3713,7 @@ async function deleteHistory(id){
                 )
                 .single();
 
+
         if(
             !spoolResult.error &&
             spoolResult.data
@@ -3190,6 +3724,7 @@ async function deleteHistory(id){
                     spoolResult.data.weight || 0
                 ) +
                 Number(item.weight || 0);
+
 
             await db
                 .from('spools')
@@ -3212,13 +3747,107 @@ async function deleteHistory(id){
 
     }
 
+
     await loadData();
 
 }
 
 
 /* =========================================================
-   PAGE
+   EXPORT CSV
+========================================================= */
+
+function exportHistoryCSV(){
+
+    if(!history.length){
+
+        alert(
+            'История пуста, экспорт недоступен.'
+        );
+
+        return;
+
+    }
+
+
+    let csvContent =
+        "data:text/csv;charset=utf-8,\uFEFF";
+
+
+    csvContent +=
+        "ID;Дата;Модель;Вес (г);Себестоимость (€);Катушка;Заметки\n";
+
+
+    history.forEach(function(h){
+
+        const row = [
+
+            h.id,
+
+            `"${h.date || ''}"`,
+
+            `"${(h.name || '')
+                .replace(/"/g,'""')}"`,
+
+            h.weight,
+
+            h.cost,
+
+            `"${(h.spoolName || '')
+                .replace(/"/g,'""')}"`,
+
+            `"${(h.notes || '')
+                .replace(/"/g,'""')}"`
+
+        ];
+
+
+        csvContent +=
+            row.join(";") +
+            "\n";
+
+    });
+
+
+    const encodedUri =
+        encodeURI(csvContent);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.setAttribute(
+        "href",
+        encodedUri
+    );
+
+
+    link.setAttribute(
+        "download",
+        `printdesk_history_${new Date()
+            .toISOString()
+            .slice(0,10)}.csv`
+    );
+
+
+    document
+        .body
+        .appendChild(link);
+
+
+    link.click();
+
+
+    document
+        .body
+        .removeChild(link);
+
+}
+
+
+/* =========================================================
+   PAGE NAVIGATION
 ========================================================= */
 
 function showPage(page){
@@ -3233,6 +3862,7 @@ function showPage(page){
 
         });
 
+
     document
         .querySelectorAll('.nav div')
         .forEach(function(x){
@@ -3243,15 +3873,18 @@ function showPage(page){
 
         });
 
+
     const pageElement =
         document.getElementById(
             'page-' + page
         );
 
+
     const navElement =
         document.getElementById(
             'nav-' + page
         );
+
 
     if(pageElement){
 
@@ -3261,6 +3894,7 @@ function showPage(page){
 
     }
 
+
     if(navElement){
 
         navElement
@@ -3269,11 +3903,13 @@ function showPage(page){
 
     }
 
+
     if(page === 'calc'){
 
         fillSelect();
 
     }
+
 
     update();
 
@@ -3286,19 +3922,26 @@ function showPage(page){
 
 function update(){
 
-    /*
+    /* =====================================================
        SUMMARY
-    */
+    ===================================================== */
 
     const summary =
         document
             .getElementById('summary');
 
+
     if(!spools.length){
 
         summary.innerHTML =
-            '<div class="empty">' +
-            'Катушек пока нет.' +
+            '<div class="empty-state">' +
+
+                '<div class="empty-state-icon">' +
+                    '🧵' +
+                '</div>' +
+
+                'У вас пока нет активных катушек.' +
+
             '</div>';
 
     }else{
@@ -3308,24 +3951,46 @@ function update(){
                 .map(function(s){
 
                     return `
-                        <div style="padding:7px 0">
+
+                        <div
+                            style="
+                                padding:8px 0;
+                                border-bottom:1px solid #2a2a2a;
+                                display:flex;
+                                align-items:center;
+                                justify-content:space-between;
+                            ">
+
+                            <div>
+
+                                <span
+                                    class="color-dot"
+                                    style="
+                                        background:${esc(
+                                            s.color ||
+                                            '#888888'
+                                        )}">
+                                </span>
+
+                                <b>
+                                    ${esc(s.name)}
+                                </b>
+
+                            </div>
+
 
                             <span
-                                class="color-dot"
-                                style="background:${esc(
-                                    s.color || '#888888'
-                                )}">
-                            </span>
+                                style="
+                                    color:#aaa;
+                                    font-size:14px;
+                                ">
 
-                            <b>
-                                ${esc(s.name)}
-                            </b>
+                                ${s.weight} г
 
-                            <span style="color:#aaa">
-                                — ${s.weight} г
                             </span>
 
                         </div>
+
                     `;
 
                 })
@@ -3334,9 +3999,9 @@ function update(){
     }
 
 
-    /*
-       TOTAL
-    */
+    /* =====================================================
+       TOTAL PRINTED
+    ===================================================== */
 
     const total =
         history.reduce(
@@ -3344,12 +4009,14 @@ function update(){
 
                 return sum +
                     (
-                        Number(x.weight) || 0
+                        Number(x.weight) ||
+                        0
                     );
 
             },
             0
         );
+
 
     document
         .getElementById('total-grams')
@@ -3358,9 +4025,9 @@ function update(){
             ' г';
 
 
-    /*
+    /* =====================================================
        PROFIT
-    */
+    ===================================================== */
 
     const profit =
         history.reduce(
@@ -3368,12 +4035,14 @@ function update(){
 
                 return sum +
                     (
-                        Number(x.profit) || 0
+                        Number(x.profit) ||
+                        0
                     );
 
             },
             0
         );
+
 
     document
         .getElementById('profit')
@@ -3382,13 +4051,34 @@ function update(){
             ' €';
 
 
-    /*
+    /* =====================================================
        SPOOLS
-    */
+    ===================================================== */
 
-    document
-        .getElementById('spools-list')
-        .innerHTML =
+    const spoolsListEl =
+        document.getElementById(
+            'spools-list'
+        );
+
+
+    if(!spools.length){
+
+        spoolsListEl.innerHTML =
+            '<div class="empty-state">' +
+
+                '<div class="empty-state-icon">' +
+                    '📦' +
+                '</div>' +
+
+                'Список катушек пуст.<br>' +
+
+                'Добавьте первую катушку с помощью формы выше.' +
+
+            '</div>';
+
+    }else{
+
+        spoolsListEl.innerHTML =
             spools
                 .map(function(s){
 
@@ -3396,8 +4086,11 @@ function update(){
                         s.color ||
                         '#888888';
 
+
                     return `
+
                         <div class="spool">
+
 
                             <button
                                 class="delete"
@@ -3407,6 +4100,7 @@ function update(){
 
                             </button>
 
+
                             <button
                                 class="edit"
                                 onclick="editSpool(${s.id})">
@@ -3415,16 +4109,20 @@ function update(){
 
                             </button>
 
+
                             <div class="spool-name">
 
                                 <span
                                     class="color-dot"
-                                    style="background:${esc(color)}">
+                                    style="
+                                        background:${esc(color)}
+                                    ">
                                 </span>
 
                                 ${esc(s.name)}
 
                             </div>
+
 
                             <div class="spool-meta">
 
@@ -3440,52 +4138,67 @@ function update(){
 
                             </div>
 
+
                             ${
                                 s.manufacturer
                                 ? `
                                     <div class="spool-meta">
+
                                         Производитель:
+
                                         ${esc(
                                             s.manufacturer
                                         )}
+
                                     </div>
                                 `
                                 : ''
                             }
+
 
                             ${
                                 s.purchaseDate
                                 ? `
                                     <div class="spool-meta">
+
                                         Куплена:
+
                                         ${esc(
                                             s.purchaseDate
                                         )}
+
                                     </div>
                                 `
                                 : ''
                             }
 
+
                             ${
                                 s.notes
                                 ? `
                                     <div class="spool-notes">
-                                        📝 ${esc(s.notes)}
+
+                                        📝
+                                        ${esc(s.notes)}
+
                                     </div>
                                 `
                                 : ''
                             }
 
                         </div>
+
                     `;
 
                 })
                 .join('');
 
+    }
 
-    /*
+
+    /* =====================================================
        HISTORY
-    */
+    ===================================================== */
 
     const historyElement =
         document
@@ -3493,11 +4206,20 @@ function update(){
                 'history-list'
             );
 
+
     if(!history.length){
 
         historyElement.innerHTML =
-            '<div class="empty">' +
-            'История пуста.' +
+            '<div class="empty-state">' +
+
+                '<div class="empty-state-icon">' +
+                    '📋' +
+                '</div>' +
+
+                'История печати пока пуста.<br>' +
+
+                'Выполните первый расчёт и сохраните его.' +
+
             '</div>';
 
         return;
@@ -3512,14 +4234,10 @@ function update(){
                 let color =
                     h.color || '';
 
+
                 let spoolName =
                     h.spoolName || '';
 
-
-                /*
-                   Старые записи,
-                   где цвет не был сохранён.
-                */
 
                 if(
                     !color &&
@@ -3536,10 +4254,12 @@ function update(){
 
                         });
 
+
                     if(spool){
 
                         color =
                             spool.color || '';
+
 
                         if(!spoolName){
 
@@ -3562,9 +4282,11 @@ function update(){
 
 
                 return `
+
                     <div
                         class="history"
                         onclick="openHistory(${h.id})">
+
 
                         <button
                             class="delete"
@@ -3577,6 +4299,7 @@ function update(){
 
                         </button>
 
+
                         <button
                             class="edit"
                             onclick="
@@ -3588,9 +4311,11 @@ function update(){
 
                         </button>
 
+
                         <div class="history-title">
 
                             ${esc(h.name)}
+
 
                             <span
                                 class="history-date">
@@ -3600,6 +4325,7 @@ function update(){
                             </span>
 
                         </div>
+
 
                         <div class="history-info">
 
@@ -3615,12 +4341,16 @@ function update(){
 
                         </div>
 
+
                         <div class="history-color">
 
                             <span
                                 class="color-dot"
-                                style="background:${esc(color)}">
+                                style="
+                                    background:${esc(color)}
+                                ">
                             </span>
+
 
                             ${
                                 spoolName
@@ -3630,21 +4360,29 @@ function update(){
 
                         </div>
 
+
                         ${
                             h.notes
                             ? `
                                 <div class="history-notes">
-                                    📝 ${esc(h.notes)}
+
+                                    📝
+                                    ${esc(h.notes)}
+
                                 </div>
                             `
                             : ''
                         }
 
+
                         <div class="history-open">
+
                             Нажмите, чтобы открыть запись →
+
                         </div>
 
                     </div>
+
                 `;
 
             })
@@ -3665,6 +4403,7 @@ db.auth.onAuthStateChange(
             event
         );
 
+
         if(
             session &&
             session.user
@@ -3675,8 +4414,10 @@ db.auth.onAuthStateChange(
                 currentUser.id !==
                     session.user.id;
 
+
             currentUser =
                 session.user;
+
 
             if(changed){
 
@@ -3687,10 +4428,12 @@ db.auth.onAuthStateChange(
                     .classList
                     .add('hidden');
 
+
                 document
                     .getElementById('app')
                     .classList
                     .remove('hidden');
+
 
                 document
                     .getElementById(
@@ -3698,6 +4441,7 @@ db.auth.onAuthStateChange(
                     )
                     .textContent =
                         currentUser.email || '—';
+
 
                 await loadData();
 
@@ -3716,7 +4460,7 @@ db.auth.onAuthStateChange(
 
 
 /* =========================================================
-   START
+   START APPLICATION
 ========================================================= */
 
 document.addEventListener(
