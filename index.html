@@ -4830,107 +4830,93 @@ function update(){
 
                 return `
 
-                    <div
-                        class="history"
-                        onclick="openHistory(${h.id})">
+    <div
+        class="history"
+        onclick="openHistory(${h.id})">
 
 
-                        <button
-                            class="delete"
-                            onclick="
-                                event.stopPropagation();
-                                deleteHistory(${h.id});
-                            ">
+        <button
+            class="delete"
+            onclick="
+                event.stopPropagation();
+                deleteHistory(${h.id});
+            ">
 
-                            🗑️
+            🗑️
 
-                        </button>
-
-
-                        <button
-                            class="edit"
-                            onclick="
-                                event.stopPropagation();
-                                editHistory(${h.id});
-                            ">
-
-                            ✏️
-
-                        </button>
+        </button>
 
 
-                        <div class="history-title">
+        <button
+            class="edit"
+            onclick="
+                event.stopPropagation();
+                editHistory(${h.id});
+            ">
 
-                            ${esc(h.name)}
+            ✏️
 
-
-                            <span
-                                class="history-date">
-
-                                ${esc(h.date)}
-
-                            </span>
-
-                        </div>
+        </button>
 
 
-                        <div class="history-info">
+        <div class="history-title">
 
-                            ⚖️
-                            ${Number(h.weight).toFixed(1)}
-                            г
-
-                            ·
-
-                            💰
-                            ${Number(h.cost).toFixed(2)}
-                            €
-
-                        </div>
+            ${esc(h.name)}
 
 
-                        <div class="history-color">
+            <span
+                class="history-date">
 
-                            <span
-                                class="color-dot"
-                                style="
-                                    background:${esc(color)}
-                                ">
-                            </span>
+                ${esc(h.date)}
 
+            </span>
 
-                            ${
-                                spoolName
-                                ? esc(spoolName)
-                                : 'Цвет не указан'
-                            }
-
-                        </div>
+        </div>
 
 
-                        ${
-                            h.notes
-                            ? `
-                                <div class="history-notes">
+        <div class="history-info">
 
-                                    📝
-                                    ${esc(h.notes)}
+            ⚖️
+            ${Number(h.weight).toFixed(1)}
+            г
 
-                                </div>
-                            `
-                            : ''
-                        }
+            ·
+
+            💰
+            ${Number(h.cost).toFixed(2)}
+            €
+
+        </div>
 
 
-                        <div class="history-open">
+        <div class="history-color">
 
-                            Нажмите, чтобы открыть запись →
+            <span
+                class="color-dot"
+                style="
+                    background:${esc(color)}
+                ">
+            </span>
 
-                        </div>
 
-                    </div>
+            ${
+                spoolName
+                ? esc(spoolName)
+                : 'Цвет не указан'
+            }
 
-                `;
+        </div>
+
+
+        <div class="history-open">
+
+            Нажмите, чтобы открыть запись →
+
+        </div>
+
+    </div>
+
+`;
 
             })
             .join('');
