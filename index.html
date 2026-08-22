@@ -5,7 +5,6 @@
     <link rel="icon" type="image/png" sizes="192x192" href="logo1.png">
     <link rel="apple-touch-icon" href="logo1.png">
 
-
 <meta charset="UTF-8">
 
 <meta
@@ -317,7 +316,6 @@ header img{
 
 /* =========================================================
    USER BLOCK
-   НАХОДИТСЯ ПОСЛЕ ОСНОВНОГО МЕНЮ
 ========================================================= */
 
 .user-section{
@@ -1424,9 +1422,6 @@ header img{
 
     <!-- =====================================================
          USER BLOCK
-
-         ВАЖНО:
-         Блок пользователя находится ПОСЛЕ основного меню.
     ====================================================== -->
 
     <div class="user-section">
@@ -2255,9 +2250,6 @@ async function loadData(isRealtime=false){
 
                     notes:
                         x.notes || '',
-
-                    printTime:
-                        x.print_time || '',
 
                     photoPath:
                         x.photo_path || '',
@@ -3184,7 +3176,7 @@ async function saveOrder(){
 
     const time = hours + (minutes / 60);
 
-    const printTimeStr = `${hours} ч ${minutes} мин`;
+    const printTimeStr = `⏱️ Время печати: ${hours} ч ${minutes} мин`;
 
 
     const name =
@@ -3300,6 +3292,7 @@ async function saveOrder(){
 
     }
 
+    const finalNotes = notes ? `${notes}\n\n${printTimeStr}` : printTimeStr;
 
     const historyRow = {
 
@@ -3327,10 +3320,7 @@ async function saveOrder(){
             spool.id,
 
         notes:
-            notes || null,
-
-        print_time:
-            printTimeStr,
+            finalNotes,
 
         user_id:
             currentUser.id
@@ -3562,25 +3552,6 @@ function openHistory(id){
             </span>
 
         </div>
-
-
-        ${
-            item.printTime
-            ? `
-                <div class="detail-row">
-
-                    <span class="detail-label">
-                        Время печати
-                    </span>
-
-                    <span class="detail-value">
-                        ⏱️ ${esc(item.printTime)}
-                    </span>
-
-                </div>
-            `
-            : ''
-        }
 
 
         <div class="detail-row">
