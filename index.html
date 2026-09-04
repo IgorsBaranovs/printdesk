@@ -233,7 +233,7 @@ header img{
 
 
 /* =========================================================
-   CALCULATOR
+   CALCULATOR & MULTI-MATERIAL
 ========================================================= */
 
 .result{
@@ -247,6 +247,31 @@ header img{
     font-weight:700;
     font-size:18px;
     padding:12px 0;
+}
+
+.material-row{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    margin-bottom:8px;
+}
+
+.material-row select{
+    flex:2;
+}
+
+.material-row input{
+    flex:1;
+}
+
+.btn-remove-material{
+    background:none;
+    border:none;
+    color:#ff5252;
+    font-size:20px;
+    cursor:pointer;
+    padding:0 6px;
+    line-height:1;
 }
 
 
@@ -935,31 +960,24 @@ header img{
                 </div>
 
 
+                <!-- МНОГОЦВЕТНЫЕ/МНОГОМАТЕРИАЛЬНЫЕ СТРОКИ -->
                 <div class="field">
 
                     <label>
-                        Катушка
+                        Используемые катушки и вес
                     </label>
 
-                    <select
-                        id="calc-spool"
-                        onchange="calculate()">
-                    </select>
+                    <div id="calc-materials-container"></div>
 
-                </div>
+                    <button
+                        type="button"
+                        class="btn secondary small"
+                        style="width:100%; margin-top:5px; padding:10px;"
+                        onclick="addCalcMaterialRow()">
 
+                        ➕ Добавить ещё цвет/материал
 
-                <div class="field">
-
-                    <label>
-                        Вес модели (г)
-                    </label>
-
-                    <input
-                        id="calc-weight"
-                        type="number"
-                        value="100"
-                        oninput="calculate()">
+                    </button>
 
                 </div>
 
@@ -1036,6 +1054,19 @@ header img{
                         id="calc-photo-preview"
                         class="photo-preview hidden"
                         alt="Предпросмотр фотографии">
+
+                </div>
+
+
+                <div class="result">
+
+                    <span>
+                        Общий вес
+                    </span>
+
+                    <span id="calc-total-weight">
+                        0 г
+                    </span>
 
                 </div>
 
@@ -2731,152 +2762,20 @@ async function delSpool(id){
 
 
 /* =========================================================
-   CALCULATOR
+   CALCULATOR (MULTI-MATERIAL)
 ========================================================= */
 
-function calculate(){
+function addCalcMaterialRow(spoolId = null, weightVal = '100'){
 
-    const select =
-        document
-            .getElementById('calc-spool');
+    const container =
+        document.getElementById('calc-materials-container');
 
-
-    if(!select){
-
-        return;
-
-    }
-
-
-    const id =
-        Number(select.value);
-
-
-    const spool =
-        spools.find(function(x){
-
-            return x.id === id;
-
-        });
-
-
-    if(!spool){
-
-        [
-            'mat',
-            'elec',
-            'amort',
-            'cost',
-            'price'
-        ].forEach(function(id){
-
-            document
-                .getElementById(id)
-                .textContent =
-                    '0.00 €';
-
-        });
-
-        return;
-
-    }
-
-
-    const weight =
-        Number(
-            document
-                .getElementById('calc-weight')
-                .value
-        ) || 0;
-
-
-    const hours =
-        Number(
-            document
-                .getElementById('calc-hours')
-                .value
-        ) || 0;
-
-    const minutes =
-        Number(
-            document
-                .getElementById('calc-minutes')
-                .value
-        ) || 0;
-
-    const time = hours + (minutes / 60);
-
-
-    const materialCost =
-        weight *
-        (
-            spool.price /
-            (spool.initWeight || 1000)
-        );
-
-
-    const electricity =
-        time * ELEC;
-
-
-    const amortization =
-        time * AMORT;
-
-
-    const cost =
-        materialCost +
-        electricity +
-        amortization;
-
-
-    document
-        .getElementById('mat')
-        .textContent =
-            materialCost.toFixed(2) +
-            ' €';
-
-
-    document
-        .getElementById('elec')
-        .textContent =
-            electricity.toFixed(2) +
-            ' €';
-
-
-    document
-        .getElementById('amort')
-        .textContent =
-            amortization.toFixed(2) +
-            ' €';
-
-
-    document
-        .getElementById('cost')
-        .textContent =
-            cost.toFixed(2) +
-            ' €';
-
-
-    document
-        .getElementById('price')
-        .textContent =
-            cost.toFixed(2) +
-            ' €';
-
-}
-
-
-function fillSelect(){
-
-    const e =
-        document
-            .getElementById('calc-spool');
-
+    if(!container) return;
 
     if(!spools.length){
 
-        e.innerHTML =
-            '<option value="">Нет катушек</option>';
+        container.innerHTML =
+            '<div style="color:#aaa; font-size:14px; margin-bottom:8px;">Сначала добавьте катушки.</div>';
 
         calculate();
 
@@ -2884,29 +2783,138 @@ function fillSelect(){
 
     }
 
+    const rowId =
+        'mat-row-' + Date.now() + '-' + Math.random().toString(36).substring(2,6);
 
-    e.innerHTML =
-        spools
-            .map(function(s){
+    const optionsHtml =
+        spools.map(function(s){
 
-                return `
-                    <option value="${s.id}">
-                        ${esc(s.name)}
-                        ${
-                            s.material
-                            ? ' · ' +
-                              esc(s.material)
-                            : ''
-                        }
-                        · ${s.weight} г
-                    </option>
-                `;
+            return `<option value="${s.id}" ${s.id === spoolId ? 'selected' : ''}>
+                ${esc(s.name)} ${s.material ? '· ' + esc(s.material) : ''} (${s.weight} г)
+            </option>`;
 
-            })
-            .join('');
+        }).join('');
 
+    const row =
+        document.createElement('div');
+
+    row.className = 'material-row';
+    row.id = rowId;
+
+    row.innerHTML = `
+        <select class="calc-spool-select" onchange="calculate()">${optionsHtml}</select>
+        <input type="number" class="calc-weight-input" placeholder="Вес (г)" value="${weightVal}" min="0" oninput="calculate()">
+        <button type="button" class="btn-remove-material" onclick="removeCalcMaterialRow('${rowId}')">✕</button>
+    `;
+
+    container.appendChild(row);
 
     calculate();
+
+}
+
+
+function removeCalcMaterialRow(rowId){
+
+    const row =
+        document.getElementById(rowId);
+
+    if(row){
+
+        row.remove();
+
+        calculate();
+
+    }
+
+}
+
+
+function calculate(){
+
+    const selects =
+        document.querySelectorAll('.calc-spool-select');
+
+    const weights =
+        document.querySelectorAll('.calc-weight-input');
+
+    let totalMaterialCost = 0;
+    let totalWeight = 0;
+
+    selects.forEach(function(select, index){
+
+        const id = Number(select.value);
+
+        const spool = spools.find(function(s){ return s.id === id; });
+
+        const weight = Number(weights[index]?.value) || 0;
+
+        if(spool && weight > 0){
+
+            totalWeight += weight;
+
+            totalMaterialCost += weight * (spool.price / (spool.initWeight || 1000));
+
+        }
+
+    });
+
+    const hours =
+        Number(document.getElementById('calc-hours')?.value) || 0;
+
+    const minutes =
+        Number(document.getElementById('calc-minutes')?.value) || 0;
+
+    const time = hours + (minutes / 60);
+
+    const electricity = time * ELEC;
+
+    const amortization = time * AMORT;
+
+    const cost = totalMaterialCost + electricity + amortization;
+
+    const totalWeightEl = document.getElementById('calc-total-weight');
+    if(totalWeightEl) totalWeightEl.textContent = totalWeight.toFixed(1) + ' г';
+
+    const matEl = document.getElementById('mat');
+    if(matEl) matEl.textContent = totalMaterialCost.toFixed(2) + ' €';
+
+    const elecEl = document.getElementById('elec');
+    if(elecEl) elecEl.textContent = electricity.toFixed(2) + ' €';
+
+    const amortEl = document.getElementById('amort');
+    if(amortEl) amortEl.textContent = amortization.toFixed(2) + ' €';
+
+    const costEl = document.getElementById('cost');
+    if(costEl) costEl.textContent = cost.toFixed(2) + ' €';
+
+    const priceEl = document.getElementById('price');
+    if(priceEl) priceEl.textContent = cost.toFixed(2) + ' €';
+
+}
+
+
+function fillSelect(){
+
+    const container =
+        document.getElementById('calc-materials-container');
+
+    if(!container) return;
+
+    container.innerHTML = '';
+
+    if(spools.length > 0){
+
+        addCalcMaterialRow();
+
+    }else{
+
+        container.innerHTML =
+            '<div style="color:#aaa; font-size:14px; margin-bottom:8px;">Сначала добавьте катушки.</div>';
+
+        calculate();
+
+    }
 
 }
 
@@ -3135,198 +3143,167 @@ async function saveOrder(){
 
     }
 
+    const selects =
+        document.querySelectorAll('.calc-spool-select');
 
-    const spoolId =
-        Number(
-            document
-                .getElementById('calc-spool')
-                .value
-        );
+    const weights =
+        document.querySelectorAll('.calc-weight-input');
 
+    if(!selects.length){
 
-    const spool =
-        spools.find(function(x){
+        alert('Добавьте катушку для расчёта.');
 
-            return x.id === spoolId;
+        return;
+
+    }
+
+    let usedMaterials = [];
+    let spoolUpdates = [];
+    let totalWeight = 0;
+    let totalMaterialCost = 0;
+
+    for(let i = 0; i < selects.length; i++){
+
+        const spoolId = Number(selects[i].value);
+
+        const weight = Number(weights[i].value) || 0;
+
+        const spool = spools.find(function(s){ return s.id === spoolId; });
+
+        if(!spool || weight <= 0){
+
+            continue;
+
+        }
+
+        if(weight > spool.weight){
+
+            alert(`Недостаточно пластика на катушке "${spool.name}". Доступно: ${spool.weight} г`);
+
+            return;
+
+        }
+
+        const cost = weight * (spool.price / (spool.initWeight || 1000));
+
+        totalWeight += weight;
+
+        totalMaterialCost += cost;
+
+        usedMaterials.push({
+
+            spoolId: spool.id,
+
+            spoolName: spool.name,
+
+            color: spool.color,
+
+            weight: weight,
+
+            cost: cost
 
         });
 
+        spoolUpdates.push({
 
-    const weight =
-        Number(
-            document
-                .getElementById('calc-weight')
-                .value
-        ) || 0;
+            id: spool.id,
 
+            newWeight: spool.weight - weight
+
+        });
+
+    }
+
+    if(usedMaterials.length === 0){
+
+        alert('Укажите вес для используемых катушек.');
+
+        return;
+
+    }
 
     const hours =
-        Number(
-            document
-                .getElementById('calc-hours')
-                .value
-        ) || 0;
+        Number(document.getElementById('calc-hours').value) || 0;
 
     const minutes =
-        Number(
-            document
-                .getElementById('calc-minutes')
-                .value
-        ) || 0;
+        Number(document.getElementById('calc-minutes').value) || 0;
 
     const time = hours + (minutes / 60);
 
     const printTimeStr = `⏱️ Время печати: ${hours} ч ${minutes} мин`;
 
+    const electricity = time * ELEC;
+
+    const amortization = time * AMORT;
+
+    const cost = totalMaterialCost + electricity + amortization;
 
     const name =
-        document
-            .getElementById('model')
-            .value
-            .trim() ||
-        'Деталь';
-
+        document.getElementById('model').value.trim() || 'Деталь';
 
     const notes =
-        document
-            .getElementById('calc-notes')
-            .value
-            .trim();
-
+        document.getElementById('calc-notes').value.trim();
 
     const photoInput =
         document.getElementById('calc-photo');
 
     const photoFile =
-        photoInput && photoInput.files
-        ? photoInput.files[0]
-        : null;
+        photoInput && photoInput.files ? photoInput.files[0] : null;
 
+    // Списание остатков пластика с катушек
+    for(let update of spoolUpdates){
 
-    if(!spool){
+        const spoolUpdate =
+            await db
+                .from('spools')
+                .update({ weight: update.newWeight })
+                .eq('id', update.id)
+                .eq('user_id', currentUser.id);
 
-        alert(
-            'Добавьте или выберите катушку.'
-        );
+        if(spoolUpdate.error){
 
-        return;
+            alert('Ошибка обновления катушек:\n' + spoolUpdate.error.message);
 
-    }
+            return;
 
-
-    if(weight <= 0){
-
-        alert(
-            'Вес модели должен быть больше 0.'
-        );
-
-        return;
-
-    }
-
-
-    if(weight > spool.weight){
-
-        alert(
-            'Недостаточно пластика в катушке.'
-        );
-
-        return;
-
-    }
-
-
-    const materialCost =
-        weight *
-        (
-            spool.price /
-            (spool.initWeight || 1000)
-        );
-
-
-    const electricity =
-        time * ELEC;
-
-
-    const amortization =
-        time * AMORT;
-
-
-    const cost =
-        materialCost +
-        electricity +
-        amortization;
-
-
-    const newWeight =
-        spool.weight -
-        weight;
-
-
-    const spoolUpdate =
-        await db
-            .from('spools')
-            .update({
-
-                weight:newWeight
-
-            })
-            .eq(
-                'id',
-                spool.id
-            )
-            .eq(
-                'user_id',
-                currentUser.id
-            );
-
-
-    if(spoolUpdate.error){
-
-        alert(
-            'Ошибка обновления катушки:\n' +
-            spoolUpdate.error.message
-        );
-
-        return;
+        }
 
     }
 
     const finalNotes = notes ? `${notes}\n\n${printTimeStr}` : printTimeStr;
 
+    const spoolNamesSummary =
+        usedMaterials.map(m => `${m.spoolName} (${m.weight}г)`).join(', ');
+
+    const primaryColor =
+        usedMaterials[0].color || '#00adb5';
+
+    const primarySpoolId =
+        usedMaterials[0].spoolId;
+
     const historyRow = {
 
         name,
 
-        weight,
+        weight: totalWeight,
 
         cost,
 
-        profit:0,
+        profit: 0,
 
-        date:
-            new Date()
-                .toLocaleDateString(
-                    'ru-RU'
-                ),
+        date: new Date().toLocaleDateString('ru-RU'),
 
-        spool_name:
-            spool.name,
+        spool_name: spoolNamesSummary,
 
-        color:
-            spool.color,
+        color: primaryColor,
 
-        spool_id:
-            spool.id,
+        spool_id: primarySpoolId,
 
-        notes:
-            finalNotes,
+        notes: finalNotes,
 
-        user_id:
-            currentUser.id
+        user_id: currentUser.id
 
     };
-
 
     const historyResult =
         await db
@@ -3335,36 +3312,13 @@ async function saveOrder(){
             .select('id')
             .single();
 
-
     if(historyResult.error){
 
-        await db
-            .from('spools')
-            .update({
-
-                weight:
-                    spool.weight
-
-            })
-            .eq(
-                'id',
-                spool.id
-            )
-            .eq(
-                'user_id',
-                currentUser.id
-            );
-
-
-        alert(
-            'Ошибка сохранения истории:\n' +
-            historyResult.error.message
-        );
+        alert('Ошибка сохранения истории:\n' + historyResult.error.message);
 
         return;
 
     }
-
 
     if(photoFile){
 
@@ -3411,20 +3365,11 @@ async function saveOrder(){
 
     }
 
+    document.getElementById('model').value = 'Деталь';
 
-    document
-        .getElementById('model')
-        .value =
-            'Деталь';
-
-
-    document
-        .getElementById('calc-notes')
-        .value = '';
-
+    document.getElementById('calc-notes').value = '';
 
     resetCalcPhoto();
-
 
     await loadData();
 
