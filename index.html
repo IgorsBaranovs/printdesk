@@ -3275,8 +3275,8 @@ async function saveOrder(){
     const spoolNamesSummary =
         usedMaterials.map(m => `${m.spoolName} (${m.weight}г)`).join(', ');
 
-    const primaryColor =
-        usedMaterials[0].color || '#00adb5';
+    // Собираем цвета всех используемых катушек через запятую
+    const allColors = usedMaterials.map(m => m.color || '#888888').join(',');
 
     const primarySpoolId =
         usedMaterials[0].spoolId;
@@ -3295,7 +3295,7 @@ async function saveOrder(){
 
         spool_name: spoolNamesSummary,
 
-        color: primaryColor,
+        color: allColors,
 
         spool_id: primarySpoolId,
 
@@ -3442,6 +3442,12 @@ function openHistory(id){
 
     }
 
+    // Отрисовка нескольких цветных кружков для каждого цвета из списка
+    const colorsList = color.split(',');
+    const colorDotsHtml = colorsList
+        .map(c => `<span class="color-dot" style="background:${esc(c.trim())};margin-left:4px;margin-right:0;"></span>`)
+        .join('');
+
 
     document
         .getElementById(
@@ -3531,15 +3537,9 @@ function openHistory(id){
                 Цвет
             </span>
 
-            <span class="detail-value">
+            <span class="detail-value" style="display:flex; align-items:center; justify-content:flex-end;">
 
-                <span
-                    class="color-dot"
-                    style="
-                        background:${esc(color)};
-                        margin-right:0;
-                    ">
-                </span>
+                ${colorDotsHtml}
 
             </span>
 
@@ -4836,12 +4836,9 @@ function update(){
 
         <div class="history-color">
 
-            <span
-                class="color-dot"
-                style="
-                    background:${esc(color)}
-                ">
-            </span>
+            ${
+                color.split(',').map(c => `<span class="color-dot" style="background:${esc(c.trim())}"></span>`).join('')
+            }
 
 
             ${
