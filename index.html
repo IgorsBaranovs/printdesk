@@ -4430,13 +4430,13 @@ if (!spools.length) {
     summary.innerHTML = spools.map(function(s) {
         // Логика предупреждений о низком остатке филамента
         let warningBadge = '';
-        if (s.weight < 50) {
-            // Красный значок для критического остатка (< 50 г)
-            warningBadge = '<span style="background: #ff4d4f; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-left: 6px;" title="Критический остаток (< 50 г)">!</span>';
-        } else if (s.weight <= 150) {
-            // Желтый значок для низкого остатка (от 50 до 150 г)
-            warningBadge = '<span style="background: #faad14; color: #1a1a1a; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-left: 6px;" title="Низкий остаток (< 150 г)">!</span>';
-        }
+if (s.weight < 50) {
+    // Красный треугольник для критического остатка (< 50 г)
+    warningBadge = '<span style="display: inline-flex; align-items: center; margin-left: 6px;" title="Критический остаток (< 50 г)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#ff4d4f"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10h2v5h-2v-5zm0 6h2v2h-2v-2z"/></svg></span>';
+} else if (s.weight <= 150) {
+    // Желтый треугольник для низкого остатка (от 50 до 150 г)
+    warningBadge = '<span style="display: inline-flex; align-items: center; margin-left: 6px;" title="Низкий остаток (< 150 г)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#faad14"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10h2v5h-2v-5zm0 6h2v2h-2v-2z"/></svg></span>';
+}
         return `
             <div style="
                 padding: 8px 0;
