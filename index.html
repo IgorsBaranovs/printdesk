@@ -4414,81 +4414,51 @@ function showPage(page){
 
 function update(){
 
-    /* =====================================================
-       SUMMARY
-    ===================================================== */
+/* =====================================================
+   SUMMARY (Список катушек с предупреждениями)
+===================================================== */
 
-    const summary =
-        document
-            .getElementById('summary');
+const summary = document.getElementById('summary');
 
+if (!spools.length) {
+    summary.innerHTML =
+        '<div class="empty-state">' +
+            '<div class="empty-state-icon">🧵</div>' +
+            'У вас пока нет активных катушек.' +
+        '</div>';
+} else {
+    summary.innerHTML = spools.map(function(s) {
+        // Логика предупреждений о низком остатке филамента
+        let warningBadge = '';
+        if (s.weight < 50) {
+            // Красный значок для критического остатка (< 50 г)
+            warningBadge = '<span style="background: #ff4d4f; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-left: 6px;" title="Критический остаток (< 50 г)">!</span>';
+        } else if (s.weight <= 150) {
+            // Желтый значок для низкого остатка (от 50 до 150 г)
+            warningBadge = '<span style="background: #faad14; color: #1a1a1a; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-left: 6px;" title="Низкий остаток (< 150 г)">!</span>';
+        }
 
-    if(!spools.length){
+        return `
+            <div style="
+                padding: 8px 0;
+                border-bottom: 1px solid #2a2a2a;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            ">
+                <div style="display: flex; align-items: center;">
+                    <span class="color-dot" style="background: ${esc(s.color || '#888888')}"></span>
+                    <b>${esc(s.name)}</b>
+                    ${warningBadge}
+                </div>
 
-        summary.innerHTML =
-            '<div class="empty-state">' +
-
-                '<div class="empty-state-icon">' +
-                    '🧵' +
-                '</div>' +
-
-                'У вас пока нет активных катушек.' +
-
-            '</div>';
-
-    }else{
-
-        summary.innerHTML =
-            spools
-                .map(function(s){
-
-                    return `
-
-                        <div
-                            style="
-                                padding:8px 0;
-                                border-bottom:1px solid #2a2a2a;
-                                display:flex;
-                                align-items:center;
-                                justify-content:space-between;
-                            ">
-
-                            <div>
-
-                                <span
-                                    class="color-dot"
-                                    style="
-                                        background:${esc(
-                                            s.color ||
-                                            '#888888'
-                                        )}">
-                                </span>
-
-                                <b>
-                                    ${esc(s.name)}
-                                </b>
-
-                            </div>
-
-
-                            <span
-                                style="
-                                    color:#aaa;
-                                    font-size:14px;
-                                ">
-
-                                ${s.weight} г
-
-                            </span>
-
-                        </div>
-
-                    `;
-
-                })
-                .join('');
-
-    }
+                <span style="color: #aaa; font-size: 14px;">
+                    ${s.weight} г
+                </span>
+            </div>
+        `;
+    }).join('');
+}
 
 
     /* =====================================================
