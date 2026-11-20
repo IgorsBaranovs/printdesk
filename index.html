@@ -978,3 +978,3933 @@ header img{
                         onclick="addCalcMaterialRow()">
 
                         ➕ Добавить ещё цвет/материал
+
+                    </button>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Время печати
+                    </label>
+
+                    <div style="display:flex; gap:10px;">
+
+                        <div style="flex:1;">
+
+                            <input
+                                id="calc-hours"
+                                type="number"
+                                min="0"
+                                value="4"
+                                placeholder="Часы"
+                                oninput="calculate()">
+
+                            <span style="font-size:12px; color:#888;">Часы</span>
+
+                        </div>
+
+                        <div style="flex:1;">
+
+                            <input
+                                id="calc-minutes"
+                                type="number"
+                                min="0"
+                                max="59"
+                                value="0"
+                                placeholder="Мин"
+                                oninput="calculate()">
+
+                            <span style="font-size:12px; color:#888;">Минуты</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Заметки
+                    </label>
+
+                    <textarea
+                        id="calc-notes"
+                        placeholder="Например: печать для клиента...">
+                    </textarea>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        📷 Фотография работы
+                    </label>
+
+                    <input
+                        id="calc-photo"
+                        type="file"
+                        accept="image/*"
+                        onchange="previewCalcPhoto()">
+
+                    <img
+                        id="calc-photo-preview"
+                        class="photo-preview hidden"
+                        alt="Предпросмотр фотографии">
+
+                </div>
+
+
+                <div class="result">
+
+                    <span>
+                        Общий вес
+                    </span>
+
+                    <span id="calc-total-weight">
+                        0 г
+                    </span>
+
+                </div>
+
+
+                <div class="result">
+
+                    <span>
+                        Материал
+                    </span>
+
+                    <span id="mat">
+                        0.00 €
+                    </span>
+
+                </div>
+
+
+                <div class="result">
+
+                    <span>
+                        Электричество
+                    </span>
+
+                    <span id="elec">
+                        0.00 €
+                    </span>
+
+                </div>
+
+
+                <div class="result">
+
+                    <span>
+                        Амортизация
+                    </span>
+
+                    <span id="amort">
+                        0.00 €
+                    </span>
+
+                </div>
+
+
+                <div class="result total">
+
+                    <span>
+                        Себестоимость
+                    </span>
+
+                    <span id="cost">
+                        0.00 €
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="result total"
+                    style="color:#00adb5">
+
+                    <span>
+                        Итоговая цена
+                    </span>
+
+                    <span id="price">
+                        0.00 €
+                    </span>
+
+                </div>
+
+
+                <button
+                    class="btn"
+                    onclick="saveOrder()">
+
+                    💾 Сохранить заказ
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SPOOLS
+        ================================================= -->
+
+        <section
+            id="page-spools"
+            class="page">
+
+            <div
+                class="card"
+                id="spool-form-card">
+
+
+                <div id="spool-form-title">
+
+                    <h3>
+                        Добавить катушку
+                    </h3>
+
+                </div>
+
+
+                <input
+                    id="editing-spool-id"
+                    type="hidden"
+                    value="">
+
+
+                <div class="field">
+
+                    <label>
+                        Название
+                    </label>
+
+                    <input
+                        id="spool-name"
+                        placeholder="Anycubic PLA Black">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Материал
+                    </label>
+
+                    <select
+                        id="spool-material">
+
+                        <option value="PLA">
+                            PLA
+                        </option>
+
+                        <option value="PLA+">
+                            PLA+
+                        </option>
+
+                        <option value="PETG">
+                            PETG
+                        </option>
+
+                        <option value="ASA">
+                            ASA
+                        </option>
+
+                        <option value="ABS">
+                            ABS
+                        </option>
+
+                        <option value="TPU">
+                            TPU
+                        </option>
+
+                        <option value="Другой">
+                            Другой
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Цвет
+                    </label>
+
+                    <input
+                        id="spool-color"
+                        type="color"
+                        value="#00adb5"
+                        style="height:45px;padding:3px">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Вес пластика (г)
+                    </label>
+
+                    <input
+                        id="spool-weight"
+                        type="number"
+                        value="1000">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Цена катушки (€)
+                    </label>
+
+                    <input
+                        id="spool-price"
+                        type="number"
+                        step="0.01"
+                        value="19.99">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Производитель
+                    </label>
+
+                    <input
+                        id="spool-manufacturer">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Дата покупки
+                    </label>
+
+                    <input
+                        id="spool-purchase-date"
+                        type="date">
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Заметки
+                    </label>
+
+                    <textarea
+                        id="spool-notes">
+                    </textarea>
+
+                </div>
+
+
+                <button
+                    id="spool-save-button"
+                    class="btn"
+                    onclick="saveSpool()">
+
+                    ➕ Добавить катушку
+
+                </button>
+
+
+                <button
+                    id="spool-cancel-button"
+                    class="btn secondary hidden"
+                    onclick="cancelSpoolEdit()">
+
+                    Отмена
+
+                </button>
+
+            </div>
+
+
+            <div id="spools-list"></div>
+
+        </section>
+
+
+        <!-- =================================================
+             HISTORY
+        ================================================= -->
+
+        <section
+            id="page-history"
+            class="page">
+
+            <div class="card">
+
+                <div
+                    style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:center;
+                        margin-bottom:14px;
+                    ">
+
+                    <h3 style="margin:0;">
+
+                        История заказов
+
+                    </h3>
+
+
+                    <button
+                        class="btn secondary small"
+                        style="margin:0;"
+                        onclick="exportHistoryCSV()">
+
+                        📥 Экспорт CSV
+
+                    </button>
+
+                </div>
+
+
+                <div id="history-list"></div>
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN NAVIGATION
+    ====================================================== -->
+
+    <div class="nav">
+
+        <div
+            id="nav-main"
+            class="active"
+            onclick="showPage('main')">
+
+            <span>
+                🏠
+            </span>
+
+            Главная
+
+        </div>
+
+
+        <div
+            id="nav-calc"
+            onclick="showPage('calc')">
+
+            <span>
+                🧮
+            </span>
+
+            Расчёт
+
+        </div>
+
+
+        <div
+            id="nav-spools"
+            onclick="showPage('spools')">
+
+            <span>
+                🧵
+            </span>
+
+            Катушки
+
+        </div>
+
+
+        <div
+            id="nav-history"
+            onclick="showPage('history')">
+
+            <span>
+                📋
+            </span>
+
+            История
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         USER BLOCK
+    ====================================================== -->
+
+    <div class="user-section">
+
+        <div class="user-info">
+
+            Пользователь:
+
+            <b id="user-email">
+                —
+            </b>
+
+
+            <button
+                class="btn secondary"
+                style="margin-top:8px"
+                onclick="logout()">
+
+                Выйти
+
+            </button>
+
+
+            <div
+                id="debug-info"
+                class="debug">
+
+                Подключение к облаку...
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     HISTORY VIEW MODAL
+========================================================= -->
+
+<div
+    id="history-modal"
+    class="modal"
+    onclick="closeHistoryModal(event)">
+
+    <div
+        class="modal-box"
+        onclick="event.stopPropagation()">
+
+
+        <div class="modal-header">
+
+            <h3>
+                📋 Запись истории
+            </h3>
+
+
+            <button
+                class="close"
+                onclick="closeHistoryModal()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="history-modal-content">
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     HISTORY EDIT MODAL
+========================================================= -->
+
+<div
+    id="history-edit-modal"
+    class="modal"
+    onclick="closeHistoryEditModal(event)">
+
+    <div
+        class="modal-box"
+        onclick="event.stopPropagation()">
+
+
+        <div class="modal-header">
+
+            <h3>
+                ✏️ Редактирование истории
+            </h3>
+
+
+            <button
+                class="close"
+                onclick="closeHistoryEditModal()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <input
+            type="hidden"
+            id="editing-history-id">
+
+
+        <div class="field">
+
+            <label>
+                Название модели
+            </label>
+
+            <input
+                id="history-edit-name">
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Вес модели (г)
+            </label>
+
+            <input
+                id="history-edit-weight"
+                type="number"
+                step="0.1">
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Стоимость (€)
+            </label>
+
+            <input
+                id="history-edit-cost"
+                type="number"
+                step="0.01">
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Дата
+            </label>
+
+            <input
+                id="history-edit-date"
+                type="text"
+                placeholder="13.08.2026">
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Заметки
+            </label>
+
+            <textarea
+                id="history-edit-notes">
+            </textarea>
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                📷 Фотография работы
+            </label>
+
+            <input
+                id="history-edit-photo"
+                type="file"
+                accept="image/*"
+                onchange="previewEditPhoto()">
+
+            <img
+                id="history-edit-photo-preview"
+                class="photo-preview hidden"
+                alt="Фотография работы">
+
+            <div
+                id="history-edit-photo-status"
+                style="color:#888;font-size:13px;margin-top:7px">
+            </div>
+
+        </div>
+
+
+        <button
+            class="btn"
+            onclick="saveHistoryEdit()">
+
+            💾 Сохранить изменения
+
+        </button>
+
+
+        <button
+            class="btn secondary"
+            onclick="closeHistoryEditModal()">
+
+            Отмена
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+    'https://fxydodwbgixtlcptarro.supabase.co';
+
+const SUPABASE_KEY =
+    'sb_publishable_SI7sEQyG02PQO3r_IRrBwA_OeIn3fU-';
+
+const db =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+const ELEC = 0.05;
+const AMORT = 0.10;
+const PHOTO_BUCKET = 'print-photos';
+
+
+/* =========================================================
+   DATA
+========================================================= */
+
+let currentUser = null;
+
+let spools = [];
+
+let history = [];
+
+let realtimeChannel = null;
+
+let realtimeReloadTimer = null;
+
+let realtimeLoading = false;
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function esc(value){
+
+    return String(value ?? '')
+        .replace(/[&<>"']/g,function(c){
+
+            return {
+                '&':'&amp;',
+                '<':'&lt;',
+                '>':'&gt;',
+                '"':'&quot;',
+                "'":'&#039;'
+            }[c];
+
+        });
+
+}
+
+
+function status(text,error=false){
+
+    const e =
+        document.getElementById('status');
+
+    if(!e) return;
+
+    e.textContent =
+        text || '';
+
+    e.style.color =
+        error
+        ? '#ff5252'
+        : '#aaa';
+
+}
+
+
+function debug(text){
+
+    const e =
+        document.getElementById('debug-info');
+
+    if(e){
+
+        e.textContent =
+            text;
+
+    }
+
+}
+
+
+/* =========================================================
+   REALTIME
+========================================================= */
+
+async function stopRealtime(){
+
+    if(realtimeChannel){
+
+        try{
+
+            await db.removeChannel(
+                realtimeChannel
+            );
+
+        }catch(error){
+
+            console.error(error);
+
+        }
+
+        realtimeChannel = null;
+
+    }
+
+}
+
+
+function scheduleRealtimeReload(reason){
+
+    console.log(
+        'Realtime:',
+        reason
+    );
+
+    if(realtimeReloadTimer){
+
+        clearTimeout(
+            realtimeReloadTimer
+        );
+
+    }
+
+    realtimeReloadTimer =
+        setTimeout(
+            async function(){
+
+                realtimeReloadTimer =
+                    null;
+
+                if(
+                    !currentUser ||
+                    realtimeLoading
+                ){
+
+                    return;
+
+                }
+
+                realtimeLoading = true;
+
+                try{
+
+                    await loadData(true);
+
+                }finally{
+
+                    realtimeLoading = false;
+
+                }
+
+            },
+            300
+        );
+
+}
+
+
+function startRealtime(){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+    stopRealtime();
+
+    const userId =
+        currentUser.id;
+
+    realtimeChannel =
+        db
+            .channel(
+                'printdesk-' + userId
+            )
+
+            .on(
+                'postgres_changes',
+                {
+                    event:'*',
+                    schema:'public',
+                    table:'spools',
+                    filter:
+                        'user_id=eq.' + userId
+                },
+                function(){
+
+                    scheduleRealtimeReload(
+                        'Изменились катушки'
+                    );
+
+                }
+            )
+
+            .on(
+                'postgres_changes',
+                {
+                    event:'*',
+                    schema:'public',
+                    table:'print_history',
+                    filter:
+                        'user_id=eq.' + userId
+                },
+                function(){
+
+                    scheduleRealtimeReload(
+                        'Изменилась история'
+                    );
+
+                }
+            )
+
+            .subscribe(
+                function(state){
+
+                    console.log(
+                        'Realtime:',
+                        state
+                    );
+
+                    if(
+                        state === 'SUBSCRIBED'
+                    ){
+
+                        debug(
+                            'User ID: ' +
+                            userId +
+                            ' | 🟢 Realtime подключён'
+                        );
+
+                    }
+
+                }
+            );
+
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+function showLogin(){
+
+    document
+        .getElementById('login-screen')
+        .classList
+        .remove('hidden');
+
+    document
+        .getElementById('app')
+        .classList
+        .add('hidden');
+
+}
+
+
+async function checkAuth(){
+
+    const result =
+        await db.auth.getUser();
+
+    if(result.error){
+
+        showLogin();
+
+        return false;
+
+    }
+
+    currentUser =
+        result.data.user;
+
+    if(!currentUser){
+
+        showLogin();
+
+        return false;
+
+    }
+
+    document
+        .getElementById('login-screen')
+        .classList
+        .add('hidden');
+
+    document
+        .getElementById('app')
+        .classList
+        .remove('hidden');
+
+    document
+        .getElementById('user-email')
+        .textContent =
+            currentUser.email || '—';
+
+    await loadData();
+
+    startRealtime();
+
+    return true;
+
+}
+
+
+async function login(){
+
+    const email =
+        document
+            .getElementById('login-email')
+            .value
+            .trim();
+
+    const password =
+        document
+            .getElementById('login-password')
+            .value;
+
+    const error =
+        document
+            .getElementById('login-error');
+
+    error.textContent = '';
+
+    if(!email || !password){
+
+        error.textContent =
+            'Введите email и пароль.';
+
+        return;
+
+    }
+
+    const result =
+        await db.auth.signInWithPassword({
+
+            email,
+            password
+
+        });
+
+    if(result.error){
+
+        error.textContent =
+            result.error.message;
+
+        return;
+
+    }
+
+    currentUser =
+        result.data.user;
+
+    document
+        .getElementById('login-screen')
+        .classList
+        .add('hidden');
+
+    document
+        .getElementById('app')
+        .classList
+        .remove('hidden');
+
+    document
+        .getElementById('user-email')
+        .textContent =
+            currentUser.email || '—';
+
+    await loadData();
+
+    startRealtime();
+
+}
+
+
+async function logout(){
+
+    await stopRealtime();
+
+    if(realtimeReloadTimer){
+
+        clearTimeout(
+            realtimeReloadTimer
+        );
+
+        realtimeReloadTimer = null;
+
+    }
+
+    await db.auth.signOut();
+
+    currentUser = null;
+
+    spools = [];
+
+    history = [];
+
+    showLogin();
+
+}
+
+
+/* =========================================================
+   LOAD DATA
+========================================================= */
+
+async function loadData(isRealtime=false){
+
+    if(!currentUser){
+
+        showLogin();
+
+        return;
+
+    }
+
+    status(
+        isRealtime
+        ? '🔄 Синхронизация...'
+        : '☁️ Загружаю данные...'
+    );
+
+
+    const spoolResult =
+        await db
+            .from('spools')
+            .select('*')
+            .eq(
+                'user_id',
+                currentUser.id
+            )
+            .order(
+                'created_at',
+                {
+                    ascending:true
+                }
+            );
+
+
+    const historyResult =
+        await db
+            .from('print_history')
+            .select('*')
+            .eq(
+                'user_id',
+                currentUser.id
+            )
+            .order(
+                'created_at',
+                {
+                    ascending:false
+                }
+            );
+
+
+    if(spoolResult.error){
+
+        console.error(
+            spoolResult.error
+        );
+
+        status(
+            '❌ Ошибка загрузки катушек',
+            true
+        );
+
+        return;
+
+    }
+
+
+    if(historyResult.error){
+
+        console.error(
+            historyResult.error
+        );
+
+        status(
+            '❌ Ошибка загрузки истории',
+            true
+        );
+
+        return;
+
+    }
+
+
+    spools =
+        (spoolResult.data || [])
+            .map(function(x){
+
+                return {
+
+                    id:Number(x.id),
+
+                    name:
+                        x.name ||
+                        'Без названия',
+
+                    material:
+                        x.material || '',
+
+                    color:
+                        x.color ||
+                        '#888888',
+
+                    weight:
+                        Number(x.weight || 0),
+
+                    initWeight:
+                        Number(
+                            x.initial_weight ||
+                            1000
+                        ),
+
+                    price:
+                        Number(x.price || 0),
+
+                    manufacturer:
+                        x.manufacturer || '',
+
+                    purchaseDate:
+                        x.purchase_date || '',
+
+                    notes:
+                        x.notes || ''
+
+                };
+
+            });
+
+
+    history =
+        (historyResult.data || [])
+            .map(function(x){
+
+                return {
+
+                    id:Number(x.id),
+
+                    name:
+                        x.name ||
+                        'Деталь',
+
+                    weight:
+                        Number(x.weight || 0),
+
+                    cost:
+                        Number(x.cost || 0),
+
+                    profit:
+                        Number(x.profit || 0),
+
+                    date:
+                        x.date ||
+                        (
+                            x.created_at
+                            ? new Date(
+                                x.created_at
+                              ).toLocaleDateString(
+                                'ru-RU'
+                              )
+                            : ''
+                        ),
+
+                    spoolId:
+                        x.spool_id
+                        ? Number(x.spool_id)
+                        : null,
+
+                    spoolName:
+                        x.spool_name || '',
+
+                    color:
+                        x.color || '',
+
+                    notes:
+                        x.notes || '',
+
+                    photoPath:
+                        x.photo_path || '',
+
+                    photoUrl:
+                        ''
+
+                };
+
+            });
+
+
+    await Promise.all(
+        history.map(async function(item){
+
+            if(!item.photoPath){
+                return;
+            }
+
+            const signed =
+                await db
+                    .storage
+                    .from(PHOTO_BUCKET)
+                    .createSignedUrl(
+                        item.photoPath,
+                        60 * 60 * 24
+                    );
+
+            if(
+                !signed.error &&
+                signed.data
+            ){
+                item.photoUrl =
+                    signed.data.signedUrl || '';
+            }
+
+        })
+    );
+
+
+    debug(
+        'User ID: ' +
+        currentUser.id +
+        ' | Катушек: ' +
+        spools.length +
+        ' | Истории: ' +
+        history.length +
+        ' | 🟢 Realtime'
+    );
+
+
+    status(
+        '☁️ Синхронизировано · ' +
+        spools.length +
+        ' катушек · ' +
+        history.length +
+        ' записей'
+    );
+
+
+    update();
+
+}
+
+
+/* =========================================================
+   SPOOL FORM
+========================================================= */
+
+function resetSpoolForm(){
+
+    document
+        .getElementById('editing-spool-id')
+        .value = '';
+
+    document
+        .getElementById('spool-name')
+        .value = '';
+
+    document
+        .getElementById('spool-material')
+        .value = 'PLA';
+
+    document
+        .getElementById('spool-color')
+        .value = '#00adb5';
+
+    document
+        .getElementById('spool-weight')
+        .value = '1000';
+
+    document
+        .getElementById('spool-price')
+        .value = '19.99';
+
+    document
+        .getElementById('spool-manufacturer')
+        .value = '';
+
+    document
+        .getElementById('spool-purchase-date')
+        .value = '';
+
+    document
+        .getElementById('spool-notes')
+        .value = '';
+
+    document
+        .getElementById('spool-form-card')
+        .classList
+        .remove('edit-mode');
+
+    document
+        .getElementById('spool-form-title')
+        .innerHTML =
+            '<h3>Добавить катушку</h3>';
+
+    document
+        .getElementById('spool-save-button')
+        .textContent =
+            '➕ Добавить катушку';
+
+    document
+        .getElementById('spool-cancel-button')
+        .classList
+        .add('hidden');
+
+}
+
+
+function editSpool(id){
+
+    const spool =
+        spools.find(function(x){
+
+            return x.id === id;
+
+        });
+
+    if(!spool){
+
+        return;
+
+    }
+
+    document
+        .getElementById('editing-spool-id')
+        .value =
+            spool.id;
+
+    document
+        .getElementById('spool-name')
+        .value =
+            spool.name;
+
+    document
+        .getElementById('spool-material')
+        .value =
+            spool.material || 'PLA';
+
+    document
+        .getElementById('spool-color')
+        .value =
+            spool.color || '#00adb5';
+
+    document
+        .getElementById('spool-weight')
+        .value =
+            spool.weight;
+
+    document
+        .getElementById('spool-price')
+        .value =
+            spool.price;
+
+    document
+        .getElementById('spool-manufacturer')
+        .value =
+            spool.manufacturer || '';
+
+    document
+        .getElementById('spool-purchase-date')
+        .value =
+            spool.purchaseDate || '';
+
+    document
+        .getElementById('spool-notes')
+        .value =
+            spool.notes || '';
+
+    document
+        .getElementById('spool-form-card')
+        .classList
+        .add('edit-mode');
+
+    document
+        .getElementById('spool-form-title')
+        .innerHTML =
+            '<div class="edit-title">✏️ Редактирование катушки</div>';
+
+    document
+        .getElementById('spool-save-button')
+        .textContent =
+            '💾 Сохранить изменения';
+
+    document
+        .getElementById('spool-cancel-button')
+        .classList
+        .remove('hidden');
+
+    showPage('spools');
+
+    window.scrollTo({
+        top:0,
+        behavior:'smooth'
+    });
+
+}
+
+
+function cancelSpoolEdit(){
+
+    resetSpoolForm();
+
+}
+
+
+async function saveSpool(){
+
+    if(!currentUser){
+
+        alert(
+            'Пользователь не авторизован.'
+        );
+
+        return;
+
+    }
+
+
+    const editingId =
+        Number(
+            document
+                .getElementById('editing-spool-id')
+                .value
+        ) || null;
+
+
+    const name =
+        document
+            .getElementById('spool-name')
+            .value
+            .trim();
+
+
+    const material =
+        document
+            .getElementById('spool-material')
+            .value;
+
+
+    const color =
+        document
+            .getElementById('spool-color')
+            .value;
+
+
+    const weight =
+        Number(
+            document
+                .getElementById('spool-weight')
+                .value
+        );
+
+
+    const price =
+        Number(
+            document
+                .getElementById('spool-price')
+                .value
+        );
+
+
+    const manufacturer =
+        document
+            .getElementById('spool-manufacturer')
+            .value
+            .trim();
+
+
+    const purchaseDate =
+        document
+            .getElementById('spool-purchase-date')
+            .value || null;
+
+
+    const notes =
+        document
+            .getElementById('spool-notes')
+            .value
+            .trim();
+
+
+    if(!name){
+
+        alert(
+            'Введите название катушки.'
+        );
+
+        return;
+
+    }
+
+
+    if(weight < 0){
+
+        alert(
+            'Вес не может быть отрицательным.'
+        );
+
+        return;
+
+    }
+
+
+    if(price < 0){
+
+        alert(
+            'Цена не может быть отрицательной.'
+        );
+
+        return;
+
+    }
+
+
+    if(editingId){
+
+        const result =
+            await db
+                .from('spools')
+                .update({
+
+                    name,
+                    material,
+                    color,
+                    weight,
+                    price,
+
+                    manufacturer:
+                        manufacturer || null,
+
+                    purchase_date:
+                        purchaseDate,
+
+                    notes:
+                        notes || null
+
+                })
+                .eq(
+                    'id',
+                    editingId
+                )
+                .eq(
+                    'user_id',
+                    currentUser.id
+                );
+
+
+        if(result.error){
+
+            alert(
+                'Ошибка редактирования:\n' +
+                result.error.message
+            );
+
+            return;
+
+        }
+
+
+    }else{
+
+        const result =
+            await db
+                .from('spools')
+                .insert({
+
+                    name,
+                    material,
+                    color,
+                    weight,
+
+                    initial_weight:
+                        weight,
+
+                    price,
+
+                    manufacturer:
+                        manufacturer || null,
+
+                    purchase_date:
+                        purchaseDate,
+
+                    notes:
+                        notes || null,
+
+                    user_id:
+                        currentUser.id
+
+                });
+
+
+        if(result.error){
+
+            alert(
+                'Ошибка добавления:\n' +
+                result.error.message
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    resetSpoolForm();
+
+    await loadData();
+
+}
+
+
+/* =========================================================
+   DELETE SPOOL
+========================================================= */
+
+async function delSpool(id){
+
+    if(!confirm(
+        'Удалить эту катушку?'
+    )){
+
+        return;
+
+    }
+
+
+    const result =
+        await db
+            .from('spools')
+            .delete()
+            .eq(
+                'id',
+                id
+            )
+            .eq(
+                'user_id',
+                currentUser.id
+            );
+
+
+    if(result.error){
+
+        alert(
+            'Ошибка удаления:\n' +
+            result.error.message
+        );
+
+        return;
+
+    }
+
+
+    await loadData();
+
+}
+
+
+/* =========================================================
+   CALCULATOR (MULTI-MATERIAL)
+========================================================= */
+
+function addCalcMaterialRow(spoolId = null, weightVal = '100'){
+
+    const container =
+        document.getElementById('calc-materials-container');
+
+    if(!container) return;
+
+    if(!spools.length){
+
+        container.innerHTML =
+            '<div style="color:#aaa; font-size:14px; margin-bottom:8px;">Сначала добавьте катушки.</div>';
+
+        calculate();
+
+        return;
+
+    }
+
+    const rowId =
+        'mat-row-' + Date.now() + '-' + Math.random().toString(36).substring(2,6);
+
+    const optionsHtml =
+        spools.map(function(s){
+
+            return `<option value="${s.id}" ${s.id === spoolId ? 'selected' : ''}>
+                ${esc(s.name)} ${s.material ? '· ' + esc(s.material) : ''} (${s.weight} г)
+            </option>`;
+
+        }).join('');
+
+    const row =
+        document.createElement('div');
+
+    row.className = 'material-row';
+    row.id = rowId;
+
+    row.innerHTML = `
+        <select class="calc-spool-select" onchange="calculate()">${optionsHtml}</select>
+        <input type="number" class="calc-weight-input" placeholder="Вес (г)" value="${weightVal}" min="0" oninput="calculate()">
+        <button type="button" class="btn-remove-material" onclick="removeCalcMaterialRow('${rowId}')">✕</button>
+    `;
+
+    container.appendChild(row);
+
+    calculate();
+
+}
+
+
+function removeCalcMaterialRow(rowId){
+
+    const row =
+        document.getElementById(rowId);
+
+    if(row){
+
+        row.remove();
+
+        calculate();
+
+    }
+
+}
+
+
+function calculate(){
+
+    const selects =
+        document.querySelectorAll('.calc-spool-select');
+
+    const weights =
+        document.querySelectorAll('.calc-weight-input');
+
+    let totalMaterialCost = 0;
+    let totalWeight = 0;
+
+    selects.forEach(function(select, index){
+
+        const id = Number(select.value);
+
+        const spool = spools.find(function(s){ return s.id === id; });
+
+        const weight = Number(weights[index]?.value) || 0;
+
+        if(spool && weight > 0){
+
+            totalWeight += weight;
+
+            totalMaterialCost += weight * (spool.price / (spool.initWeight || 1000));
+
+        }
+
+    });
+
+    const hours =
+        Number(document.getElementById('calc-hours')?.value) || 0;
+
+    const minutes =
+        Number(document.getElementById('calc-minutes')?.value) || 0;
+
+    const time = hours + (minutes / 60);
+
+    const electricity = time * ELEC;
+
+    const amortization = time * AMORT;
+
+    const cost = totalMaterialCost + electricity + amortization;
+
+    const totalWeightEl = document.getElementById('calc-total-weight');
+    if(totalWeightEl) totalWeightEl.textContent = totalWeight.toFixed(1) + ' г';
+
+    const matEl = document.getElementById('mat');
+    if(matEl) matEl.textContent = totalMaterialCost.toFixed(2) + ' €';
+
+    const elecEl = document.getElementById('elec');
+    if(elecEl) elecEl.textContent = electricity.toFixed(2) + ' €';
+
+    const amortEl = document.getElementById('amort');
+    if(amortEl) amortEl.textContent = amortization.toFixed(2) + ' €';
+
+    const costEl = document.getElementById('cost');
+    if(costEl) costEl.textContent = cost.toFixed(2) + ' €';
+
+    const priceEl = document.getElementById('price');
+    if(priceEl) priceEl.textContent = cost.toFixed(2) + ' €';
+
+}
+
+
+function fillSelect(){
+
+    const container =
+        document.getElementById('calc-materials-container');
+
+    if(!container) return;
+
+    container.innerHTML = '';
+
+    if(spools.length > 0){
+
+        addCalcMaterialRow();
+
+    }else{
+
+        container.innerHTML =
+            '<div style="color:#aaa; font-size:14px; margin-bottom:8px;">Сначала добавьте катушки.</div>';
+
+        calculate();
+
+    }
+
+}
+
+
+/* =========================================================
+   PHOTOS
+========================================================= */
+
+function previewCalcPhoto(){
+
+    const input =
+        document.getElementById('calc-photo');
+
+    const preview =
+        document.getElementById('calc-photo-preview');
+
+    if(!input.files || !input.files[0]){
+
+        preview.src = '';
+        preview.classList.add('hidden');
+        return;
+
+    }
+
+    const url =
+        URL.createObjectURL(input.files[0]);
+
+    preview.src = url;
+    preview.classList.remove('hidden');
+
+    preview.onload = function(){
+        URL.revokeObjectURL(url);
+    };
+
+}
+
+
+function previewEditPhoto(){
+
+    const input =
+        document.getElementById('history-edit-photo');
+
+    const preview =
+        document.getElementById('history-edit-photo-preview');
+
+    if(!input.files || !input.files[0]){
+        return;
+    }
+
+    const url =
+        URL.createObjectURL(input.files[0]);
+
+    preview.src = url;
+    preview.classList.remove('hidden');
+
+    preview.onload = function(){
+        URL.revokeObjectURL(url);
+    };
+
+}
+
+
+function compressImage(file, maxSize=1600, quality=0.82){
+
+    return new Promise(function(resolve,reject){
+
+        const reader = new FileReader();
+
+        reader.onload = function(){
+
+            const img = new Image();
+
+            img.onload = function(){
+
+                let width = img.naturalWidth;
+                let height = img.naturalHeight;
+
+                if(width > maxSize || height > maxSize){
+
+                    const scale =
+                        Math.min(
+                            maxSize / width,
+                            maxSize / height
+                        );
+
+                    width = Math.round(width * scale);
+                    height = Math.round(height * scale);
+
+                }
+
+                const canvas =
+                    document.createElement('canvas');
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img,0,0,width,height);
+
+                canvas.toBlob(
+                    function(blob){
+                        if(blob){
+                            resolve(blob);
+                        }else{
+                            reject(new Error('Не удалось обработать фотографию.'));
+                        }
+                    },
+                    'image/jpeg',
+                    quality
+                );
+
+            };
+
+            img.onerror = function(){
+                reject(new Error('Не удалось открыть фотографию.'));
+            };
+
+            img.src = reader.result;
+
+        };
+
+        reader.onerror = function(){
+            reject(new Error('Не удалось прочитать файл фотографии.'));
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+}
+
+
+async function uploadHistoryPhoto(file, historyId){
+
+    if(!file){
+        return null;
+    }
+
+    if(!file.type || !file.type.startsWith('image/')){
+        throw new Error('Можно загружать только изображения.');
+    }
+
+    const blob =
+        await compressImage(file);
+
+    const path =
+        currentUser.id + '/' +
+        historyId + '-' +
+        Date.now() +
+        '.jpg';
+
+    const result =
+        await db
+            .storage
+            .from(PHOTO_BUCKET)
+            .upload(
+                path,
+                blob,
+                {
+                    contentType:'image/jpeg',
+                    upsert:false
+                }
+            );
+
+    if(result.error){
+        throw result.error;
+    }
+
+    return path;
+}
+
+
+async function deleteHistoryPhoto(path){
+
+    if(!path){
+        return;
+    }
+
+    const result =
+        await db
+            .storage
+            .from(PHOTO_BUCKET)
+            .remove([path]);
+
+    if(result.error){
+        console.warn(
+            'Не удалось удалить фотографию:',
+            result.error
+        );
+    }
+}
+
+
+function resetCalcPhoto(){
+
+    const input =
+        document.getElementById('calc-photo');
+
+    const preview =
+        document.getElementById('calc-photo-preview');
+
+    if(input){
+        input.value = '';
+    }
+
+    if(preview){
+        preview.src = '';
+        preview.classList.add('hidden');
+    }
+
+}
+
+
+/* =========================================================
+   SAVE ORDER
+========================================================= */
+
+async function saveOrder(){
+
+    if(!currentUser){
+
+        alert(
+            'Пользователь не авторизован.'
+        );
+
+        return;
+
+    }
+
+    const selects =
+        document.querySelectorAll('.calc-spool-select');
+
+    const weights =
+        document.querySelectorAll('.calc-weight-input');
+
+    if(!selects.length){
+
+        alert('Добавьте катушку для расчёта.');
+
+        return;
+
+    }
+
+    let usedMaterials = [];
+    let spoolUpdates = [];
+    let totalWeight = 0;
+    let totalMaterialCost = 0;
+
+    for(let i = 0; i < selects.length; i++){
+
+        const spoolId = Number(selects[i].value);
+
+        const weight = Number(weights[i].value) || 0;
+
+        const spool = spools.find(function(s){ return s.id === spoolId; });
+
+        if(!spool || weight <= 0){
+
+            continue;
+
+        }
+
+        if(weight > spool.weight){
+
+            alert(`Недостаточно пластика на катушке "${spool.name}". Доступно: ${spool.weight} г`);
+
+            return;
+
+        }
+
+        const cost = weight * (spool.price / (spool.initWeight || 1000));
+
+        totalWeight += weight;
+
+        totalMaterialCost += cost;
+
+        usedMaterials.push({
+
+            spoolId: spool.id,
+
+            spoolName: spool.name,
+
+            color: spool.color,
+
+            weight: weight,
+
+            cost: cost
+
+        });
+
+        spoolUpdates.push({
+
+            id: spool.id,
+
+            newWeight: spool.weight - weight
+
+        });
+
+    }
+
+    if(usedMaterials.length === 0){
+
+        alert('Укажите вес для используемых катушек.');
+
+        return;
+
+    }
+
+    const hours =
+        Number(document.getElementById('calc-hours').value) || 0;
+
+    const minutes =
+        Number(document.getElementById('calc-minutes').value) || 0;
+
+    const time = hours + (minutes / 60);
+
+    const printTimeStr = `⏱️ Время печати: ${hours} ч ${minutes} мин`;
+
+    const electricity = time * ELEC;
+
+    const amortization = time * AMORT;
+
+    const cost = totalMaterialCost + electricity + amortization;
+
+    const name =
+        document.getElementById('model').value.trim() || 'Деталь';
+
+    const notes =
+        document.getElementById('calc-notes').value.trim();
+
+    const photoInput =
+        document.getElementById('calc-photo');
+
+    const photoFile =
+        photoInput && photoInput.files ? photoInput.files[0] : null;
+
+    for(let update of spoolUpdates){
+
+        const spoolUpdate =
+            await db
+                .from('spools')
+                .update({ weight: update.newWeight })
+                .eq('id', update.id)
+                .eq('user_id', currentUser.id);
+
+        if(spoolUpdate.error){
+
+            alert('Ошибка обновления катушек:\n' + spoolUpdate.error.message);
+
+            return;
+
+        }
+
+    }
+
+    const finalNotes = notes ? `${notes}\n\n${printTimeStr}` : printTimeStr;
+
+    const spoolNamesSummary =
+        usedMaterials.map(m => `${m.spoolName} (${m.weight}г)`).join(', ');
+
+    const allColors = usedMaterials.map(m => m.color || '#888888').join(',');
+
+    const primarySpoolId =
+        usedMaterials[0].spoolId;
+
+    const historyRow = {
+
+        name,
+
+        weight: totalWeight,
+
+        cost,
+
+        profit: 0,
+
+        date: new Date().toLocaleDateString('ru-RU'),
+
+        spool_name: spoolNamesSummary,
+
+        color: allColors,
+
+        spool_id: primarySpoolId,
+
+        notes: finalNotes,
+
+        user_id: currentUser.id
+
+    };
+
+    const historyResult =
+        await db
+            .from('print_history')
+            .insert(historyRow)
+            .select('id')
+            .single();
+
+    if(historyResult.error){
+
+        alert('Ошибка сохранения истории:\n' + historyResult.error.message);
+
+        return;
+
+    }
+
+    if(photoFile){
+
+        try{
+
+            const photoPath =
+                await uploadHistoryPhoto(
+                    photoFile,
+                    historyResult.data.id
+                );
+
+            const photoUpdate =
+                await db
+                    .from('print_history')
+                    .update({
+                        photo_path:photoPath
+                    })
+                    .eq(
+                        'id',
+                        historyResult.data.id
+                    )
+                    .eq(
+                        'user_id',
+                        currentUser.id
+                    );
+
+            if(photoUpdate.error){
+                throw photoUpdate.error;
+            }
+
+        }catch(error){
+
+            console.error(
+                'Ошибка загрузки фотографии:',
+                error
+            );
+
+            alert(
+                'Запись сохранена, но фотографию не удалось загрузить:\n' +
+                (error.message || error)
+            );
+
+        }
+
+    }
+
+    document.getElementById('model').value = 'Деталь';
+
+    document.getElementById('calc-notes').value = '';
+
+    resetCalcPhoto();
+
+    await loadData();
+
+    showPage('main');
+
+}
+
+
+/* =========================================================
+   OPEN HISTORY
+========================================================= */
+
+function openHistory(id){
+
+    const item =
+        history.find(function(x){
+
+            return x.id === id;
+
+        });
+
+
+    if(!item){
+
+        return;
+
+    }
+
+
+    let color =
+        item.color || '#666666';
+
+
+    let spoolName =
+        item.spoolName ||
+        'Неизвестная катушка';
+
+
+    if(
+        (!item.color || !item.spoolName) &&
+        item.spoolId
+    ){
+
+        const spool =
+            spools.find(function(s){
+
+                return s.id === item.spoolId;
+
+            });
+
+
+        if(spool){
+
+            if(!item.color){
+
+                color =
+                    spool.color || '#666666';
+
+            }
+
+
+            if(!item.spoolName){
+
+                spoolName =
+                    spool.name;
+
+            }
+
+        }
+
+    }
+
+    const colorsList = color.split(',');
+    const colorDotsHtml = colorsList
+        .map(c => `<span class="color-dot" style="background:${esc(c.trim())};margin-left:4px;margin-right:0;"></span>`)
+        .join('');
+
+
+    document
+        .getElementById(
+            'history-modal-content'
+        )
+        .innerHTML = `
+
+        ${
+            item.photoUrl
+            ? `
+                <img
+                    class="history-photo"
+                    src="${esc(item.photoUrl)}"
+                    alt="${esc(item.name)}">
+            `
+            : ''
+        }
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Модель
+            </span>
+
+            <span class="detail-value">
+                ${esc(item.name)}
+            </span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Дата
+            </span>
+
+            <span class="detail-value">
+                ${esc(item.date)}
+            </span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Вес
+            </span>
+
+            <span class="detail-value">
+                ${Number(item.weight).toFixed(1)} г
+            </span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Себестоимость
+            </span>
+
+            <span class="detail-value">
+                ${Number(item.cost).toFixed(2)} €
+            </span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Катушка
+            </span>
+
+            <span class="detail-value">
+                ${esc(spoolName)}
+            </span>
+
+        </div>
+
+
+        <div class="detail-row">
+
+            <span class="detail-label">
+                Цвет
+            </span>
+
+            <span class="detail-value" style="display:flex; align-items:center; justify-content:flex-end;">
+
+                ${colorDotsHtml}
+
+            </span>
+
+        </div>
+
+
+        ${
+            item.notes
+            ? `
+                <div class="detail-notes">
+                    📝 ${esc(item.notes)}
+                </div>
+            `
+            : `
+                <div class="detail-notes">
+                    Заметок нет.
+                </div>
+            `
+        }
+
+
+        <button
+            class="btn"
+            onclick="editHistory(${item.id})">
+
+            ✏️ Редактировать
+
+        </button>
+
+
+        <button
+            class="btn danger"
+            onclick="
+                deleteHistory(${item.id});
+                closeHistoryModal();
+            ">
+
+            🗑️ Удалить запись
+
+        </button>
+
+    `;
+
+
+    document
+        .getElementById('history-modal')
+        .classList
+        .add('active');
+
+}
+
+
+function closeHistoryModal(event){
+
+    if(
+        event &&
+        event.target !==
+        document.getElementById('history-modal')
+    ){
+
+        return;
+
+    }
+
+
+    document
+        .getElementById('history-modal')
+        .classList
+        .remove('active');
+
+}
+
+
+/* =========================================================
+   EDIT HISTORY
+========================================================= */
+
+function editHistory(id){
+
+    const item =
+        history.find(function(x){
+
+            return x.id === id;
+
+        });
+
+
+    if(!item){
+
+        return;
+
+    }
+
+
+    closeHistoryModal();
+
+
+    document
+        .getElementById(
+            'editing-history-id'
+        )
+        .value =
+            item.id;
+
+
+    document
+        .getElementById(
+            'history-edit-name'
+        )
+        .value =
+            item.name;
+
+
+    document
+        .getElementById(
+            'history-edit-weight'
+        )
+        .value =
+            item.weight;
+
+
+    document
+        .getElementById(
+            'history-edit-cost'
+        )
+        .value =
+            item.cost;
+
+
+    document
+        .getElementById(
+            'history-edit-date'
+        )
+        .value =
+            item.date;
+
+
+    document
+        .getElementById(
+            'history-edit-notes'
+        )
+        .value =
+            item.notes || '';
+
+
+    const editPhotoInput =
+        document.getElementById(
+            'history-edit-photo'
+        );
+
+    const editPhotoPreview =
+        document.getElementById(
+            'history-edit-photo-preview'
+        );
+
+    const editPhotoStatus =
+        document.getElementById(
+            'history-edit-photo-status'
+        );
+
+    if(editPhotoInput){
+        editPhotoInput.value = '';
+    }
+
+    if(editPhotoPreview){
+        editPhotoPreview.src =
+            item.photoUrl || '';
+        editPhotoPreview.classList.toggle(
+            'hidden',
+            !item.photoUrl
+        );
+    }
+
+    if(editPhotoStatus){
+        editPhotoStatus.textContent =
+            item.photoUrl
+            ? 'Выберите новое фото, чтобы заменить текущее.'
+            : 'Фото пока нет.';
+    }
+
+
+    document
+        .getElementById(
+            'history-edit-modal'
+        )
+        .classList
+        .add('active');
+
+}
+
+
+function closeHistoryEditModal(event){
+
+    if(
+        event &&
+        event.target !==
+        document.getElementById(
+            'history-edit-modal'
+        )
+    ){
+
+        return;
+
+    }
+
+
+    document
+        .getElementById(
+            'history-edit-modal'
+        )
+        .classList
+        .remove('active');
+
+}
+
+
+/* =========================================================
+   SAVE HISTORY EDIT
+========================================================= */
+
+async function saveHistoryEdit(){
+
+    const id =
+        Number(
+            document
+                .getElementById(
+                    'editing-history-id'
+                )
+                .value
+        );
+
+
+    const item =
+        history.find(function(x){
+
+            return x.id === id;
+
+        });
+
+
+    if(!item){
+
+        return;
+
+    }
+
+
+    const name =
+        document
+            .getElementById(
+                'history-edit-name'
+            )
+            .value
+            .trim() ||
+        'Деталь';
+
+
+    const newWeight =
+        Number(
+            document
+                .getElementById(
+                    'history-edit-weight'
+                )
+                .value
+        );
+
+
+    const newCost =
+        Number(
+            document
+                .getElementById(
+                    'history-edit-cost'
+                )
+                .value
+        );
+
+
+    const date =
+        document
+            .getElementById(
+                'history-edit-date'
+            )
+            .value
+            .trim();
+
+
+    const notes =
+        document
+            .getElementById(
+                'history-edit-notes'
+            )
+            .value
+            .trim();
+
+
+    const editPhotoInput =
+        document.getElementById(
+            'history-edit-photo'
+        );
+
+    const newPhotoFile =
+        editPhotoInput && editPhotoInput.files
+        ? editPhotoInput.files[0]
+        : null;
+
+
+    if(newWeight <= 0){
+
+        alert(
+            'Вес должен быть больше 0.'
+        );
+
+        return;
+
+    }
+
+
+    if(newCost < 0){
+
+        alert(
+            'Стоимость не может быть отрицательной.'
+        );
+
+        return;
+
+    }
+
+
+    const difference =
+        item.weight -
+        newWeight;
+
+
+    if(
+        difference !== 0 &&
+        item.spoolId
+    ){
+
+        const spoolResult =
+            await db
+                .from('spools')
+                .select('weight')
+                .eq(
+                    'id',
+                    item.spoolId
+                )
+                .eq(
+                    'user_id',
+                    currentUser.id
+                )
+                .single();
+
+
+        if(spoolResult.error){
+
+            alert(
+                'Не удалось получить катушку:\n' +
+                spoolResult.error.message
+            );
+
+            return;
+
+        }
+
+
+        const currentWeight =
+            Number(
+                spoolResult.data.weight || 0
+            );
+
+
+        if(difference < 0){
+
+            const extra =
+                Math.abs(difference);
+
+
+            if(currentWeight < extra){
+
+                alert(
+                    'На катушке недостаточно пластика для такого изменения.'
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        const finalWeight =
+            currentWeight +
+            difference;
+
+
+        const spoolUpdate =
+            await db
+                .from('spools')
+                .update({
+
+                    weight:
+                        finalWeight
+
+                })
+                .eq(
+                    'id',
+                    item.spoolId
+                )
+                .eq(
+                    'user_id',
+                    currentUser.id
+                );
+
+
+        if(spoolUpdate.error){
+
+            alert(
+                'Ошибка изменения остатка катушки:\n' +
+                spoolUpdate.error.message
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    const result =
+        await db
+            .from('print_history')
+            .update({
+
+                name,
+
+                weight:
+                    newWeight,
+
+                cost:
+                    newCost,
+
+                date:
+                    date || null,
+
+                notes:
+                    notes || null
+
+            })
+            .eq(
+                'id',
+                id
+            )
+            .eq(
+                'user_id',
+                currentUser.id
+            );
+
+
+    if(result.error){
+
+        if(
+            difference !== 0 &&
+            item.spoolId
+        ){
+
+            const spoolResult =
+                await db
+                    .from('spools')
+                    .select('weight')
+                    .eq(
+                        'id',
+                        item.spoolId
+                    )
+                    .eq(
+                        'user_id',
+                        currentUser.id
+                    )
+                    .single();
+
+
+            if(
+                !spoolResult.error &&
+                spoolResult.data
+            ){
+
+                const rollback =
+                    Number(
+                        spoolResult.data.weight || 0
+                    ) -
+                    difference;
+
+
+                await db
+                    .from('spools')
+                    .update({
+
+                        weight:
+                            rollback
+
+                    })
+                    .eq(
+                        'id',
+                        item.spoolId
+                    )
+                    .eq(
+                        'user_id',
+                        currentUser.id
+                    );
+
+            }
+
+        }
+
+
+        alert(
+            'Ошибка редактирования истории:\n' +
+            result.error.message
+        );
+
+        return;
+
+    }
+
+
+    if(newPhotoFile){
+
+        try{
+
+            const newPhotoPath =
+                await uploadHistoryPhoto(
+                    newPhotoFile,
+                    id
+                );
+
+            const photoUpdate =
+                await db
+                    .from('print_history')
+                    .update({
+                        photo_path:newPhotoPath
+                    })
+                    .eq(
+                        'id',
+                        id
+                    )
+                    .eq(
+                        'user_id',
+                        currentUser.id
+                    );
+
+            if(photoUpdate.error){
+                throw photoUpdate.error;
+            }
+
+            await deleteHistoryPhoto(
+                item.photoPath
+            );
+
+        }catch(error){
+
+            console.error(
+                'Ошибка замены фотографии:',
+                error
+            );
+
+            alert(
+                'Данные сохранены, но фотографию не удалось заменить:\n' +
+                (error.message || error)
+            );
+
+        }
+
+    }
+
+
+    closeHistoryEditModal();
+
+    await loadData();
+
+}
+
+
+/* =========================================================
+   DELETE HISTORY
+========================================================= */
+
+async function deleteHistory(id){
+
+    if(!confirm(
+        'Удалить эту запись из истории?\n\n' +
+        'Использованный пластик будет возвращён ' +
+        'на соответствующую катушку.'
+    )){
+
+        return;
+
+    }
+
+
+    const item =
+        history.find(function(x){
+
+            return x.id === id;
+
+        });
+
+
+    if(!item){
+
+        return;
+
+    }
+
+
+    const result =
+        await db
+            .from('print_history')
+            .delete()
+            .eq(
+                'id',
+                id
+            )
+            .eq(
+                'user_id',
+                currentUser.id
+            );
+
+
+    if(result.error){
+
+        alert(
+            'Ошибка удаления истории:\n' +
+            result.error.message
+        );
+
+        return;
+
+    }
+
+
+    await deleteHistoryPhoto(
+        item.photoPath
+    );
+
+
+    if(
+        item.spoolId &&
+        Number(item.weight) > 0
+    ){
+
+        const spoolResult =
+            await db
+                .from('spools')
+                .select('weight')
+                .eq(
+                    'id',
+                    item.spoolId
+                )
+                .eq(
+                    'user_id',
+                    currentUser.id
+                )
+                .single();
+
+
+        if(
+            !spoolResult.error &&
+            spoolResult.data
+        ){
+
+            const restoredWeight =
+                Number(
+                    spoolResult.data.weight || 0
+                ) +
+                Number(item.weight || 0);
+
+
+            await db
+                .from('spools')
+                .update({
+
+                    weight:
+                        restoredWeight
+
+                })
+                .eq(
+                    'id',
+                    item.spoolId
+                )
+                .eq(
+                    'user_id',
+                    currentUser.id
+                );
+
+        }
+
+    }
+
+
+    await loadData();
+
+}
+
+
+/* =========================================================
+   EXPORT CSV
+========================================================= */
+
+function exportHistoryCSV(){
+
+    if(!history.length){
+
+        alert(
+            'История пуста, экспорт недоступен.'
+        );
+
+        return;
+
+    }
+
+
+    let csvContent =
+        "data:text/csv;charset=utf-8,\uFEFF";
+
+
+    csvContent +=
+        "ID;Дата;Модель;Вес (г);Себестоимость (€);Катушка;Фото;Заметки\n";
+
+
+    history.forEach(function(h){
+
+        const row = [
+
+            h.id,
+
+            `"${h.date || ''}"`,
+
+            `"${(h.name || '')
+                .replace(/"/g,'""')}"`,
+
+            h.weight,
+
+            h.cost,
+
+            `"${(h.spoolName || '')
+                .replace(/"/g,'""')}"`,
+
+            h.photoPath ? 'Да' : 'Нет',
+
+            `"${(h.notes || '')
+                .replace(/"/g,'""')}"`
+
+        ];
+
+
+        csvContent +=
+            row.join(";") +
+            "\n";
+
+    });
+
+
+    const encodedUri =
+        encodeURI(csvContent);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.setAttribute(
+        "href",
+        encodedUri
+    );
+
+
+    link.setAttribute(
+        "download",
+        `printdesk_history_${new Date()
+            .toISOString()
+            .slice(0,10)}.csv`
+    );
+
+
+    document
+        .body
+        .appendChild(link);
+
+
+    link.click();
+
+
+    document
+        .body
+        .removeChild(link);
+
+}
+
+
+/* =========================================================
+   PAGE NAVIGATION
+========================================================= */
+
+function showPage(page){
+
+    document
+        .querySelectorAll('.page')
+        .forEach(function(x){
+
+            x.classList.remove(
+                'active'
+            );
+
+        });
+
+
+    document
+        .querySelectorAll('.nav div')
+        .forEach(function(x){
+
+            x.classList.remove(
+                'active'
+            );
+
+        });
+
+
+    const pageElement =
+        document.getElementById(
+            'page-' + page
+        );
+
+
+    const navElement =
+        document.getElementById(
+            'nav-' + page
+        );
+
+
+    if(pageElement){
+
+        pageElement
+            .classList
+            .add('active');
+
+    }
+
+
+    if(navElement){
+
+        navElement
+            .classList
+            .add('active');
+
+    }
+
+
+    if(page === 'calc'){
+
+        fillSelect();
+
+    }
+
+
+    update();
+
+}
+
+
+/* =========================================================
+   UPDATE UI
+========================================================= */
+
+function update(){
+
+const summary = document.getElementById('summary');
+
+if (!spools.length) {
+    summary.innerHTML =
+        '<div class="empty-state">' +
+            '<div class="empty-state-icon">🧵</div>' +
+            'У вас пока нет активных катушек.' +
+        '</div>';
+} else {
+    summary.innerHTML = spools.map(function(s) {
+        let warningBadge = '';
+        if (s.weight < 50) {
+            warningBadge = '<span style="display: inline-flex; align-items: center; margin-left: 6px;" title="Критический остаток (< 50 г)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#ff4d4f"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10h2v5h-2v-5zm0 6h2v2h-2v-2z"/></svg></span>';
+        } else if (s.weight <= 150) {
+            warningBadge = '<span style="display: inline-flex; align-items: center; margin-left: 6px;" title="Низкий остаток (< 150 г)"><svg width="16" height="16" viewBox="0 0 24 24" fill="#faad14"><path d="M12 2L1 21h22L12 2zm0 3.99L19.53 19H4.47L12 5.99zM11 10h2v5h-2v-5zm0 6h2v2h-2v-2z"/></svg></span>';
+        }
+        return `
+            <div style="
+                padding: 8px 0;
+                border-bottom: 1px solid #2a2a2a;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            ">
+                <div style="display: flex; align-items: center;">
+                    <span class="color-dot" style="background: ${esc(s.color || '#888888')}"></span>
+                    <b>${esc(s.name)}</b>
+                    ${warningBadge}
+                </div>
+
+                <span style="color: #aaa; font-size: 14px;">
+                    ${s.weight} г
+                </span>
+            </div>
+        `;
+    }).join('');
+}
+
+
+    const total =
+        history.reduce(
+            function(sum,x){
+
+                return sum +
+                    (
+                        Number(x.weight) ||
+                        0
+                    );
+
+            },
+            0
+        );
+
+
+    document
+        .getElementById('total-grams')
+        .textContent =
+            total.toFixed(0) +
+            ' г';
+
+
+    const profit =
+        history.reduce(
+            function(sum,x){
+
+                return sum +
+                    (
+                        Number(x.profit) ||
+                        0
+                    );
+
+            },
+            0
+        );
+
+
+    document
+        .getElementById('profit')
+        .textContent =
+            profit.toFixed(2) +
+            ' €';
+
+
+    const spoolsListEl =
+        document.getElementById(
+            'spools-list'
+        );
+
+
+    if(!spools.length){
+
+        spoolsListEl.innerHTML =
+            '<div class="empty-state">' +
+
+                '<div class="empty-state-icon">' +
+                    '📦' +
+                '</div>' +
+
+                'Список катушек пуст.<br>' +
+
+                'Добавьте первую катушку с помощью формы выше.' +
+
+            '</div>';
+
+    }else{
+
+        spoolsListEl.innerHTML =
+            spools
+                .map(function(s){
+
+                    const color =
+                        s.color ||
+                        '#888888';
+
+
+                    return `
+
+                        <div class="spool">
+
+
+                            <button
+                                class="delete"
+                                onclick="delSpool(${s.id})">
+
+                                🗑️
+
+                            </button>
+
+
+                            <button
+                                class="edit"
+                                onclick="editSpool(${s.id})">
+
+                                ✏️
+
+                            </button>
+
+
+                            <div class="spool-name">
+
+                                <span
+                                    class="color-dot"
+                                    style="
+                                        background:${esc(color)}
+                                    ">
+                                </span>
+
+                                ${esc(s.name)}
+
+                            </div>
+
+
+                            <div class="spool-meta">
+
+                                ${esc(s.material)}
+
+                                · осталось
+
+                                <b>
+                                    ${s.weight} г
+                                </b>
+
+                                · ${s.price.toFixed(2)} €
+
+                            </div>
+
+
+                            ${
+                                s.manufacturer
+                                ? `
+                                    <div class="spool-meta">
+
+                                        Производитель:
+
+                                        ${esc(
+                                            s.manufacturer
+                                        )}
+
+                                    </div>
+                                `
+                                : ''
+                            }
+
+
+                            ${
+                                s.purchaseDate
+                                ? `
+                                    <div class="spool-meta">
+
+                                        Куплена:
+
+                                        ${esc(
+                                            s.purchaseDate
+                                        )}
+
+                                    </div>
+                                `
+                                : ''
+                            }
+
+
+                            ${
+                                s.notes
+                                ? `
+                                    <div class="spool-notes">
+
+                                        📝
+                                        ${esc(s.notes)}
+
+                                    </div>
+                                `
+                                : ''
+                            }
+
+                        </div>
+
+                    `;
+
+                })
+                .join('');
+
+    }
+
+
+    const historyElement =
+        document
+            .getElementById(
+                'history-list'
+            );
+
+
+    if(!history.length){
+
+        historyElement.innerHTML =
+            '<div class="empty-state">' +
+
+                '<div class="empty-state-icon">' +
+                    '📋' +
+                '</div>' +
+
+                'История печати пока пуста.<br>' +
+
+                'Выполните первый расчёт и сохраните его.' +
+
+            '</div>';
+
+        return;
+
+    }
+
+
+    historyElement.innerHTML =
+        history
+            .map(function(h){
+
+                let color =
+                    h.color || '';
+
+
+                let spoolName =
+                    h.spoolName || '';
+
+
+                if(
+                    !color &&
+                    h.spoolId
+                ){
+
+                    const spool =
+                        spools.find(function(s){
+
+                            return (
+                                s.id ===
+                                h.spoolId
+                            );
+
+                        });
+
+
+                    if(spool){
+
+                        color =
+                            spool.color || '';
+
+
+                        if(!spoolName){
+
+                            spoolName =
+                                spool.name;
+
+                        }
+
+                    }
+
+                }
+
+
+                if(!color){
+
+                    color =
+                        '#666666';
+
+                }
+
+
+                return `
+
+    <div
+        class="history"
+        onclick="openHistory(${h.id})">
+
+
+        <button
+            class="delete"
+            onclick="
+                event.stopPropagation();
+                deleteHistory(${h.id});
+            ">
+
+            🗑️
+
+        </button>
+
+
+        <button
+            class="edit"
+            onclick="
+                event.stopPropagation();
+                editHistory(${h.id});
+            ">
+
+            ✏️
+
+        </button>
+
+
+        <div class="history-title">
+
+            ${esc(h.name)}
+
+
+            <span
+                class="history-date">
+
+                ${esc(h.date)}
+
+            </span>
+
+        </div>
+
+
+        <div class="history-info">
+
+            ⚖️
+            ${Number(h.weight).toFixed(1)}
+            г
+
+            ·
+
+            💰
+            ${Number(h.cost).toFixed(2)}
+            €
+
+        </div>
+
+
+        <div class="history-color">
+
+            ${
+                color.split(',').map(c => `<span class="color-dot" style="background:${esc(c.trim())}"></span>`).join('')
+            }
+
+
+            ${
+                spoolName
+                ? esc(spoolName)
+                : 'Цвет не указан'
+            }
+
+        </div>
+
+
+        <div class="history-open">
+
+            Нажмите, чтобы открыть запись →
+
+        </div>
+
+    </div>
+
+`;
+
+            })
+            .join('');
+
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+db.auth.onAuthStateChange(
+    async function(event,session){
+
+        console.log(
+            'Auth event:',
+            event
+        );
+
+
+        if(
+            session &&
+            session.user
+        ){
+
+            const changed =
+                !currentUser ||
+                currentUser.id !==
+                    session.user.id;
+
+
+            currentUser =
+                session.user;
+
+
+            if(changed){
+
+                document
+                    .getElementById(
+                        'login-screen'
+                    )
+                    .classList
+                    .add('hidden');
+
+
+                document
+                    .getElementById('app')
+                    .classList
+                    .remove('hidden');
+
+
+                document
+                    .getElementById(
+                        'user-email'
+                    )
+                    .textContent =
+                        currentUser.email || '—';
+
+
+                await loadData();
+
+                startRealtime();
+
+            }
+
+        }else{
+
+            await stopRealtime();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   START APPLICATION
+========================================================= */
+
+document.addEventListener(
+    'DOMContentLoaded',
+    async function(){
+
+        await checkAuth();
+
+    }
+);
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js')
+            .then(function(reg) {
+                console.log('SW зарегистрирован:', reg.scope);
+            })
+            .catch(function(err) {
+                console.error('Ошибка SW:', err);
+            });
+    });
+}
+
+</script>
+
+</body>
+</html>
