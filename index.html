@@ -1592,7 +1592,8 @@ header img{
             <input
                 id="history-edit-weight"
                 type="number"
-                step="0.1">
+                step="0.1"
+                oninput="recalcHistoryEditCost()">
 
         </div>
 
@@ -1632,7 +1633,8 @@ header img{
             </label>
 
             <textarea
-                id="history-edit-notes">
+                id="history-edit-notes"
+                oninput="recalcHistoryEditCost()">
             </textarea>
 
         </div>
@@ -3642,6 +3644,82 @@ function closeHistoryModal(event){
    EDIT HISTORY
 ========================================================= */
 
+function recalcHistoryEditCost(){
+
+    const weightInput =
+        document.getElementById(
+            'history-edit-weight'
+        );
+
+    const costInput =
+        document.getElementById(
+            'history-edit-cost'
+        );
+
+    const notesInput =
+        document.getElementById(
+            'history-edit-notes'
+        );
+
+    if(!weightInput || !costInput){
+
+        return;
+
+    }
+
+    const origWeight =
+        Number(weightInput.dataset.origWeight) || 0;
+
+    const origCost =
+        Number(costInput.dataset.origCost) || 0;
+
+    const newWeight =
+        Number(weightInput.value) || 0;
+
+    if(newWeight <= 0){
+
+        costInput.value = '0.00';
+
+        return;
+
+    }
+
+    const notesText =
+        notesInput ? notesInput.value : '';
+
+    const timeMatch =
+        notesText.match(/⏱️\s*Время печати:\s*(\d+)\s*ч\s*(\d+)\s*мин/);
+
+    const hours =
+        timeMatch ? Number(timeMatch[1]) || 0 : 0;
+
+    const minutes =
+        timeMatch ? Number(timeMatch[2]) || 0 : 0;
+
+    const printOverhead =
+        (hours + minutes / 60) * (ELEC + AMORT);
+
+    let recalculatedCost = origCost;
+
+    if(origWeight > 0){
+
+        const origMaterialCost =
+            Math.max(0, origCost - printOverhead);
+
+        const newMaterialCost =
+            origMaterialCost * (newWeight / origWeight);
+
+        recalculatedCost =
+            newMaterialCost + printOverhead;
+
+    }
+
+    costInput.value =
+        recalculatedCost.toFixed(2);
+
+}
+
+
 function editHistory(id){
 
     const item =
@@ -3678,20 +3756,28 @@ function editHistory(id){
             item.name;
 
 
-    document
-        .getElementById(
+    const editWeightEl =
+        document.getElementById(
             'history-edit-weight'
-        )
-        .value =
-            item.weight;
+        );
+
+    editWeightEl.value =
+        item.weight;
+
+    editWeightEl.dataset.origWeight =
+        String(item.weight);
 
 
-    document
-        .getElementById(
+    const editCostEl =
+        document.getElementById(
             'history-edit-cost'
-        )
-        .value =
-            item.cost;
+        );
+
+    editCostEl.value =
+        item.cost;
+
+    editCostEl.dataset.origCost =
+        String(item.cost);
 
 
     document
