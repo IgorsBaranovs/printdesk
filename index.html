@@ -3447,6 +3447,13 @@ function openHistory(id){
         .map(c => `<span class="color-dot" style="background:${esc(c.trim())};margin-left:4px;margin-right:0;"></span>`)
         .join('');
 
+    const rawNotes = item.notes || '';
+    const timeMatch = rawNotes.match(/⏱️\s*Время печати:\s*([^\n]+)/);
+    const printTimeText = timeMatch ? timeMatch[1].trim() : '';
+    const cleanNotes = rawNotes
+        .replace(/\n*⏱️\s*Время печати:\s*[^\n]+/g, '')
+        .trim();
+
 
     document
         .getElementById(
@@ -3517,6 +3524,25 @@ function openHistory(id){
         </div>
 
 
+        ${
+            printTimeText
+            ? `
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        Время печати
+                    </span>
+
+                    <span class="detail-value">
+                        ${esc(printTimeText)}
+                    </span>
+
+                </div>
+            `
+            : ''
+        }
+
+
         <div class="detail-row">
 
             <span class="detail-label">
@@ -3546,10 +3572,10 @@ function openHistory(id){
 
 
         ${
-            item.notes
+            cleanNotes
             ? `
                 <div class="detail-notes">
-                    📝 ${esc(item.notes)}
+                    📝 ${esc(cleanNotes)}
                 </div>
             `
             : `
